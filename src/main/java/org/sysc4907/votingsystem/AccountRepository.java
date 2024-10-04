@@ -2,8 +2,10 @@ package org.sysc4907.votingsystem;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface AccountRepository extends CrudRepository<Account, Long> {
+import java.util.Optional;
 
-    Account findById(long id);
+public interface AccountRepository extends CrudRepository<Account, String> {
+
+    Optional<Account> findById(String userName);
 
 }
