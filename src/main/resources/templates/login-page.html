@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Login</title>
+</head>
+<body>
+  <h1>Login to Voting System</h1>
+  <form action="/login" method="post">
+    <label for="userName">Username:</label>
+    <input type="text" id="userName" name="userName" required><br><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
+    <button type="submit">Login</button>
+  </form>
+</body>
+</html>
+
