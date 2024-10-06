@@ -7,7 +7,8 @@ import java.security.SecureRandom;
 @Service
 public class AccountGenerator {
 
-    public final int NUMBER_OF_ACCOUNTS = 100;
+    public final int NUMBER_OF_VOTER_ACCOUNTS = 10;
+    public final int NUMBER_OF_ADMIN_ACCOUNTS = 1;
 
     private final AccountRepository accountRepository;
     private final SecureRandom secureRandom = new SecureRandom();
@@ -30,11 +31,18 @@ public class AccountGenerator {
     // Method to generate n dummy accounts
     public void generateDummyAccounts() {
         accountRepository.deleteAll();
-        for (int i = 0; i < NUMBER_OF_ACCOUNTS; i++) {
+        for (int i = 0; i < NUMBER_OF_VOTER_ACCOUNTS; i++) {
             String username = generateRandomString(8); // Random username of length 8
             String password = generateRandomString(12); // Random password of length 12
-            Account account = new Account(username, password);
+            VoterAccount account = new VoterAccount(username, password);
             accountRepository.save(account); // Save account to repository
         }
+        for (int i = 0; i < NUMBER_OF_ADMIN_ACCOUNTS; i++) {
+            String username = generateRandomString(8); // Random username of length 8
+            String password = generateRandomString(12); // Random password of length 12
+            AdminAccount account = new AdminAccount(username, password);
+            accountRepository.save(account); // Save account to repository
+        }
+
     }
 }

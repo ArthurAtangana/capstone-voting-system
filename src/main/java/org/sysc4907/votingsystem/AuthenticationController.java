@@ -23,12 +23,11 @@ public class AuthenticationController {
 
         model.addAttribute("name", userName);
 
-        boolean success = authenticationService.authenticate(userName, password);
+        String template = authenticationService.authenticate(userName, password);
 
-        if (success) {
-            return "successful-login";
-        } else {
+        if (template.equals("")) {
             return "unsuccessful-login";
         }
+        return template;
     }
 }

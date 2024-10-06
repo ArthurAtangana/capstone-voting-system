@@ -9,14 +9,24 @@ import java.util.Optional;
 public class AuthenticationService {
 
     @Autowired
-    private AccountRepository repository;
+    private AccountRepository accountRepository;
 
-    public boolean authenticate(String userName, String password) {
-        Optional<Account> account = repository.findById(userName);
+    public String authenticate(String userName, String password) {
+
+        Optional<Account> account = accountRepository.findById(userName);
 
         if (account.isPresent()) {
-            return account.get().getPassword().equals(password);
+            Account a = account.get();
+            if (account.get().getPassword().equals(password)) {
+                if (a instanceof VoterAccount) {
+                    return "successful-voter-login";
+                }
+                if (a instanceof AdminAccount) {
+                    return "successful-admin-login";
+                }
+            }
         }
-        return false;
+
+        return "";
     }
 }

@@ -1,10 +1,11 @@
 package org.sysc4907.votingsystem;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
-public class Account {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "account_type")
+public abstract class Account {
 
     @Id
     private String userName;
