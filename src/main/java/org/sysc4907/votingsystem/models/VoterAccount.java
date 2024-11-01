@@ -1,7 +1,8 @@
-package org.sysc4907.votingsystem;
+package org.sysc4907.votingsystem.models;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import org.sysc4907.votingsystem.models.Account;
 
 @Entity
 @DiscriminatorValue("VOTER")

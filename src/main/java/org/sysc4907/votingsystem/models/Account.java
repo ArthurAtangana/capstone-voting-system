@@ -1,4 +1,4 @@
-package org.sysc4907.votingsystem;
+package org.sysc4907.votingsystem.models;
 
 import jakarta.persistence.*;
 

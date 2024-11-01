@@ -1,7 +1,11 @@
-package org.sysc4907.votingsystem;
+package org.sysc4907.votingsystem.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.sysc4907.votingsystem.models.Account;
+import org.sysc4907.votingsystem.models.AdminAccount;
+import org.sysc4907.votingsystem.models.VoterAccount;
+import org.sysc4907.votingsystem.repositories.AccountRepository;
 
 import java.util.Optional;
 

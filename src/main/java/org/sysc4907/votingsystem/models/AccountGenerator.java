@@ -1,6 +1,7 @@
-package org.sysc4907.votingsystem;
+package org.sysc4907.votingsystem.models;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.sysc4907.votingsystem.repositories.AccountRepository;
 
 import java.security.SecureRandom;
 

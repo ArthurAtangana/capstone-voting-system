@@ -1,8 +1,9 @@
-package org.sysc4907.votingsystem;
+package org.sysc4907.votingsystem.helpers;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.sysc4907.votingsystem.models.AccountGenerator;
 
 @SpringBootApplication
 public class AccountGenerationRunner {
