@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poll Configuration Success</title>
+    <style>
+        body, .title, .message, .details, .candidate-list, .container {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #e6f4ea;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        .title {
+            font-size: 1.8rem;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .details {
+            background-color: #f8fbfe;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #d9e7f3;
+            color: #333;
+            text-align: left;
+        }
+
+        .candidate-list {
+            list-style-type: none; /* Change to none for unnumbered list */
+            padding-left: 0; /* Remove padding for left alignment */
+            color: #000; /* Change to black */
+            text-align: center; /* Center align the text */
+        }
+
+        .candidate-list li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="title">Congratulations!</div>
+    <div class="message">You have successfully configured an election!</div>
+    <div class="details">
+        <p>Please double-check that the following are true:</p>
+        <p><strong th:text="${name}"></strong> polls will open on <strong th:text="${startDate}"></strong> and close on <strong th:text="${endDate}"></strong> with the following candidates as options:</p>
+        <ul class="candidate-list"> <!-- Changed from ol to ul for unnumbered list -->
+            <li th:each="candidate : ${candidates}" th:text="${candidate}"></li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

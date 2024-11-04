@@ -1,4 +1,4 @@
-package org.sysc4907.votingsystem;
+package org.sysc4907.votingsystem.generators;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

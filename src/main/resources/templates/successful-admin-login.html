@@ -22,11 +22,14 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             padding: 40px;
             text-align: center;
+            max-width: 500px;
+            width: 100%;
         }
 
         h1 {
             color: #333;
             margin-bottom: 20px;
+            font-size: 1.5em;
         }
 
         .footer {
@@ -34,14 +37,45 @@
             font-size: 0.9em;
             color: #777;
         }
+
+        #createAddress {
+            margin-top: 20px;
+        }
+
+        #createAddress button {
+            background: linear-gradient(45deg, #4CAF50, #81C784);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            padding: 12px 24px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        #createAddress button:hover {
+            background: linear-gradient(45deg, #43A047, #66BB6A);
+            transform: scale(1.05);
+        }
+
+        #createAddress button:active {
+            background: #388E3C;
+            transform: scale(1.03);
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1 th:text="'Welcome ADMIN to our secure & transparent voting system, ' + ${name} + '!'"></h1>
+    <h1 th:text="|Welcome ADMIN, ${name}!|"></h1>
     <div class="footer">
-        <p>&copy; 2024 Your Voting System</p>
+        <p>&copy; Secure and Transparent Voting System</p>
     </div>
+    <p id="createAddress">
+        <a th:href="@{/create-election}">
+            <button type="button">Configure New Election</button>
+        </a>
+    </p>
 </div>
 </body>
 </html>
