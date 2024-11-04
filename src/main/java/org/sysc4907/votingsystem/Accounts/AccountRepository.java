@@ -1,6 +1,7 @@
-package org.sysc4907.votingsystem;
+package org.sysc4907.votingsystem.Accounts;
 
 import org.springframework.data.repository.CrudRepository;
+import org.sysc4907.votingsystem.Accounts.Account;
 
 import java.util.Optional;
 

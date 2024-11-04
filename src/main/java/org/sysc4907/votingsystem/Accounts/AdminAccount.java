@@ -1,8 +1,8 @@
-package org.sysc4907.votingsystem;
+package org.sysc4907.votingsystem.Accounts;
 
-import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import org.sysc4907.votingsystem.Accounts.Account;
 
 @Entity
 @DiscriminatorValue("ADMIN")

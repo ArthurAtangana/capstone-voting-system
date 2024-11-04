@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid Poll Config</title>
+    <style>
+        body, .title, .message, .checklist, .container {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #f8d7da;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            color: #dc3545;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+            color: #555;
+            text-align: left;
+        }
+
+        .checklist li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .checklist li::before {
+            content: "⚠️";
+            margin-right: 0.5rem;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="title">Invalid Poll Config</div>
+    <div class="message">Please check the following:</div>
+    <ul class="checklist">
+        <li>End date is after the start date</li>
+        <li>End date is not in the past</li>
+        <li>Election name is less than 100 characters</li>
+        <li>Candidate names are unique</li>
+    </ul>
+</div>
+</body>
+</html>
+

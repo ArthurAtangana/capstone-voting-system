@@ -1,7 +1,7 @@
 package org.sysc4907.votingsystem.notinuse;
 
 import org.springframework.data.repository.CrudRepository;
-import org.sysc4907.votingsystem.VoterAccount;
+import org.sysc4907.votingsystem.Accounts.VoterAccount;
 
 import java.util.Optional;
 

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poll Configuration</title>
+    <style>
+        body, h1, label, input[type="text"], input[type="date"], textarea, button {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 80px;
+        }
+
+        #submitButton {
+            background: linear-gradient(45deg, #4CAF50, #81C784);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            padding: 12px 24px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            width: 100%;
+        }
+
+        #submitButton:hover {
+            background: linear-gradient(45deg, #43A047, #66BB6A);
+            transform: scale(1.05);
+        }
+
+        #submitButton:active {
+            background: #388E3C;
+            transform: scale(1.03);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Configure New Poll</h1>
+
+    <form th:action="@{/election}" method="post">
+        <div class="form-group">
+            <label for="startDate">Start Date</label>
+            <input type="date" id="startDate" name="startDate" required>
+        </div>
+
+        <div class="form-group">
+            <label for="endDate">End Date</label>
+            <input type="date" id="endDate" name="endDate" required>
+        </div>
+
+        <div class="form-group">
+            <label for="name">Name of Election</label>
+            <input type="text" id="name" name="name" placeholder="Enter election name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="candidates">List of Candidates</label>
+            <textarea id="candidates" name="candidates" placeholder="Enter each candidate's name on a new line" required></textarea>
+        </div>
+
+        <button type="submit" id="submitButton">Submit</button>
+    </form>
+</div>
+</body>
+</html>
