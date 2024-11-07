@@ -7,6 +7,9 @@ import org.sysc4907.votingsystem.Accounts.VoterAccount;
 
 import java.security.SecureRandom;
 
+/**
+ *
+ */
 @Service
 public class AccountGenerator {
 
