@@ -12,9 +12,9 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
 
-    @GetMapping("/login-page")
-    public String showLoginForm() {
-        return "login-page";
+    @GetMapping("/home-page")
+    public String showHomePage() {
+        return "home-page";
     }
 
     @PostMapping("/login")
@@ -30,4 +30,6 @@ public class AuthenticationController {
         }
         return template;
     }
+
+
 }
