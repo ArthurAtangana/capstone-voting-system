@@ -1,0 +1,29 @@
+<!--
+    Registration Sign-In Key Page Template
+    This template is used to display the form for submitting registration sign-in key.
+
+    Author: Jasmine Gad El Hak
+    Version: 1.0
+-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+    <link rel="stylesheet" href="/css/styles.css">
+
+</head>
+<body>
+<div class="container">
+    <h1>Register to Voting System</h1>
+    <form action="/register/sign-in-key" method="post">
+        <div class="form-group">
+            <label for="signInKey">Sign-In Key:</label>
+            <input type="text" id="signInKey" name="signInKey" required>
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

@@ -13,7 +13,7 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
 
     @GetMapping("/home-page")
-    public String showLoginForm() {
+    public String showHomePage() {
         return "home-page";
     }
 
@@ -30,4 +30,6 @@ public class AuthenticationController {
         }
         return template;
     }
+
+
 }
