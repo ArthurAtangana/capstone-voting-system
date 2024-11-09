@@ -1,35 +1,55 @@
 package org.sysc4907.votingsystem.PollConfiguration;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
 public class PollConfigurationService {
 
-    public String validatePollConfiguration(LocalDate startDate, LocalDate endDate, String name,
-                                            String candidates) {
+    public boolean validatePollConfiguration(LocalDate startDate, LocalTime startTime, LocalDate endDate,
+                                            LocalTime endTime, String name, String candidates, MultipartFile voterKeysFile) {
 
-        boolean validDates = validateDates(startDate, endDate);
+        boolean validDateTime = validateDateTime(startDate, endDate, startTime, endTime);
         boolean validName = validateElectionName(name);
         boolean validCandidates = validateCandidates(candidates);
+        List<Integer> voterKeyList = convertFileToList(voterKeysFile);
+        boolean validVoterKeys = validateVoterKeys(voterKeyList);
 
-        if (validDates && validName && validCandidates) {
-            return "successful-poll-config";
-        }
-
-        return "unsuccessful-poll-config";
+        return validDateTime && validName && validCandidates && validVoterKeys;
     }
 
 
-    private boolean validateDates(LocalDate startDate, LocalDate endDate)  {
+    private boolean validateDateTime(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime)  {
         LocalDate currentDate = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
 
-        if (startDate == null || endDate == null) {
+        if (startDate == null || endDate == null || startTime == null || endTime == null) {
             return false;
         }
-        return endDate.compareTo(startDate) > 0 && endDate.compareTo(currentDate) > 0;
+
+        if (startDate.isBefore(currentDate) || endDate.isBefore(currentDate)) {
+            return false;
+        }
+
+        if (startDate.isAfter(endDate)) {
+            return false;
+        }
+
+        if (startDate.equals(endDate)) {
+            if (endTime.isBefore(startTime)) {
+                return false;
+            }
+
+            if (startDate.equals(currentDate) && (startTime.isBefore(currentTime)) || endTime.isBefore(currentTime)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean validateElectionName(String electionName) {
@@ -48,6 +68,31 @@ public class PollConfigurationService {
 
         Set<String> uniqueCandidates = new HashSet<>(splitCandidates);
         return uniqueCandidates.size() == splitCandidates.size();
+    }
+
+    private boolean validateVoterKeys(List<Integer> voterKeyList) {
+        Set<Integer> uniqueKeys = new HashSet<>(voterKeyList);
+        return uniqueKeys.size() == voterKeyList.size();
+    }
+
+    private List<Integer> convertFileToList(MultipartFile voterKeysFile) {
+        List<Integer> keysList = new ArrayList<>();
+
+        try {
+            String content = new String(voterKeysFile.getBytes());
+            String[] lines = content.split("\\r?\\n");
+
+            for (String line : lines) {
+                try {
+                    keysList.add(Integer.parseInt(line.trim()));
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid key: " + line);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Could not read voter keys file");
+        }
+        return keysList;
     }
 }
 
