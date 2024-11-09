@@ -1,8 +1,7 @@
-package org.sysc4907.votingsystem.PollConfiguration;
+package org.sysc4907.votingsystem.Elections;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.sysc4907.votingsystem.Elections.Election;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -10,7 +9,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 @Service
-public class PollConfigurationService {
+public class ElectionService {
 
     private Election election;
 
