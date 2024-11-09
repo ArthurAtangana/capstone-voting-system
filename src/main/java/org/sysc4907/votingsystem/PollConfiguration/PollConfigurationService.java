@@ -2,6 +2,7 @@ package org.sysc4907.votingsystem.PollConfiguration;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.sysc4907.votingsystem.Elections.Election;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -11,16 +12,31 @@ import java.util.*;
 @Service
 public class PollConfigurationService {
 
-    public boolean validatePollConfiguration(LocalDate startDate, LocalTime startTime, LocalDate endDate,
+    private Election election;
+
+    public boolean validateAndConfigurePoll(LocalDate startDate, LocalTime startTime, LocalDate endDate,
                                             LocalTime endTime, String name, String candidates, MultipartFile voterKeysFile) {
 
         boolean validDateTime = validateDateTime(startDate, endDate, startTime, endTime);
         boolean validName = validateElectionName(name);
-        boolean validCandidates = validateCandidates(candidates);
+        List<String> splitCandidates = Arrays.asList(candidates.split("\\r?\\n"));
+        boolean validCandidates = validateCandidates(splitCandidates);
         List<Integer> voterKeyList = convertFileToList(voterKeysFile);
         boolean validVoterKeys = validateVoterKeys(voterKeyList);
 
-        return validDateTime && validName && validCandidates && validVoterKeys;
+        if (validDateTime && validName && validCandidates && validVoterKeys) {
+            this.election = new Election(startDate, startTime, endDate, endTime, name, splitCandidates, voterKeyList.size(), voterKeyList);
+            return true;
+        }
+
+        return false;
+    }
+
+    public Election getElection() {
+        if (election == null) {
+            System.out.println("Election has not been configured yet.");
+        }
+        return election;
     }
 
 
@@ -31,20 +47,16 @@ public class PollConfigurationService {
         if (startDate == null || endDate == null || startTime == null || endTime == null) {
             return false;
         }
-
         if (startDate.isBefore(currentDate) || endDate.isBefore(currentDate)) {
             return false;
         }
-
         if (startDate.isAfter(endDate)) {
             return false;
         }
-
         if (startDate.equals(endDate)) {
             if (endTime.isBefore(startTime)) {
                 return false;
             }
-
             if (startDate.equals(currentDate) && (startTime.isBefore(currentTime)) || endTime.isBefore(currentTime)) {
                 return false;
             }
@@ -59,15 +71,14 @@ public class PollConfigurationService {
         return true;
     }
 
-    private boolean validateCandidates(String candidates) {
-        List<String> splitCandidates = Arrays.asList(candidates.split("\\r?\\n"));
+    private boolean validateCandidates(List<String> candidates) {
 
         if (candidates == null || candidates.isEmpty()) {
             return false;
         }
 
-        Set<String> uniqueCandidates = new HashSet<>(splitCandidates);
-        return uniqueCandidates.size() == splitCandidates.size();
+        Set<String> uniqueCandidates = new HashSet<>(candidates);
+        return uniqueCandidates.size() == candidates.size();
     }
 
     private boolean validateVoterKeys(List<Integer> voterKeyList) {

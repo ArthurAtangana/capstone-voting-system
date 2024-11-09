@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.sysc4907.votingsystem.Elections.Election;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -16,8 +17,18 @@ import java.util.List;
 
 @Controller
 public class PollConfigurationController {
+
+    private final PollConfigurationService pollConfigurationService;
+
     @Autowired
-    private PollConfigurationService pollConfigurationService;
+    public PollConfigurationController(PollConfigurationService pollConfigurationService) {
+        this.pollConfigurationService = pollConfigurationService;
+    }
+
+    @GetMapping
+    public Election getElectionDetails() {
+        return pollConfigurationService.getElection();
+    }
 
     @GetMapping("/create-election")
     public String showLoginForm() {
@@ -42,7 +53,7 @@ public class PollConfigurationController {
         List<String> splitCandidates = Arrays.asList(candidates.split("\\r?\\n"));
         model.addAttribute("candidates", splitCandidates);
 
-        if (pollConfigurationService.validatePollConfiguration(
+        if (pollConfigurationService.validateAndConfigurePoll(
                 startDate, startTime, endDate, endTime, name, candidates, voterKeys) == true) {
             return "successful-poll-config";
         }

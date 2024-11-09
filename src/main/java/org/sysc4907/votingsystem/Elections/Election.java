@@ -3,15 +3,18 @@ package org.sysc4907.votingsystem.Elections;
 import org.sysc4907.votingsystem.generators.BallotIdGenerator;
 import org.sysc4907.votingsystem.generators.CandidateOrderGenerator;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
 public class Election {
     private Long id;
-    public final Date START_DATE;
-    public final Date END_DATE;
+    public final LocalDate START_DATE;
+    public final LocalDate END_DATE;
+    public final LocalTime START_TIME;
+    public final LocalTime END_TIME;
     public final String NAME;
 
     private final List<String> candidates;
@@ -23,24 +26,31 @@ public class Election {
     private final CandidateOrderGenerator candidateOrderGenerator;
 
     // List of voter keys or accounts?
+    private final List<Integer> voterKeys;
 
 
-    public Election(Date startDate, Date endDate, String name, List<String> candidates, int numberOfDecryptionKeys) {
+    public Election(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime, String name, List<String> candidates, int numberOfDecryptionKeys, List<Integer> voterKeys) {
         START_DATE = startDate;
+        START_TIME = startTime;
         END_DATE = endDate;
+        END_TIME = endTime;
         NAME = name;
         this.candidates = List.copyOf(candidates);
         NumberOfDecryptionKeys = numberOfDecryptionKeys;
+        this.voterKeys = voterKeys;
         tallier = new Tally(candidates.size(), numberOfDecryptionKeys);
         this.candidateOrderGenerator = new CandidateOrderGenerator(candidates.size());
     }
 
     public Election() {
-        START_DATE = new Date();
-        END_DATE = new Date();
+        START_DATE = null;
+        END_DATE = null;
+        START_TIME = null;
+        END_TIME = null;
         NAME = "";
         candidates = new ArrayList<>();
         NumberOfDecryptionKeys = 0;
+        voterKeys = new ArrayList<>();
         tallier = new Tally(0,0);
         candidateOrderGenerator = new CandidateOrderGenerator(0);
     }
