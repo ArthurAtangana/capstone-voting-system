@@ -52,6 +52,9 @@ public class ElectionService {
         if (startDate.isAfter(endDate)) {
             return false;
         }
+        if (startTime.isBefore(currentTime) || endTime.isBefore(currentTime)) {
+            return false;
+        }
         if (startDate.equals(endDate)) {
             if (endTime.isBefore(startTime)) {
                 return false;
@@ -72,7 +75,7 @@ public class ElectionService {
 
     private boolean validateCandidates(List<String> candidates) {
 
-        if (candidates == null || candidates.isEmpty()) {
+        if (candidates == null || candidates.size() <= 1) {
             return false;
         }
 
@@ -81,6 +84,9 @@ public class ElectionService {
     }
 
     private boolean validateVoterKeys(List<Integer> voterKeyList) {
+        if (voterKeyList == null || voterKeyList.isEmpty()) {
+            return false;
+        }
         Set<Integer> uniqueKeys = new HashSet<>(voterKeyList);
         return uniqueKeys.size() == voterKeyList.size();
     }
