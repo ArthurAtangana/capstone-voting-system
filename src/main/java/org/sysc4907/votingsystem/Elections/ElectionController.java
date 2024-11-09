@@ -14,6 +14,9 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Controller class responsible for handling web requests and responses for endpoints relating to poll configuration.
+ */
 @Controller
 public class ElectionController {
 
@@ -24,10 +27,6 @@ public class ElectionController {
         this.electionService = electionService;
     }
 
-    @GetMapping
-    public Election getElectionDetails() {
-        return electionService.getElection();
-    }
 
     @GetMapping("/create-election")
     public String showLoginForm() {

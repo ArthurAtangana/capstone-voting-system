@@ -8,6 +8,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
+/**
+ * Service class responsible for logic of processing poll configuration.
+ */
 @Service
 public class ElectionService {
 
@@ -31,6 +34,10 @@ public class ElectionService {
         return false;
     }
 
+    /**
+     * Returns current Election object (singleton).
+     * @return Election
+     */
     public Election getElection() {
         if (election == null) {
             System.out.println("Election has not been configured yet.");
@@ -56,7 +63,7 @@ public class ElectionService {
             return false;
         }
         if (startDate.equals(endDate)) {
-            if (endTime.isBefore(startTime)) {
+            if (endTime.isBefore(startTime) || startTime.equals(endTime)) {
                 return false;
             }
             if (startDate.equals(currentDate) && (startTime.isBefore(currentTime)) || endTime.isBefore(currentTime)) {

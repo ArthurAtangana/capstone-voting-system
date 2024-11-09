@@ -53,30 +53,56 @@
             border: 1px solid #d9e7f3;
             color: #333;
             text-align: left;
+            margin-bottom: 20px;
         }
 
         .candidate-list {
-            list-style-type: none; /* Change to none for unnumbered list */
-            padding-left: 0; /* Remove padding for left alignment */
-            color: #000; /* Change to black */
-            text-align: center; /* Center align the text */
+            list-style-type: none;
+            padding-left: 0;
+            color: #000;
+            text-align: center; /* Center the list */
+            margin-top: 10px;
         }
 
         .candidate-list li {
             margin-bottom: 0.5rem;
         }
+
+        .details p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .details .item {
+            margin-bottom: 15px;
+        }
+
+        .details strong {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="title">Congratulations!</div>
+    <div class="title">Poll Configured</div>
     <div class="message">You have successfully configured an election!</div>
     <div class="details">
-        <p>Please double-check that the following are true:</p>
-        <p><strong th:text="${name}"></strong> polls will open on <strong th:text="${startDate}"></strong> and close on <strong th:text="${endDate}"></strong> with the following candidates as options:</p>
-        <ul class="candidate-list"> <!-- Changed from ol to ul for unnumbered list -->
-            <li th:each="candidate : ${candidates}" th:text="${candidate}"></li>
-        </ul>
+        <p>Please double-check that the following details are correct:</p>
+        <div class="item">
+            <strong>Election Name:</strong> <span th:text="${name}"></span>
+        </div>
+        <div class="item">
+            <strong>Start Date and Time:</strong> <span th:text="${startDate}"></span> at <span th:text="${startTime}"></span>
+        </div>
+        <div class="item">
+            <strong>End Date and Time:</strong> <span th:text="${endDate}"></span> at <span th:text="${endTime}"></span>
+        </div>
+        <div class="item">
+            <strong>Candidates:</strong>
+            <ul class="candidate-list">
+                <li th:each="candidate : ${candidates}" th:text="${candidate}"></li>
+            </ul>
+        </div>
     </div>
 </div>
 </body>
