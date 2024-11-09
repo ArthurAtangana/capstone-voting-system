@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.sysc4907.votingsystem.Accounts.Account;
 import org.sysc4907.votingsystem.Accounts.AccountRepository;
 import org.sysc4907.votingsystem.Accounts.VoterAccount;
+import org.sysc4907.votingsystem.PollConfiguration.PollConfigurationService;
+
 /**
  * Service class responsible for logic of processing account registration.
  *
@@ -22,9 +24,9 @@ public class RegistrationService {
      * @param key - the sign in key provided by the user
      * @return - // TODO update once complete
      */
-    public String validateSignInKey(String key){
+    public boolean validateSignInKey(String key){
        // TODO verify sign in key from list of poll sign in keys
-        return "registration-credentials-page";
+        return true;
 
     }
 
@@ -34,7 +36,7 @@ public class RegistrationService {
      * @return blank account
      */
     private Account selectRandomBlankAccount() {
-        // TODO select randomly from list of available account
+        // TODO select randomly from list of available accounts
         return new VoterAccount();
     }
 
@@ -45,12 +47,12 @@ public class RegistrationService {
      * @param password - user-provided password
      * @return // TODO update once complete
      */
-    public String registerAccount(String username, String password) {
+    public Account registerAccount(String username, String password) {
         Account newAccount = selectRandomBlankAccount();
         newAccount.setUserName(username);
         newAccount.setPassword(password);
         accountRepository.save(newAccount);
         // TODO admin accounts
-        return "successful-voter-login";
+        return newAccount;
     }
 }
