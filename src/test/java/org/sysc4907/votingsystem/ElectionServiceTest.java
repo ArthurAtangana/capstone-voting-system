@@ -51,7 +51,6 @@ public class ElectionServiceTest {
         assertEquals(startTime, election.START_TIME);
         assertEquals(endDate, election.END_DATE);
         assertEquals(endTime, election.END_TIME);
-        assertEquals(numberOfDecryptionKeys, election.NumberOfDecryptionKeys);
         assertEquals(Arrays.asList("Espresso", "Latte", "Mocha"), election.getCandidates());
     }
 

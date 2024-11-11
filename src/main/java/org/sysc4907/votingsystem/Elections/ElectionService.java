@@ -26,8 +26,9 @@ public class ElectionService {
         List<Integer> voterKeyList = convertFileToList(voterKeysFile);
         boolean validVoterKeys = validateVoterKeys(voterKeyList);
 
+
         if (validDateTime && validName && validCandidates && validVoterKeys) {
-            this.election = new Election(startDate, startTime, endDate, endTime, name, splitCandidates, voterKeyList.size(), voterKeyList);
+            this.election = new Election(startDate, startTime, endDate, endTime, name, splitCandidates, new HashSet<>(voterKeyList));
             return true;
         }
 

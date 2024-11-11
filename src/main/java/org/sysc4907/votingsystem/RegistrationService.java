@@ -5,11 +5,12 @@ import org.springframework.stereotype.Service;
 import org.sysc4907.votingsystem.Accounts.Account;
 import org.sysc4907.votingsystem.Accounts.AccountRepository;
 import org.sysc4907.votingsystem.Accounts.VoterAccount;
-import org.sysc4907.votingsystem.PollConfiguration.PollConfigurationService;
+import org.sysc4907.votingsystem.Elections.ElectionService;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Service class responsible for logic of processing account registration.
@@ -21,7 +22,8 @@ import java.util.List;
 public class RegistrationService {
     @Autowired
     private AccountRepository accountRepository;
-
+    @Autowired
+    private ElectionService electionService;
     /**
      * Validates sign-in key against list of valid sign-in keys associated with configured election.
      *
@@ -29,7 +31,7 @@ public class RegistrationService {
      * @return - true if sign in key is valid for current election, otherwise false.
      */
     public boolean validateSignInKey(String key){
-        HashSet<String> signInKeys = new HashSet<>(); // TODO change to real list of poll sign in keys
+        Set<Integer> signInKeys = electionService.getElection().getVoterKeys();
         if (signInKeys.contains(key)) {
             signInKeys.remove(key);
             return true;
