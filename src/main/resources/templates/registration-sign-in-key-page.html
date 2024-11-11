@@ -12,14 +12,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration</title>
     <link rel="stylesheet" href="/css/styles.css">
-
+    <style>
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
     <h1>Register to Voting System</h1>
+
     <form action="/register/sign-in-key" method="post">
         <div class="form-group">
             <label for="signInKey">Sign-In Key:</label>
+            <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
             <input type="text" id="signInKey" name="signInKey" required>
             <button type="submit">Submit</button>
         </div>

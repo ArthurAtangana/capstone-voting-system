@@ -31,8 +31,10 @@ public class RegistrationController {
         // TODO handle invalid key workflow
         if (registrationService.validateSignInKey(key)) {
             return "redirect:/register/credentials";
+        } else {
+            model.addAttribute("errorMessage", "Invalid sign-in key. Please try again.");
         }
-        return "redirect:/register/sign-in-key";
+        return "registration-sign-in-key-page";
     }
 
     @PostMapping("/register/credentials")

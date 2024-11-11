@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
+    //@Autowired ElectionService electionService; // TODO once merged with new poll config
+
 
     /**
      * Displays the home page of the application.

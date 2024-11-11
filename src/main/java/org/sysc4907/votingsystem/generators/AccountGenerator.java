@@ -48,4 +48,7 @@ public class AccountGenerator {
         }
 
     }
+    public void generateBlankAccounts() {
+
+    }
 }

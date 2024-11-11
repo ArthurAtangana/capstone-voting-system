@@ -7,6 +7,10 @@ import org.sysc4907.votingsystem.Accounts.AccountRepository;
 import org.sysc4907.votingsystem.Accounts.VoterAccount;
 import org.sysc4907.votingsystem.PollConfiguration.PollConfigurationService;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
 /**
  * Service class responsible for logic of processing account registration.
  *
@@ -22,11 +26,15 @@ public class RegistrationService {
      * Validates sign-in key against list of valid sign-in keys associated with configured election.
      *
      * @param key - the sign in key provided by the user
-     * @return - // TODO update once complete
+     * @return - true if sign in key is valid for current election, otherwise false.
      */
     public boolean validateSignInKey(String key){
-       // TODO verify sign in key from list of poll sign in keys
-        return true;
+        HashSet<String> signInKeys = new HashSet<>(); // TODO change to real list of poll sign in keys
+        if (signInKeys.contains(key)) {
+            signInKeys.remove(key);
+            return true;
+        }
+        return false;
 
     }
 
@@ -37,6 +45,7 @@ public class RegistrationService {
      */
     private Account selectRandomBlankAccount() {
         // TODO select randomly from list of available accounts
+
         return new VoterAccount();
     }
 
