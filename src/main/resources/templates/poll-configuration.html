@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poll Configuration</title>
     <style>
-        body, h1, label, input[type="text"], input[type="date"], textarea, button {
+        body, h1, label, input[type="text"], input[type="date"], input[type="time"], textarea, button {
             font-family: 'Roboto', sans-serif;
         }
 
@@ -45,14 +45,30 @@
             margin-bottom: 8px;
         }
 
+        .date-time-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .date-time-group label {
+            font-weight: normal;
+            color: #777;
+        }
+
         input[type="text"],
         input[type="date"],
+        input[type="time"],
         textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 1em;
+        }
+
+        .date-time-group input[type="date"],
+        .date-time-group input[type="time"] {
+            width: 48%;
         }
 
         textarea {
@@ -82,26 +98,46 @@
             background: #388E3C;
             transform: scale(1.03);
         }
+
+        /* Styling for file preview */
+        #filePreview {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.9em;
+            color: #555;
+            white-space: pre-wrap;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>Configure New Poll</h1>
 
-    <form th:action="@{/election}" method="post">
-        <div class="form-group">
-            <label for="startDate">Start Date</label>
-            <input type="date" id="startDate" name="startDate" required>
-        </div>
-
-        <div class="form-group">
-            <label for="endDate">End Date</label>
-            <input type="date" id="endDate" name="endDate" required>
-        </div>
-
+    <form th:action="@{/election}" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="name">Name of Election</label>
             <input type="text" id="name" name="name" placeholder="Enter election name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="startDate">Start Date & Time</label>
+            <div class="date-time-group">
+                <input type="date" id="startDate" name="startDate" required>
+                <input type="time" id="startTime" name="startTime" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="endDate">End Date & Time</label>
+            <div class="date-time-group">
+                <input type="date" id="endDate" name="endDate" required>
+                <input type="time" id="endTime" name="endTime" required>
+            </div>
         </div>
 
         <div class="form-group">
@@ -109,8 +145,45 @@
             <textarea id="candidates" name="candidates" placeholder="Enter each candidate's name on a new line" required></textarea>
         </div>
 
+        <!-- New section for Voter Keys upload -->
+        <div class="form-group">
+            <label for="voterKeys">Voter Keys</label>
+            <div class="custom-file-input">
+                <label class="file-upload-label">
+                    <input type="file" id="voterKeys" name="voterKeys" accept=".txt" onchange="previewFile()" style="display: none;">
+                    <button type="button" onclick="document.getElementById('voterKeys').click()">Choose File (.txt)</button>
+                </label>
+                <div id="filePreview" style="display:none;"></div>
+            </div>
+        </div>
+
         <button type="submit" id="submitButton">Submit</button>
     </form>
 </div>
+
+<script>
+    function previewFile() {
+        const fileInput = document.getElementById('voterKeys');
+        const filePreview = document.getElementById('filePreview');
+
+        const file = fileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                if (typeof event.target.result === "string") {
+                    filePreview.textContent = event.target.result;
+                    filePreview.style.display = 'block';
+                }
+            };
+
+            reader.readAsText(file);
+        } else {
+            filePreview.textContent = '';
+            filePreview.style.display = 'none';
+        }
+    }
+
+</script>
 </body>
 </html>
