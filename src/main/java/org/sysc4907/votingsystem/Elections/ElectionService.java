@@ -1,7 +1,10 @@
 package org.sysc4907.votingsystem.Elections;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.sysc4907.votingsystem.Accounts.AccountService;
+import org.sysc4907.votingsystem.Elections.Election;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -14,7 +17,14 @@ import java.util.*;
 @Service
 public class ElectionService {
 
+
     private Election election;
+
+    public AccountService getAccountService() {
+        return accountService;
+    }
+    @Autowired
+    private AccountService accountService;
 
     public boolean validateAndConfigurePoll(LocalDate startDate, LocalTime startTime, LocalDate endDate,
                                             LocalTime endTime, String name, String candidates, MultipartFile voterKeysFile) {
@@ -28,7 +38,8 @@ public class ElectionService {
 
 
         if (validDateTime && validName && validCandidates && validVoterKeys) {
-            this.election = new Election(startDate, startTime, endDate, endTime, name, splitCandidates, new HashSet<>(voterKeyList));
+            election = new Election(startDate, startTime, endDate, endTime, name, splitCandidates, new HashSet<>(voterKeyList));
+            accountService.initAccountService(new HashSet<>(voterKeyList));
             return true;
         }
 
@@ -44,6 +55,9 @@ public class ElectionService {
             System.out.println("Election has not been configured yet.");
         }
         return election;
+    }
+    public boolean electionIsConfigured() {
+        return election != null;
     }
 
 
@@ -118,6 +132,8 @@ public class ElectionService {
         }
         return keysList;
     }
+
+
 }
 
 

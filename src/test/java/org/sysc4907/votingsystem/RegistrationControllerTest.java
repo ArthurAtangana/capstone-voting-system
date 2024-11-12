@@ -6,9 +6,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import org.sysc4907.votingsystem.Accounts.AdminAccount;
-import org.sysc4907.votingsystem.Accounts.VoterAccount;
+import org.sysc4907.votingsystem.Registration.RegistrationController;
+import org.sysc4907.votingsystem.Registration.RegistrationService;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -53,20 +54,20 @@ public class RegistrationControllerTest {
      */
     @Test
     public void testSubmitKeyValid() throws Exception {
-        when(registrationService.validateSignInKey("validKey")).thenReturn(true); // mocking valid key value
+        when(registrationService.submitSignInKey(anyInt())).thenReturn(true); // mocking valid key value
 
         mockMvc.perform(post("/register/sign-in-key")
-                        .param("signInKey", "validKey"))
+                        .param("signInKey", "123"))
                 .andExpect(status().is3xxRedirection()) // we expect redirection to credentials page
                 .andExpect(redirectedUrl("/register/credentials"));
     }
 
     @Test
     public void testSubmitKeyInvalid() throws Exception {
-        when(registrationService.validateSignInKey("invalidKey")).thenReturn(false); // mocking invald key value
+        when(registrationService.submitSignInKey(anyInt())).thenReturn(false); // mocking invald key value
 
         mockMvc.perform(post("/register/sign-in-key")
-                        .param("signInKey", "invalidKey"))
+                        .param("signInKey", "123"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("registration-sign-in-key-page"))
                 .andExpect(model().attributeExists("errorMessage"))
@@ -75,8 +76,8 @@ public class RegistrationControllerTest {
 
     @Test
     public void testCreateAccountVoter() throws Exception {
-        VoterAccount voterAccount = new VoterAccount("userName", "password");
-        when(registrationService.registerAccount(anyString(), anyString())).thenReturn(voterAccount);
+
+        when(registrationService.submitAccountCredentials(anyString(), anyString())).thenReturn(RegistrationService.Response.VOTER_REG_SUCCESS);
 
         mockMvc.perform(post("/register/credentials")
                         .param("userName", "userName")
@@ -88,8 +89,7 @@ public class RegistrationControllerTest {
 
     @Test
     public void testCreateAccountAdmin() throws Exception {
-        AdminAccount adminAccount = new AdminAccount("adminName", "adminPass");
-        when(registrationService.registerAccount(anyString(), anyString())).thenReturn(adminAccount);
+        when(registrationService.submitAccountCredentials(anyString(), anyString())).thenReturn(RegistrationService.Response.ADMIN_REG_SUCCESS);
 
         mockMvc.perform(post("/register/credentials")
                         .param("userName", "adminName")

@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
   <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .error-message {
+      color: red;
+      margin-top: 10px;
+    }
+
+    hr.rounded {
+      border-top: 3px solid #8c8989;
+      border-radius: 3px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
 <div class="container">
@@ -23,7 +35,12 @@
     <button type="submit">Login</button>
   </form>
   <form action="/register/sign-in-key" method="get">
+    <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
     <button type="submit">Register</button>
+  </form>
+  <hr class="rounded">
+  <form action="/create-election" method="get">
+    <button type="submit">Create New Election</button>
   </form>
 </div>
 </body>

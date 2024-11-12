@@ -10,7 +10,7 @@ import java.security.SecureRandom;
 @Service
 public class AccountGenerator {
 
-    public final int NUMBER_OF_VOTER_ACCOUNTS = 10;
+    public final int NUMBER_OF_VOTER_ACCOUNTS = 1;
     public final int NUMBER_OF_ADMIN_ACCOUNTS = 1;
 
     private final AccountRepository accountRepository;
@@ -46,9 +46,6 @@ public class AccountGenerator {
             AdminAccount account = new AdminAccount(username, password);
             accountRepository.save(account); // Save account to repository
         }
-
-    }
-    public void generateBlankAccounts() {
 
     }
 }

@@ -2,10 +2,7 @@ package org.sysc4907.votingsystem.Accounts;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.sysc4907.votingsystem.Accounts.Account;
-import org.sysc4907.votingsystem.Accounts.AccountRepository;
-import org.sysc4907.votingsystem.Accounts.VoterAccount;
-import org.sysc4907.votingsystem.SignInKeyService;
+import org.sysc4907.votingsystem.Registration.SignInKeyService;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -24,13 +21,15 @@ import java.util.Set;
  */
 @Service
 public class AccountService {
-    @Autowired
-    private AccountRepository accountRepository;
     private SignInKeyService signInKeyService;
     private List<VoterAccount> blankVoterAccounts;
     // private List<AdminAccount> blankAdminAccounts; // TODO
     private List<Account> registeredAccounts;
-    public AccountService(Set<Integer> voterKeySet){
+
+    @Autowired
+    private  AccountRepository accountRepository;
+
+    public void initAccountService(Set<Integer> voterKeySet){
         signInKeyService = new SignInKeyService(voterKeySet);
 
         int numberOfAccounts = voterKeySet.size();
@@ -73,8 +72,10 @@ public class AccountService {
         account.setPassword(password);
 
         registeredAccounts.add(account);
+        if (accountRepository == null) {
+            throw new RuntimeException("Account repo was not injected properly! Account will not be saved."); // TODO resolve this bug
+        }
         accountRepository.save(account);
-
         return true;
 
 

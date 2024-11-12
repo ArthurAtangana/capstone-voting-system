@@ -2,17 +2,10 @@ package org.sysc4907.votingsystem;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
-import org.sysc4907.votingsystem.Accounts.Account;
 import org.sysc4907.votingsystem.Accounts.AccountRepository;
-import org.sysc4907.votingsystem.Accounts.VoterAccount;
-import org.sysc4907.votingsystem.Elections.AccountService;
-import org.sysc4907.votingsystem.RegistrationService;
+import org.sysc4907.votingsystem.Accounts.AccountService;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -20,9 +13,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @WebMvcTest(AccountService.class)
 class AccountServiceTest {
@@ -40,7 +31,8 @@ class AccountServiceTest {
     @BeforeEach
     void setUp() {
         validKeys = new HashSet<>(Arrays.asList(new Integer[] {123, 456, 789, 101}));
-        accountService = new AccountService(validKeys);
+        accountService = new AccountService();
+        accountService.initAccountService(validKeys);
     }
 
 

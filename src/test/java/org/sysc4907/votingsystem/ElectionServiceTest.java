@@ -1,10 +1,12 @@
 package org.sysc4907.votingsystem;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.sysc4907.votingsystem.Accounts.AccountService;
 import org.sysc4907.votingsystem.Elections.Election;
-import org.sysc4907.votingsystem.Elections.ElectionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.MultipartFile;
+import org.sysc4907.votingsystem.Elections.ElectionService;
 
 import java.io.IOException;
 import java.time.LocalDate;

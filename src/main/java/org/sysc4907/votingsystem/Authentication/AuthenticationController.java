@@ -1,4 +1,4 @@
-package org.sysc4907.votingsystem;
+package org.sysc4907.votingsystem.Authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
-    //@Autowired ElectionService electionService; // TODO once merged with new poll config
-
 
     /**
      * Displays the home page of the application.
