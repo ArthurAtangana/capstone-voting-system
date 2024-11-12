@@ -80,4 +80,8 @@ public class AccountService {
 
 
     }
+
+    public boolean markKeyAsUsed(Integer key) {
+        return signInKeyService.markKeyAsUsed(key);
+    }
 }

@@ -35,6 +35,7 @@ public class RegistrationService {
         AccountService accountService = electionService.getAccountService();
         Optional<Account> account =  accountService.assignBlankAccount(key);
         accountForRegistration = account;
+        accountService.markKeyAsUsed(key);
 
         return account.isPresent();
     }
