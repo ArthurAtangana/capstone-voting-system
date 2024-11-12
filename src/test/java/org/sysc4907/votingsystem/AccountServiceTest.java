@@ -15,17 +15,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
-@WebMvcTest(AccountService.class)
+
 class AccountServiceTest {
     private Set<Integer> validKeys;
 
-    @MockBean
-    private AccountRepository accountRepository;
-
     private AccountService accountService;
-
-//    @Autowired
-//    private MockMvc mockMvc;
 
 
     @BeforeEach

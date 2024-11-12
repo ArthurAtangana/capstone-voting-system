@@ -29,7 +29,7 @@ public class RegistrationService {
 
 
     public boolean submitSignInKey(Integer key) {
-        if (electionService.getElection() == null) {
+        if (! electionService.electionIsConfigured()) {
             return false;
         }
         AccountService accountService = electionService.getAccountService();
@@ -40,7 +40,7 @@ public class RegistrationService {
     }
 
     public Response submitAccountCredentials(String username, String password) {
-        if (electionService.getElection() == null) {
+        if (! electionService.electionIsConfigured()) {
             throw new RuntimeException("A poll has not been configured yet!");
         }
         if (accountForRegistration.isPresent()) {

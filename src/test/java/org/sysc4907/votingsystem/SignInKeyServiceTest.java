@@ -10,12 +10,13 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ *
+ * @author Jasmine Gad El Hak
+ */
 class SignInKeyServiceTest {
     private Set<Integer> validKeys;
     private SignInKeyService service;
-
-
-
 
     @BeforeEach
     void setUp() {

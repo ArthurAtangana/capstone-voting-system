@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import org.sysc4907.votingsystem.Elections.ElectionService;
 import org.sysc4907.votingsystem.Registration.RegistrationController;
 import org.sysc4907.votingsystem.Registration.RegistrationService;
 
@@ -31,11 +32,21 @@ public class RegistrationControllerTest {
     @MockBean
     private RegistrationService registrationService;
 
+    @MockBean
+    private ElectionService electionService;
+
     /**
      * Verifying GET /register/sign-in-key endpoint has OK status and returns expected template name.
      */
     @Test
     public void testShowRegistrationSignInKeyPage() throws Exception {
+        // Registration when poll is not yet configured
+        mockMvc.perform(get("/register/sign-in-key"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("home-page"));
+
+        // Registration when poll has been configured
+        when(electionService.electionIsConfigured()).thenReturn(true); // mocking that poll has been configured
         mockMvc.perform(get("/register/sign-in-key"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("registration-sign-in-key-page"));

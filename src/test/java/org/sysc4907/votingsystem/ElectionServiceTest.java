@@ -1,6 +1,10 @@
 package org.sysc4907.votingsystem;
 
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.sysc4907.votingsystem.Accounts.AccountService;
 import org.sysc4907.votingsystem.Elections.Election;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,9 +19,10 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
 public class ElectionServiceTest {
-
+    @Mock
+    private AccountService accountService;
+    @InjectMocks
     private ElectionService electionService;
     private LocalDate startDate = LocalDate.now().plusDays(1);
     private LocalTime startTime = LocalTime.now().plusHours(1);
@@ -25,14 +30,14 @@ public class ElectionServiceTest {
     private LocalTime endTime = LocalTime.now().plusHours(2);
     private String name = "Favourite Drink";
     private String candidates = "Espresso\nLatte\nMocha";
-    private int numberOfDecryptionKeys = 2;
 
     /** Simulates MultipartFile*/
     private MultipartFile mockFile;
 
     @BeforeEach
     public void setUp() {
-        electionService = new ElectionService();
+        MockitoAnnotations.openMocks(this);
+        //electionService = new ElectionService();
         mockFile = mock(MultipartFile.class);
     }
 
