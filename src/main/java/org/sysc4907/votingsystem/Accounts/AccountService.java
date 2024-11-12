@@ -72,9 +72,6 @@ public class AccountService {
         account.setPassword(password);
 
         registeredAccounts.add(account);
-        if (accountRepository == null) {
-            throw new RuntimeException("Account repo was not injected properly! Account will not be saved."); // TODO resolve this bug
-        }
         accountRepository.save(account);
         return true;
 
