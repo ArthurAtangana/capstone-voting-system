@@ -49,15 +49,14 @@ public class ThreeBallotTest {
         assertTrue(candidateOrder3.contains("3"));
         assertTrue(candidateOrder3.contains("4"));
 
-        // TODO: uncomment once premarking is implemented
-        //assertEquals(1, countRowMarks(0));
-        //assertEquals(1, countRowMarks(1));
-        //assertEquals(1, countRowMarks(2));
-        //assertEquals(1, countRowMarks(3));
+        assertEquals(1, countRowMarks(0));
+        assertEquals(1, countRowMarks(1));
+        assertEquals(1, countRowMarks(2));
+        assertEquals(1, countRowMarks(3));
 
     }
 
-    private int countRowMarks(int row) {
+    public int countRowMarks(int row) {
         int count = 0;
         if (b1.isBoxMarked(row)) count++;
         if (b2.isBoxMarked(row)) count++;

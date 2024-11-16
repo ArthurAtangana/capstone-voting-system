@@ -1,6 +1,7 @@
 package org.sysc4907.votingsystem.Ballots;
 
 import org.sysc4907.votingsystem.generators.CandidateOrderGenerator;
+import org.sysc4907.votingsystem.generators.PremarkGenerator;
 
 import java.util.List;
 
@@ -24,11 +25,9 @@ public class ThreeBallot {
         int id2 = 0; // returned by generator
         int id3 = 0; // returned by generator
 
-        boolean[][] premarked = new boolean[3][candidates.size()];
-        premarked[0] = new boolean[]{false, false, false, false}; // testing
-        premarked[1] = new boolean[]{false, false, true, false};
-        premarked[2] = new boolean[]{true, true, false,true};
         // call generator to randomly mark each candidate once
+        PremarkGenerator pGen = new PremarkGenerator(numCandidates);
+        boolean[][] premarked = pGen.generateMarks();
 
         firstBallot = new Ballot(id1, numCandidates, candidateOrder, premarked[0]);
         secondBallot = new Ballot(id2, numCandidates, candidateOrder, premarked[1]);
