@@ -12,6 +12,8 @@ public class Ballot {
         for (int i = 0; i < premarkedBoxes.length; i++) {
             if (premarkedBoxes[i]) {
                 markableBoxes[i] = new Marks(true, true);
+            } else {
+                markableBoxes[i] = new Marks(false, false);
             }
         }
     }
@@ -53,6 +55,10 @@ public class Ballot {
         return id;
     }
 
+    public boolean isPremark(int box) {
+        return markableBoxes[box].isPremark();
+    }
+
 
     private class Marks {
         public boolean marked;
@@ -68,7 +74,12 @@ public class Ballot {
         }
 
         public void setMarked(boolean marked) {
+            if (isPremark) return; // don't allow premarks to change
             this.marked = marked;
+        }
+
+        public boolean isPremark() {
+            return isPremark;
         }
     }
 }
