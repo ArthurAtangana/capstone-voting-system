@@ -3,24 +3,29 @@ package org.sysc4907.votingsystem.Ballots;
 import org.sysc4907.votingsystem.generators.CandidateOrderGenerator;
 import org.sysc4907.votingsystem.generators.PremarkGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ThreeBallot {
     private final Ballot firstBallot;
     private final Ballot secondBallot;
     private final Ballot thirdBallot;
-    private final List<String> candidateList;
+    private final List<String> candidateList = new ArrayList<>();
 
     public ThreeBallot(List<String> candidates) {
-        this.candidateList = candidates;
         int numCandidates = candidates.size();
 
         // call order generator
         CandidateOrderGenerator cGen = new CandidateOrderGenerator(numCandidates);
         int candidateOrder = cGen.generateRandomCandidateOrder(); // returned by generator
 
+        //store candidate in the random order
+        String order = String.valueOf(candidateOrder);
+        for (int i = 0; i < numCandidates; i++) {
+            this.candidateList.add(candidates.get(Character.getNumericValue(order.charAt(i)) - 1));
+        }
 
-        // call id generator
+        // TODO: call id generator
         int id1 = 0; // returned by generator
         int id2 = 0; // returned by generator
         int id3 = 0; // returned by generator
