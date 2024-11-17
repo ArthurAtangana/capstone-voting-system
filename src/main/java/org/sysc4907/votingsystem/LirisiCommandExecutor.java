@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
  *   verify      - Verify signature.
  */
 public class LirisiCommandExecutor {
+    public boolean debugMode = false;
     public static final String TOOL_NAME = "lirisi";
     public static final String GENERATING_PRIVATE_KEY_CMD = "genkey";
     public static final String GENERATING_PUBLIC_KEY_CMD = "pubout" ;
@@ -40,13 +41,13 @@ public class LirisiCommandExecutor {
     }
     /**
      * Generate public key for given private key, and output to the given 'out' file name.
-     * @param privateKeyFileName
+     * @param privateKeyFilePath
      * @param out the file name to output the generated public key
      * @throws InterruptedException
      * @throws IOException
      */
-    public void genPublicKey(String privateKeyFileName, String out) throws IOException, InterruptedException {
-        runCommand(TOOL_NAME, GENERATING_PUBLIC_KEY_CMD, "-in",privateKeyFileName, "-out", out);
+    public void genPublicKey(String privateKeyFilePath, String out) throws IOException, InterruptedException {
+        runCommand(TOOL_NAME, GENERATING_PUBLIC_KEY_CMD, "-in",privateKeyFilePath, "-out", out);
     }
 
 
@@ -57,34 +58,34 @@ public class LirisiCommandExecutor {
      * @throws IOException
      * @throws InterruptedException
      */
-    public void genFoldedPublicKeyFile(String out, String directory) throws IOException, InterruptedException {
+    public void genFoldedPublicKeysFile(String out, String directory) throws IOException, InterruptedException {
         runCommand(TOOL_NAME, GENERATING_RING_MEMBERS_PUBLIC_KEYS_CMD, "-inpath", directory, "-out", out);
     }
 
     /**
      * Generates a ring signature.
      * @param message being signed
-     * @param privateKeyFileName name of the file containing the signer's private key
-     * @param foldedPublicKeyFile name of the file containing all ring members public keys
+     * @param privateKeyFilePath name of the file containing the signer's private key
+     * @param foldedPublicKeysFilePath name of the file containing all ring members public keys
      * @param out the file name to output the generated signature
      * @throws IOException
      * @throws InterruptedException
      */
-    public void signMessage(String message, String privateKeyFileName, String foldedPublicKeyFile, String out) throws IOException, InterruptedException {
-        runCommand(TOOL_NAME, GEN_SIGNATURE_CMD, "-message", message, "-inpub", foldedPublicKeyFile, "-inkey", privateKeyFileName, "-out", out);
+    public void signMessage(String message, String privateKeyFilePath, String foldedPublicKeysFilePath, String out) throws IOException, InterruptedException {
+        runCommand(TOOL_NAME, GEN_SIGNATURE_CMD, "-message", message, "-inpub", foldedPublicKeysFilePath, "-inkey", privateKeyFilePath, "-out", out);
     }
     /**
      * Verifies that a ring signature is valid for a particular message.
      * A signature is valid if it was signed by one of the ring members.
      * @param message the message that was signed
-     * @param signatureFile name of the file containing the signature
-     * @param foldedPublicKeyFile name of the file containing all ring members public keys
+     * @param signatureFilePath name of the file containing the signature
+     * @param foldedPublicKeysFilePath name of the file containing all ring members public keys
      * @return true when signature is valid, otherwise false
      * @throws IOException
      * @throws InterruptedException
      */
-    public boolean verifySignature(String message, String signatureFile, String foldedPublicKeyFile) throws IOException, InterruptedException {
-        String response = runCommand(TOOL_NAME, VERIFY_SIGNATURE_CMD, "-message",message, "-inpub", foldedPublicKeyFile, "-in", signatureFile);
+    public boolean verifySignature(String message, String signatureFilePath, String foldedPublicKeysFilePath) throws IOException, InterruptedException {
+        String response = runCommand(TOOL_NAME, VERIFY_SIGNATURE_CMD, "-message",message, "-inpub", foldedPublicKeysFilePath, "-in", signatureFilePath);
         if (response.contains(EXPECTED_VERIFIED_OK_RESPONSE)){
             return true;
         }else if (response.contains(EXPECTED_VERIFIED_FAIL_RESPONSE)) {
@@ -102,9 +103,11 @@ public class LirisiCommandExecutor {
      * @throws InterruptedException
      */
     private String runCommand(String... command) throws IOException, InterruptedException {
-        System.out.print("executing: ");
-        Arrays.stream(command).forEach(cmd -> System.out.print(cmd + " "));
-        System.out.println();
+        if (debugMode) {
+            System.out.print("executing: ");
+            Arrays.stream(command).forEach(cmd -> System.out.print(cmd + " "));
+            System.out.println();
+        }
         ProcessBuilder builder = new ProcessBuilder(command);
         Process process = builder.start();
 

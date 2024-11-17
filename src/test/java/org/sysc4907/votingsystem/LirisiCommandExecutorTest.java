@@ -1,7 +1,6 @@
 package org.sysc4907.votingsystem;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,8 +24,10 @@ class LirisiCommandExecutorTest {
 
     @BeforeEach
     void setUp() throws IOException, InterruptedException {
+        executor.debugMode = true;
+
         // Cleanup any existing files
-        System.out.println("Set up cleanup");
+        //System.out.println("Set up cleanup");
         deleteFileIfExists(privateKeyFile);
         deleteFileIfExists(foldedPublicKeysFile);
         deleteFileIfExists(signatureFile);
@@ -35,7 +36,7 @@ class LirisiCommandExecutorTest {
     @AfterEach
     void tearDown() throws IOException, InterruptedException {
         // Cleanup generated files
-        System.out.println("Tear down cleanup");
+        //System.out.println("Tear down cleanup");
         deleteFileIfExists(privateKeyFile);
         deleteFileIfExists(foldedPublicKeysFile);
         deleteFileIfExists(signatureFile);
@@ -55,7 +56,7 @@ class LirisiCommandExecutorTest {
             //printFileContents(publicKeyFile);
 
             // Fold single public key into file
-            assertDoesNotThrow(() -> executor.genFoldedPublicKeyFile(foldedPublicKeysFile, publicKeysDirectory));
+            assertDoesNotThrow(() -> executor.genFoldedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory));
 
             // Sign a message
             assertThrows(RuntimeException.class, () -> executor.signMessage(message,  privateKeyFile, foldedPublicKeysFile, signatureFile)); // exepecting error due to insufficient number of public keys
@@ -82,7 +83,7 @@ class LirisiCommandExecutorTest {
             //printFileContents(publicKeyFile);
 
             // Fold single public key into file
-            assertDoesNotThrow(() -> executor.genFoldedPublicKeyFile(foldedPublicKeysFile, publicKeysDirectory));
+            assertDoesNotThrow(() -> executor.genFoldedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory));
 
             // Sign a message
             assertDoesNotThrow(() -> executor.signMessage(message,  privateKeyFile, foldedPublicKeysFile, signatureFile));
@@ -102,21 +103,54 @@ class LirisiCommandExecutorTest {
         try {
             // Generate private key
             executor.genPrivateKey(privateKeyFile);
-            //printFileContents(privateKeyFile);
 
             generateDummyPublicKeys(names);
 
             // Generate public key from private key
             executor.genPublicKey(privateKeyFile, publicKeyFile);
-            //printFileContents(publicKeyFile);
 
             // Fold all public keys into a single file
-            assertDoesNotThrow(() -> executor.genFoldedPublicKeyFile(foldedPublicKeysFile, publicKeysDirectory));
-            //printFileContents(foldedPublicKeysFile);
+            assertDoesNotThrow(() -> executor.genFoldedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory));
+            assertTrue(getFileContents(foldedPublicKeysFile).contains("NumberOfKeys: 10"));
 
             // Sign a message
             assertDoesNotThrow(() -> executor.signMessage(message,  privateKeyFile, foldedPublicKeysFile, signatureFile));
-            //printFileContents(signatureFile);
+
+            // Verify the signature
+            assertTrue(executor.verifySignature(message, signatureFile, foldedPublicKeysFile));
+            System.out.println("All commands executed successfully.");
+        } finally {
+            // Test-specific Cleanup
+            deleteAllPublicKeys(names);
+        }
+    }
+    @Test
+    public void verifyingSignatureWithLargeRingSizeTest() throws IOException, InterruptedException {
+        String[] names = new String[100];
+        for (int i = 0; i < 100; i++) {
+            names[i] = "member" + i;
+        }
+
+        try {
+            // Generate private key
+            executor.genPrivateKey(privateKeyFile);
+
+            executor.debugMode = false; // keep the output clean
+            System.out.println("Generating 100 public keys... be patient");
+            generateDummyPublicKeys(names);
+
+            // Generate public key from private key
+            executor.genPublicKey(privateKeyFile, publicKeyFile);
+
+            System.out.println("Done generating public keys...");
+            executor.debugMode = true;
+
+            // Fold all public keys into a single file
+            assertDoesNotThrow(() -> executor.genFoldedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory));
+            assertTrue(getFileContents(foldedPublicKeysFile).contains("NumberOfKeys: 101"));
+
+            // Sign a message
+            assertDoesNotThrow(() -> executor.signMessage(message,  privateKeyFile, foldedPublicKeysFile, signatureFile));
 
             // Verify the signature
             assertTrue(executor.verifySignature(message, signatureFile, foldedPublicKeysFile));
@@ -139,12 +173,10 @@ class LirisiCommandExecutorTest {
             executor.genPublicKey(privateKeyFile, publicKeyFile);
 
             // Fold all public keys into a single file
-            executor.genFoldedPublicKeyFile(foldedPublicKeysFile, publicKeysDirectory);
-            //printFileContents(foldedPublicKeysFile);
+            executor.genFoldedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory);
 
             // Sign a message
             executor.signMessage(message, privateKeyFile, foldedPublicKeysFile, signatureFile);
-            //printFileContents(signatureFile);
 
             // Verify the signature
             executor.verifySignature(message, signatureFile, foldedPublicKeysFile);
@@ -154,8 +186,8 @@ class LirisiCommandExecutorTest {
 
             // Generate new folded public keys fle
             deleteFileIfExists(foldedPublicKeysFile);
-            executor.genFoldedPublicKeyFile(foldedPublicKeysFile, publicKeysDirectory);
-            //printFileContents(foldedPublicKeysFile);
+            executor.genFoldedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory);
+            assertTrue(getFileContents(foldedPublicKeysFile).contains("NumberOfKeys: 3"));
 
             // Verify the signature with new folded public keys file
             assertFalse(executor.verifySignature(message, signatureFile, foldedPublicKeysFile)); // verification is expected to fail
@@ -203,19 +235,22 @@ class LirisiCommandExecutorTest {
     }
     /**
      * Prints the contents of a file (mainly for debugging purposes)
-     * @param fileName the file being output to the console
+     *
+     * @param filePath the file being output to the console
+     * @return the contents of the file as a string
      */
-    public void printFileContents(String fileName) {
+    public String getFileContents(String filePath) {
         try {
             // Read all bytes from the file and convert to String
-            String content = new String(Files.readAllBytes(Paths.get(fileName)));
-
+            String content = new String(Files.readAllBytes(Paths.get(filePath)));
             // Print the contents of the file
-            System.out.println(fileName + " contents:");
-            System.out.println(content);
+            //System.out.println(fileName + " contents:");
+            //System.out.println(content);
+            return content;
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("An error occurred while reading the file.");
+            return "";
         }
 
 
@@ -227,7 +262,7 @@ class LirisiCommandExecutorTest {
         try {
             if (Files.exists(path)) {
                 Files.delete(path);
-                System.out.println("Deleted: " + filePath);
+                //System.out.println("Deleted: " + filePath);
             } else {
                 //System.out.println("File does not exist: " + filePath);
             }
