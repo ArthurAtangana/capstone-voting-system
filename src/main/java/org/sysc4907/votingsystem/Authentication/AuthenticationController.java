@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.sysc4907.votingsystem.Elections.ElectionService;
 
 /**
  * Controller class responsible for handling authentication-related requests.
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
+
+    @Autowired
+    private ElectionService electionService;
 
     /**
      * Displays the home page of the application.
@@ -47,7 +51,13 @@ public class AuthenticationController {
         AuthenticationService.Response response = authenticationService.authenticate(userName, password);
         switch (response){
             case ADMIN_AUTH_SUCCESS -> {return "successful-admin-login";}
-            case VOTER_AUTH_SUCCESS -> {return "successful-voter-login";}
+            case VOTER_AUTH_SUCCESS -> {
+                model.addAttribute("isRegistered", true);
+                model.addAttribute("electionName", electionService.getElection().NAME);
+                model.addAttribute("endDate", electionService.getElection().END_DATE);
+                model.addAttribute("endTime", electionService.getElection().END_TIME);
+                return "successful-voter-login";
+            }
             default -> { return "unsuccessful-login";}
         }
     }

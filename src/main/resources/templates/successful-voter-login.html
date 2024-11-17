@@ -29,6 +29,30 @@
             margin-bottom: 20px;
         }
 
+        .cast-vote-title {
+            color: green;
+            font-weight: bold;
+            font-size: 36px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .election-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .election-button:hover {
+            background-color: #45a049;
+        }
+
         .footer {
             margin-top: 20px;
             font-size: 0.9em;
@@ -39,6 +63,17 @@
 <body>
 <div class="container">
     <h1 th:text="|Welcome VOTER, ${name}!|"></h1>
+
+    <div th:if="${isRegistered}">
+        <p class="cast-vote-title">Cast Vote</p>
+
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+            <button type="button" class="election-button" th:text="'Election: ' + ${electionName}"></button>
+            <span th:text="'Poll ends ' + ${endDate} + ' at ' + ${endTime}"
+                  style="font-size: 14px; color: #555;"></span>
+        </div>
+    </div>
+
     <div class="footer">
         <p>&copy; 2024 Secure and Transparent Voting System</p>
     </div>
