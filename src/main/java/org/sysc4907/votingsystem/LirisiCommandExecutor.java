@@ -29,65 +29,9 @@ public class LirisiCommandExecutor {
     public static final String GENERATING_RING_MEMBERS_PUBLIC_KEYS_CMD = "fold-pub";
     public static final String GEN_SIGNATURE_CMD = "sign";
     public static final String VERIFY_SIGNATURE_CMD = "verify";
+    public static final String EXPECTED_VERIFIED_OK_RESPONSE = "Verified OK";
+    public static final String EXPECTED_VERIFIED_FAIL_RESPONSE = "Verification Failure";
 
-
-    public static void main(String[] args) throws IOException, InterruptedException {
-        String generatedPemFilesDirectory = "target/generated-pem-files"; // it is best practice to store generated files in the target directory
-        String privateKeyFile = generatedPemFilesDirectory + "/my-private-key.pem";
-        String publicKeyFile = generatedPemFilesDirectory + "/my-public-key.pem";
-        String foldedPublicKeysFile = generatedPemFilesDirectory + "/folded-public-keys.pem";
-        String message = "Hello";
-        String signatureFile = generatedPemFilesDirectory + "/signature.pem";
-
-        // Cleanup any existing files
-        deleteFileIfExists(privateKeyFile);
-        deleteFileIfExists(publicKeyFile);
-        deleteFileIfExists(foldedPublicKeysFile);
-        deleteFileIfExists(signatureFile);
-
-        LirisiCommandExecutor executor = new LirisiCommandExecutor();
-
-        // Generate private key
-        executor.genPrivateKey(privateKeyFile);
-        executor.printFileContents(privateKeyFile);
-
-        // Generate public key from private key
-        executor.genPublicKey( privateKeyFile, publicKeyFile);
-        executor.printFileContents(publicKeyFile);
-
-        String publicKeysDirectory = generatedPemFilesDirectory+"/public-keys";
-
-        executor.generateDemoPublicKeys(publicKeysDirectory);
-
-        // Copy main public key to public-keys folder
-        Files.copy(Paths.get(publicKeyFile), Paths.get( publicKeysDirectory+"/my-public-key.pem"), StandardCopyOption.REPLACE_EXISTING);
-
-        // Fold all public keys into a single file
-        executor.genFoldedPublicKeyFile(foldedPublicKeysFile, publicKeysDirectory);
-        executor.printFileContents(foldedPublicKeysFile);
-
-        // Sign a message
-        executor.signMessage(message,  privateKeyFile, foldedPublicKeysFile, signatureFile);
-        executor.printFileContents(signatureFile);
-
-        // Verify the signature
-        executor.verifySignature(message, signatureFile, foldedPublicKeysFile);
-        System.out.println("All commands executed successfully.");
-    }
-
-    public static void deleteFileIfExists(String filePath) {
-        Path path = Paths.get(filePath);
-        try {
-            if (Files.exists(path)) {
-                Files.delete(path);
-                System.out.println("Deleted: " + filePath);
-            } else {
-                System.out.println("File does not exist: " + filePath);
-            }
-        } catch (Exception e) {
-            System.err.println("Error deleting file " + filePath + ": " + e.getMessage());
-        }
-    }
 
     /**
      * Generate and return private key.
@@ -163,18 +107,25 @@ public class LirisiCommandExecutor {
     public void signMessage(String message, String privateKeyFileName, String foldedPublicKeyFile, String out) throws IOException, InterruptedException {
         runCommand(TOOL_NAME, GEN_SIGNATURE_CMD, "-message", message, "-inpub", foldedPublicKeyFile, "-inkey", privateKeyFileName, "-out", out);
     }
-
     /**
      * Verifies that a ring signature is valid for a particular message.
      * A signature is valid if it was signed by one of the ring members.
      * @param message the message that was signed
      * @param signatureFile name of the file containing the signature
      * @param foldedPublicKeyFile name of the file containing all ring members public keys
+     * @return true when signature is valid, otherwise false
      * @throws IOException
      * @throws InterruptedException
      */
-    public void verifySignature(String message, String signatureFile, String foldedPublicKeyFile) throws IOException, InterruptedException {
-        runCommand(TOOL_NAME, VERIFY_SIGNATURE_CMD, "-message",message, "-inpub", foldedPublicKeyFile, "-in", signatureFile);
+    public boolean verifySignature(String message, String signatureFile, String foldedPublicKeyFile) throws IOException, InterruptedException {
+        String response = getCommandOutput(TOOL_NAME, VERIFY_SIGNATURE_CMD, "-message",message, "-inpub", foldedPublicKeyFile, "-in", signatureFile);
+        if (response.contains(EXPECTED_VERIFIED_OK_RESPONSE)){
+            return true;
+        }else if (response.contains(EXPECTED_VERIFIED_FAIL_RESPONSE)) {
+            return false;
+        } else {
+            throw new RuntimeException("verification gave unexpected results: " + response);
+        }
     }
 
     /**
@@ -229,7 +180,6 @@ public class LirisiCommandExecutor {
         Arrays.stream(command).forEach(cmd -> System.out.print(cmd + " "));
         System.out.println();
         ProcessBuilder builder = new ProcessBuilder(command);
-        builder.inheritIO(); // Outputs the process's streams directly to the console
         Process process = builder.start();
 
         // Capture output using BufferedReader and InputStreamReader
@@ -240,8 +190,6 @@ public class LirisiCommandExecutor {
             if (exitCode != 0) {
                 throw new RuntimeException("Command failed: " + String.join(" ", command));
             }
-
-            //System.out.println(output);
             return output; // Return captured output as a string
         }
     }
