@@ -66,7 +66,7 @@ echo -e "Retrieving installation script..."
 curl -sSLO https://raw.githubusercontent.com/hyperledger/fabric/main/scripts/install-fabric.sh && chmod +x install-fabric.sh
 
 echo -e "Executing installation script and retrieving all optional components..."
-${PWD}/install-fabric.sh docker podman binary samples
+${PWD}/install-fabric.sh --fabric-version 2.5.9 --ca-version 1.5.12 docker podman binary samples
 
 echo -e "$ANSI_BLUE"
 echo -e "DONE."
