@@ -2,7 +2,11 @@ package org.sysc4907.votingsystem;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -19,7 +23,37 @@ import java.util.stream.Collectors;
  */
 public class LirisiCommandExecutor {
     public boolean debugMode = false;
-    public static final String TOOL_NAME = "lirisi";
+    public static String TOOL_PATH;
+    static {
+        String toolDirectoryPath = "/tools/lirisi";
+        String osSpecficDirectory;
+
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) {
+            osSpecficDirectory = "/windows-amd64";
+        } else if (os.contains("mac")) {
+            osSpecficDirectory = "/darwin-amd64";
+        } else {
+            osSpecficDirectory = "/linux-amd64";
+        }
+
+        String resourcePath = toolDirectoryPath + osSpecficDirectory + "/lirisi.exe";
+        InputStream lirisiStream = LirisiCommandExecutor.class.getResourceAsStream(resourcePath);
+        if (lirisiStream == null) {
+            throw new RuntimeException("Resource not found: " + resourcePath);
+        }
+        // Copy to a temporary file
+        try {
+            Path tempLirisi = Files.createTempFile("lirisi", ".exe");
+            Files.copy(lirisiStream, tempLirisi, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            tempLirisi.toFile().setExecutable(true);
+            TOOL_PATH = tempLirisi.toString();
+        } catch (Exception e) {
+            //e.printStackTrace();
+            throw new RuntimeException("Could not create temp file for executable!");
+        }
+    }
+
     public static final String GENERATING_PRIVATE_KEY_CMD = "genkey";
     public static final String GENERATING_PUBLIC_KEY_CMD = "pubout" ;
     public static final String GENERATING_RING_MEMBERS_PUBLIC_KEYS_CMD = "fold-pub";
@@ -28,17 +62,20 @@ public class LirisiCommandExecutor {
     public static final String EXPECTED_VERIFIED_OK_RESPONSE = "Verified OK";
     public static final String EXPECTED_VERIFIED_FAIL_RESPONSE = "Verification Failure";
 
+
     /**
      * Generate private key and output to the given 'out' file name.
      * @param out the file name to output the generated private key
      * @throws InterruptedException
      * @throws IOException
      */
-    public void genPrivateKey(String out) throws InterruptedException, IOException {
-        runCommand(TOOL_NAME, GENERATING_PRIVATE_KEY_CMD, "-out", out);
+    public String genPrivateKey(String out) throws InterruptedException, IOException {
+        if (! out.isEmpty()) {runCommand(TOOL_PATH, GENERATING_PRIVATE_KEY_CMD, "-out", out); return "";}
+        else return runCommand(TOOL_PATH, GENERATING_PRIVATE_KEY_CMD);
         //getCommandOutput(TOOL_NAME, GENERATING_PRIVATE_KEY_CMD, "-out", out);
 
     }
+
     /**
      * Generate public key for given private key, and output to the given 'out' file name.
      * @param privateKeyFilePath
@@ -46,20 +83,24 @@ public class LirisiCommandExecutor {
      * @throws InterruptedException
      * @throws IOException
      */
-    public void genPublicKey(String privateKeyFilePath, String out) throws IOException, InterruptedException {
-        runCommand(TOOL_NAME, GENERATING_PUBLIC_KEY_CMD, "-in",privateKeyFilePath, "-out", out);
+    public String genPublicKey(String privateKeyFilePath, String out) throws IOException, InterruptedException {
+        if (! out.isEmpty()) {runCommand(TOOL_PATH, GENERATING_PUBLIC_KEY_CMD, "-in",privateKeyFilePath, "-out", out); return "";}
+        else return runCommand(TOOL_PATH, GENERATING_PUBLIC_KEY_CMD, "-in",privateKeyFilePath);
+
     }
 
 
     /**
      * Folds public keys into a single file.
-     * @param out the file name to output the generated folded public keys
-     * @param directory where are public keys are stored (must have at least two public keys)
+     *
+     * @param out           the file name to output the generated folded public keys
+     * @param directoryPath where are public keys are stored (must have at least two public keys)
      * @throws IOException
      * @throws InterruptedException
      */
-    public void genFoldedPublicKeysFile(String out, String directory) throws IOException, InterruptedException {
-        runCommand(TOOL_NAME, GENERATING_RING_MEMBERS_PUBLIC_KEYS_CMD, "-inpath", directory, "-out", out);
+    public String genFoldedPublicKeysFile(String out, String directoryPath) throws IOException, InterruptedException {
+        if (!out.isEmpty()) {runCommand(TOOL_PATH, GENERATING_RING_MEMBERS_PUBLIC_KEYS_CMD, "-inpath", directoryPath, "-out", out); return "";}
+        else return runCommand(TOOL_PATH, GENERATING_RING_MEMBERS_PUBLIC_KEYS_CMD, "-inpath", directoryPath);
     }
 
     /**
@@ -71,8 +112,13 @@ public class LirisiCommandExecutor {
      * @throws IOException
      * @throws InterruptedException
      */
-    public void signMessage(String message, String privateKeyFilePath, String foldedPublicKeysFilePath, String out) throws IOException, InterruptedException {
-        runCommand(TOOL_NAME, GEN_SIGNATURE_CMD, "-message", message, "-inpub", foldedPublicKeysFilePath, "-inkey", privateKeyFilePath, "-out", out);
+    public String signMessage(String message, String privateKeyFilePath, String foldedPublicKeysFilePath, String out) throws IOException, InterruptedException {
+        if (!out.isEmpty()) {
+            runCommand(TOOL_PATH, GEN_SIGNATURE_CMD, "-message", message, "-inpub", foldedPublicKeysFilePath, "-inkey", privateKeyFilePath, "-out", out);
+            return "";
+        } else {
+            return runCommand(TOOL_PATH, GEN_SIGNATURE_CMD, "-message", message, "-inpub", foldedPublicKeysFilePath, "-inkey", privateKeyFilePath);
+        }
     }
     /**
      * Verifies that a ring signature is valid for a particular message.
@@ -85,7 +131,7 @@ public class LirisiCommandExecutor {
      * @throws InterruptedException
      */
     public boolean verifySignature(String message, String signatureFilePath, String foldedPublicKeysFilePath) throws IOException, InterruptedException {
-        String response = runCommand(TOOL_NAME, VERIFY_SIGNATURE_CMD, "-message",message, "-inpub", foldedPublicKeysFilePath, "-in", signatureFilePath);
+        String response = runCommand(TOOL_PATH, VERIFY_SIGNATURE_CMD, "-message",message, "-inpub", foldedPublicKeysFilePath, "-in", signatureFilePath);
         if (response.contains(EXPECTED_VERIFIED_OK_RESPONSE)){
             return true;
         }else if (response.contains(EXPECTED_VERIFIED_FAIL_RESPONSE)) {
