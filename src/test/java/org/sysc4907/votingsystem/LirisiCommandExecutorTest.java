@@ -1,8 +1,7 @@
 package org.sysc4907.votingsystem;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,7 +11,7 @@ import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LirisiCommandExecutorTest {
-    private final String generatedPemFilesDirectory = "target/generated-pem-files"; // it is best practice to store generated files in the target directory
+    private static final String generatedPemFilesDirectory = "target/generated-pem-files"; // it is best practice to store generated files in the target directory
     private final String privateKeyFile = generatedPemFilesDirectory + "/my-private-key.pem";
     private final String publicKeysDirectory = generatedPemFilesDirectory+"/public-keys";
     private final String publicKeyFile = publicKeysDirectory + "/my-public-key.pem";
@@ -22,25 +21,36 @@ class LirisiCommandExecutorTest {
     private String message = "Hello";
     private LirisiCommandExecutor executor = new LirisiCommandExecutor();
 
+    @BeforeAll
+    static void beforeAll() throws IOException {
+        Files.createDirectories(Paths.get(generatedPemFilesDirectory));
+    }
+
+
+
     @BeforeEach
     void setUp() throws IOException, InterruptedException {
         executor.debugMode = true;
 
         // Cleanup any existing files
         //System.out.println("Set up cleanup");
-        deleteFileIfExists(privateKeyFile);
-        deleteFileIfExists(foldedPublicKeysFile);
-        deleteFileIfExists(signatureFile);
+        FileHelper.deleteFileIfExists(privateKeyFile);
+        FileHelper.deleteFileIfExists(foldedPublicKeysFile);
+        FileHelper.deleteFileIfExists(signatureFile);
     }
-
     @AfterEach
     void tearDown() throws IOException, InterruptedException {
         // Cleanup generated files
         //System.out.println("Tear down cleanup");
-        deleteFileIfExists(privateKeyFile);
-        deleteFileIfExists(foldedPublicKeysFile);
-        deleteFileIfExists(signatureFile);
+        FileHelper.deleteFileIfExists(privateKeyFile);
+        FileHelper.deleteFileIfExists(foldedPublicKeysFile);
+        FileHelper.deleteFileIfExists(signatureFile);
     }
+    @AfterAll
+    static void afterAll() throws IOException {
+        Files.delete(Paths.get(generatedPemFilesDirectory));
+    }
+
     @Test
     public void creatingRingWithOneMember() throws IOException, InterruptedException {
         try {
@@ -95,7 +105,6 @@ class LirisiCommandExecutorTest {
         }
     }
 
-
     @Test
     public void verifyingSignatureWithNominalRingSizeTest() throws IOException, InterruptedException {
         String[] names = {"Alice", "Bob", "Carol", "Dave", "Eve", "Frank", "George", "Helen", "Iva"};
@@ -111,7 +120,7 @@ class LirisiCommandExecutorTest {
 
             // Fold all public keys into a single file
             assertDoesNotThrow(() -> executor.genFoldedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory));
-            assertTrue(getFileContents(foldedPublicKeysFile).contains("NumberOfKeys: 10"));
+            assertTrue(FileHelper.getFileContents(foldedPublicKeysFile).contains("NumberOfKeys: 10"));
 
             // Sign a message
             assertDoesNotThrow(() -> executor.signMessage(message,  privateKeyFile, foldedPublicKeysFile, signatureFile));
@@ -147,7 +156,7 @@ class LirisiCommandExecutorTest {
 
             // Fold all public keys into a single file
             assertDoesNotThrow(() -> executor.genFoldedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory));
-            assertTrue(getFileContents(foldedPublicKeysFile).contains("NumberOfKeys: 101"));
+            assertTrue(FileHelper.getFileContents(foldedPublicKeysFile).contains("NumberOfKeys: 101"));
 
             // Sign a message
             assertDoesNotThrow(() -> executor.signMessage(message,  privateKeyFile, foldedPublicKeysFile, signatureFile));
@@ -160,6 +169,7 @@ class LirisiCommandExecutorTest {
             deleteAllPublicKeys(names);
         }
     }
+
     @Test
     public void verifyingSignatureAfterAddingNewRingMember() throws IOException, InterruptedException {
         try {
@@ -185,9 +195,9 @@ class LirisiCommandExecutorTest {
             generateDummyPublicKeys(new String[]{"test2"});
 
             // Generate new folded public keys fle
-            deleteFileIfExists(foldedPublicKeysFile);
+            FileHelper.deleteFileIfExists(foldedPublicKeysFile);
             executor.genFoldedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory);
-            assertTrue(getFileContents(foldedPublicKeysFile).contains("NumberOfKeys: 3"));
+            assertTrue(FileHelper.getFileContents(foldedPublicKeysFile).contains("NumberOfKeys: 3"));
 
             // Verify the signature with new folded public keys file
             assertFalse(executor.verifySignature(message, signatureFile, foldedPublicKeysFile)); // verification is expected to fail
@@ -214,11 +224,10 @@ class LirisiCommandExecutorTest {
             String privateKeyFile = generatedPemFilesDirectory + "/"+ name + ".pem";
             executor.genPrivateKey(privateKeyFile);
             executor.genPublicKey(privateKeyFile, publicKeysDirectory + "/" + name + ".pem");
-            deleteFileIfExists(privateKeyFile); // we don't need the private keys
+            FileHelper.deleteFileIfExists(privateKeyFile); // we don't need the private keys
         }
 
     }
-
     /**
      * Deletes all public keys in a "public-keys" directory.
      * @throws IOException
@@ -227,47 +236,13 @@ class LirisiCommandExecutorTest {
     public void deleteAllPublicKeys(String[] otherRingMemberNames) throws IOException, InterruptedException {
         // Generate individual public keys for a list of users
         for (String name : otherRingMemberNames) {
-            deleteFileIfExists(publicKeysDirectory + "/" + name + ".pem");
+            FileHelper.deleteFileIfExists(publicKeysDirectory + "/" + name + ".pem");
         }
-        deleteFileIfExists(publicKeyFile);
+        FileHelper.deleteFileIfExists(publicKeyFile);
         Files.delete(Paths.get(publicKeysDirectory));
 
     }
-    /**
-     * Prints the contents of a file (mainly for debugging purposes)
-     *
-     * @param filePath the file being output to the console
-     * @return the contents of the file as a string
-     */
-    public String getFileContents(String filePath) {
-        try {
-            // Read all bytes from the file and convert to String
-            String content = new String(Files.readAllBytes(Paths.get(filePath)));
-            // Print the contents of the file
-            //System.out.println(fileName + " contents:");
-            //System.out.println(content);
-            return content;
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("An error occurred while reading the file.");
-            return "";
-        }
 
 
-    }
 
-
-    public static void deleteFileIfExists(String filePath) {
-        Path path = Paths.get(filePath);
-        try {
-            if (Files.exists(path)) {
-                Files.delete(path);
-                //System.out.println("Deleted: " + filePath);
-            } else {
-                //System.out.println("File does not exist: " + filePath);
-            }
-        } catch (Exception e) {
-            System.err.println("Error deleting file " + filePath + ": " + e.getMessage());
-        }
-    }
 }
