@@ -1,8 +1,13 @@
 package org.sysc4907.votingsystem.Accounts;
 
 import jakarta.persistence.*;
+import org.sysc4907.votingsystem.LirisiCommandExecutor;
+import org.sysc4907.votingsystem.RingSignatureService;
+
+import java.io.IOException;
 
 @Entity
+@Table(name="accounts")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "account_type")
 public abstract class Account {
@@ -19,7 +24,6 @@ public abstract class Account {
     public Account() {
 
     }
-
     public String getUserName() {
         return userName;
     }
