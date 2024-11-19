@@ -19,7 +19,6 @@ public class ThreeBallot {
         CandidateOrderGenerator cGen = new CandidateOrderGenerator(numCandidates);
         int candidateOrder = cGen.generateRandomCandidateOrder(); // returned by generator
 
-
         // call id generator
         int id1 = 0; // returned by generator
         int id2 = 0; // returned by generator

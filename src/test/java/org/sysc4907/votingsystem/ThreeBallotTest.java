@@ -57,6 +57,7 @@ public class ThreeBallotTest {
     }
 
     public int countRowMarks(int row) {
+
         int count = 0;
         if (b1.isBoxMarked(row)) count++;
         if (b2.isBoxMarked(row)) count++;
