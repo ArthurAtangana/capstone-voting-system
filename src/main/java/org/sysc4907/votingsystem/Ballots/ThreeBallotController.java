@@ -11,7 +11,7 @@ public class ThreeBallotController {
 
     @GetMapping("/threeBallot")
     public String threeBallot(Model model) {
-        ThreeBallot threeBallot = new ThreeBallot(Arrays.asList("foo", "bar", "baz"));
+        ThreeBallot threeBallot = new ThreeBallot(Arrays.asList("foo", "bar", "baz", "quux"));
         model.addAttribute("threeBallot", threeBallot);
         model.addAttribute("firstBallotMarks", threeBallot.getFirstBallot().getMarkValues());
         model.addAttribute("secondBallotMarks", threeBallot.getSecondBallot().getMarkValues());
