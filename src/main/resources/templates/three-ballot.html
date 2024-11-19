@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/three-ballot.css">
+    <title>Three Ballot Voting System</title>
+</head>
+<body>
+    <h2>Three Ballot Voting System</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Candidate</th>
+            <th>Ballot 1</th>
+            <th>Ballot 2</th>
+            <th>Ballot 3</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <!-- Loop through candidates -->
+        <tr th:each="candidate, iterStat : ${threeBallot.candidateList}">
+
+            <td th:text="${candidate}"></td> <!-- Candidate name -->
+
+            <!-- Loop through ballot marks for each candidate -->
+            <td>
+                <!-- autocomplete="off" to deal with firefox caching issue -->
+                <input type="checkbox" autocomplete="off"
+                       th:checked="${firstBallotMarks[iterStat.index]}"
+                       th:attr="disabled=${threeBallot.getFirstBallot().isPremark(iterStat.index)}"/>
+            </td>
+            <td>
+                <input type="checkbox" autocomplete="off"
+                       th:checked="${secondBallotMarks[iterStat.index]}"
+                       th:attr="disabled=${threeBallot.getSecondBallot().isPremark(iterStat.index)}" />
+            </td>
+            <td>
+                <input type="checkbox" autocomplete="off"
+                       th:checked="${thirdBallotMarks[iterStat.index]}"
+                       th:attr="disabled=${threeBallot.getThirdBallot().isPremark(iterStat.index)}" />
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>
