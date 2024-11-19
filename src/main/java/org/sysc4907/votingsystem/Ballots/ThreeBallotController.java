@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.Arrays;
 
 @Controller
-public class ThreeBallotControler {
+public class ThreeBallotController {
 
     @GetMapping("/threeBallot")
     public String threeBallot(Model model) {
