@@ -1,0 +1,75 @@
+/* Center the table and give it some spacing */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    text-align: center;
+}
+
+table {
+    margin: 0 auto;
+    width: 80%;
+    border-collapse: collapse; /* Removes double borders */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Table headers styling */
+th {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    text-align: left;
+}
+
+/* Table data styling */
+td {
+    padding: 10px 20px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+/* Hover effect for rows */
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Style checkboxes */
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #4CAF50;
+    border: 1px solid #4CAF50;
+}
+
+/* Add spacing for buttons or additional content below the table */
+.table-container {
+    margin-bottom: 20px;
+}
+
+/* Optional: Footer or Action Buttons */
+.footer {
+    margin-top: 20px;
+}
+
+.button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #45a049;
+}

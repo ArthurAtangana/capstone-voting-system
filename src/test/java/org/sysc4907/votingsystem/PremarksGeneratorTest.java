@@ -15,6 +15,7 @@ public class PremarksGeneratorTest {
         assertEquals(1, countRowMarks(returnedMarks,1));
         assertEquals(1, countRowMarks(returnedMarks,2));
         assertEquals(1, countRowMarks(returnedMarks,3));
+        assertEquals(1, countRowMarks(returnedMarks,4));
     }
 
     public int countRowMarks(boolean[][] marks, int row) {
