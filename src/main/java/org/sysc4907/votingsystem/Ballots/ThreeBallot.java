@@ -1,19 +1,22 @@
 package org.sysc4907.votingsystem.Ballots;
 
+import org.sysc4907.votingsystem.generators.CandidateOrderGenerator;
+
 import java.util.List;
 
 public class ThreeBallot {
-    private Ballot firstBallot;
-    private Ballot secondBallot;
-    private Ballot thirdBallot;
-    private List<String> candidateList;
+    private final Ballot firstBallot;
+    private final Ballot secondBallot;
+    private final Ballot thirdBallot;
+    private final List<String> candidateList;
 
     public ThreeBallot(List<String> candidates) {
         this.candidateList = candidates;
         int numCandidates = candidates.size();
 
         // call order generator
-        int candidateOrder = 123; // returned by generator
+        CandidateOrderGenerator cGen = new CandidateOrderGenerator(numCandidates);
+        int candidateOrder = cGen.generateRandomCandidateOrder(); // returned by generator
 
 
         // call id generator
@@ -22,6 +25,9 @@ public class ThreeBallot {
         int id3 = 0; // returned by generator
 
         boolean[][] premarked = new boolean[3][candidates.size()];
+        premarked[0] = new boolean[]{false, false, false, false}; // testing
+        premarked[1] = new boolean[]{false, false, true, false};
+        premarked[2] = new boolean[]{true, true, false,true};
         // call generator to randomly mark each candidate once
 
         firstBallot = new Ballot(id1, numCandidates, candidateOrder, premarked[0]);
