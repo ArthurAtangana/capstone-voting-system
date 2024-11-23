@@ -16,6 +16,7 @@ public class AccountGenerationRunner {
     @Bean
     public boolean run() {
         accountGenerator.generateDummyAccounts();
+        accountGenerator.generateDefaultAccounts(); // for testing purposes
         return true;
     }
 
