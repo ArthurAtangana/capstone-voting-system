@@ -48,4 +48,17 @@ public class AccountGenerator {
         }
 
     }
+
+    /**
+     * Creates default accounts for testing purposes ONLY.
+     *
+     * Voter Account - username: "voter", password: "voter"
+     * Admin Account - username: "admin", password: "admin"
+     */
+    public void generateDefaultAccounts() {
+        VoterAccount voterAccount = new VoterAccount("voter", "voter");
+        AdminAccount adminAccount = new AdminAccount("admin", "admin");
+        accountRepository.save(voterAccount);
+        accountRepository.save(adminAccount);
+    }
 }
