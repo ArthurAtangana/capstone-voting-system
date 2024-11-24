@@ -30,6 +30,7 @@ public class RegistrationService {
 
     public boolean submitSignInKey(Integer key) {
         if (! electionService.electionIsConfigured()) {
+            System.out.println("Poll is not configured!");
             return false;
         }
         AccountService accountService = electionService.getAccountService();
@@ -42,11 +43,13 @@ public class RegistrationService {
 
     public Response submitAccountCredentials(String username, String password) {
         if (! electionService.electionIsConfigured()) {
-            throw new RuntimeException("A poll has not been configured yet!");
+            System.out.println("Poll is not configured!");
+            return Response.REG_FAILED;
         }
         if (accountForRegistration.isPresent()) {
             AccountService accountService = electionService.getAccountService();
             if (accountService.configureAndSaveNewAccount(accountForRegistration.get(), username, password)) {
+                accountForRegistration = Optional.empty(); // reset
                 return Response.VOTER_REG_SUCCESS; // TODO admin accounts
             }
         }
