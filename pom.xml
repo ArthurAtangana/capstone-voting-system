@@ -66,6 +66,10 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>3.3.4</version>
+				<configuration>
+					<mainClass>org.sysc4907.votingsystem.VotingSystemApplication</mainClass>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
