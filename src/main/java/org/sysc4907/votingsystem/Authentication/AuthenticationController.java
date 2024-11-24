@@ -54,8 +54,8 @@ public class AuthenticationController {
             case VOTER_AUTH_SUCCESS -> {
                 model.addAttribute("isRegistered", true);
                 model.addAttribute("electionName", electionService.getElection().NAME);
-                model.addAttribute("endDate", electionService.getElection().END_DATE);
-                model.addAttribute("endTime", electionService.getElection().END_TIME);
+                model.addAttribute("endDate", electionService.getElection().END_DATE_TIME.toLocalDate());
+                model.addAttribute("endTime", electionService.getElection().END_DATE_TIME.toLocalTime());
                 return "successful-voter-login";
             }
             default -> { return "unsuccessful-login";}

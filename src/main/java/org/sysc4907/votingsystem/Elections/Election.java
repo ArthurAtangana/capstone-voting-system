@@ -3,8 +3,7 @@ package org.sysc4907.votingsystem.Elections;
 import org.sysc4907.votingsystem.generators.BallotIdGenerator;
 import org.sysc4907.votingsystem.generators.CandidateOrderGenerator;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,10 +12,9 @@ import java.util.Set;
 
 public class Election {
     private Long id;
-    public final LocalDate START_DATE;
-    public final LocalDate END_DATE;
-    public final LocalTime START_TIME;
-    public final LocalTime END_TIME;
+
+    public final LocalDateTime START_DATE_TIME;
+    public final LocalDateTime END_DATE_TIME;
     public final String NAME;
 
     private final List<String> candidates;
@@ -28,12 +26,9 @@ public class Election {
 
     private final Set<Integer> voterKeys;
 
-
-    public Election(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime, String name, List<String> candidates, Set<Integer> voterKeys) {
-        START_DATE = startDate;
-        START_TIME = startTime;
-        END_DATE = endDate;
-        END_TIME = endTime;
+    public Election(LocalDateTime startDateTime, LocalDateTime endDateTime, String name, List<String> candidates, Set<Integer> voterKeys) {
+        START_DATE_TIME = startDateTime;
+        END_DATE_TIME = endDateTime;
         NAME = name;
         this.candidates = List.copyOf(candidates);
         this.voterKeys = voterKeys;
@@ -42,10 +37,8 @@ public class Election {
     }
 
     public Election() {
-        START_DATE = null;
-        END_DATE = null;
-        START_TIME = null;
-        END_TIME = null;
+        START_DATE_TIME = null;
+        END_DATE_TIME = null;
         NAME = "";
         candidates = new ArrayList<>();
         voterKeys = new HashSet<>();
