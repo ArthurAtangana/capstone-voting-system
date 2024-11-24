@@ -6,7 +6,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.sysc4907.votingsystem.Accounts.AccountService;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 /**
@@ -63,6 +65,7 @@ public class ElectionService {
 
         if (uniqueCandidates.size() != candidatesList.size()) {
             bindingResult.rejectValue("candidates", "invalid", "There can be no duplicate candidates.");
+            return false;
         }
 
         this.candidatesList = candidatesList;
@@ -87,14 +90,29 @@ public class ElectionService {
     public boolean validateDateTime(ElectionForm electionForm, BindingResult bindingResult){
         LocalDateTime startDateTime = electionForm.getStartDateTime();
         LocalDateTime endDateTime = electionForm.getEndDateTime();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate startDate = electionForm.getStartDate();
+        LocalDate endDate = electionForm.getEndDate();
+        LocalTime startTime = electionForm.getStartTime();
+        LocalTime endTime = electionForm.getEndTime();
 
-        if (startDateTime == null || endDateTime == null) {
-            bindingResult.reject("invalidDateTime", "Start and End Date/Time must be provided.");
+        if (startDate == null || endDate == null) {
+            bindingResult.reject("invalidDateTime", "Start and End Date must be provided.");
+            return false;
+        }
+
+        if (startTime == null || endTime == null) {
+            bindingResult.reject("invalidDateTime", "Start and End Time must be provided.");
             return false;
         }
 
         if (endDateTime.isBefore(startDateTime)) {
             bindingResult.rejectValue("endDate", "invalid", "End date and time must be after start date and time.");
+            return false;
+        }
+
+        if (endDateTime.isBefore(now)) {
+            bindingResult.rejectValue("endDate", "invalid", "End date and time must be after the current date and time.");
             return false;
         }
 
