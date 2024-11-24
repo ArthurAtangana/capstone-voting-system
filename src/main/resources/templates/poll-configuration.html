@@ -115,7 +115,10 @@
         .error {
             color: red;
             font-size: 0.9em;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        .error p {
+            margin: 0;
         }
 
     </style>
@@ -133,24 +136,28 @@
 
         <div class="form-group">
             <label for="startDate">Start Date & Time</label>
+            <div class="error">
+                <p th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></p>
+                <p th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></p>
+            </div>
             <div class="date-time-group">
-                <p th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" class="error"></p>
                 <input type="date" id="startDate" th:value="*{startDate}" name="startDate" required>
-                <p th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}" class="error"></p>
                 <input type="time" id="startTime" th:value="*{startTime}" name="startTime" required>
             </div>
-
         </div>
 
         <div class="form-group">
             <label for="endDate">End Date & Time</label>
+            <div class="error">
+                <p th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></p>
+                <p th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}"></p>
+            </div>
             <div class="date-time-group">
-                <p th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" class="error"></p>
                 <input type="date" id="endDate" th:value="*{endDate}" name="endDate" required>
-                <p th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}" class="error"></p>
                 <input type="time" id="endTime" th:value="*{endTime}" name="endTime" required>
             </div>
         </div>
+
 
         <div class="form-group">
             <label for="candidates">List of Candidates</label>

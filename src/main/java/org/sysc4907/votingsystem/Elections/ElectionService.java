@@ -6,9 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.sysc4907.votingsystem.Accounts.AccountService;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 
 /**
@@ -16,12 +14,8 @@ import java.util.*;
  */
 @Service
 public class ElectionService {
-
-
     private Election election;
-
     private final AccountService accountService;
-
     private Set<Integer> voterKeysList;
     private List<String> candidatesList;
 
@@ -52,8 +46,6 @@ public class ElectionService {
     public boolean electionIsConfigured() {
         return election != null;
     }
-
-
 
     public boolean validateCandidates(String candidates, BindingResult bindingResult) {
         List<String> candidatesList = Arrays.asList(candidates.split("\\r?\\n"));
@@ -91,20 +83,7 @@ public class ElectionService {
         LocalDateTime startDateTime = electionForm.getStartDateTime();
         LocalDateTime endDateTime = electionForm.getEndDateTime();
         LocalDateTime now = LocalDateTime.now();
-        LocalDate startDate = electionForm.getStartDate();
-        LocalDate endDate = electionForm.getEndDate();
-        LocalTime startTime = electionForm.getStartTime();
-        LocalTime endTime = electionForm.getEndTime();
 
-        if (startDate == null || endDate == null) {
-            bindingResult.reject("invalidDateTime", "Start and End Date must be provided.");
-            return false;
-        }
-
-        if (startTime == null || endTime == null) {
-            bindingResult.reject("invalidDateTime", "Start and End Time must be provided.");
-            return false;
-        }
 
         if (endDateTime.isBefore(startDateTime)) {
             bindingResult.rejectValue("endDate", "invalid", "End date and time must be after start date and time.");
@@ -113,6 +92,16 @@ public class ElectionService {
 
         if (endDateTime.isBefore(now)) {
             bindingResult.rejectValue("endDate", "invalid", "End date and time must be after the current date and time.");
+            return false;
+        }
+
+        if (startDateTime.isBefore(now)) {
+            bindingResult.rejectValue("startDate", "invalid", "Start date and time must be after the current date and time.");
+            return false;
+        }
+
+        if (endDateTime.equals(startDateTime)) {
+            bindingResult.rejectValue("endDate", "invalid", "End date and time cannot be equal to the start date and time.");
             return false;
         }
 

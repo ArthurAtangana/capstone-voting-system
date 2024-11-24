@@ -222,21 +222,28 @@ public class ElectionServiceTest {
     }
 
     @Test
-    public void testNullStartTime() {
-        when(electionForm.getStartTime()).thenReturn(null);
+    public void testEqualStartEndDateTime() {
+        // same day and same time
+        startDate = currentDate.plusDays(1);
+        startTime = currentTime.plusHours(2);
+        endDate = currentDate.plusDays(1);
+        endTime = currentTime.plusHours(2);
+        when(electionForm.getStartDateTime()).thenReturn(LocalDateTime.of(startDate, startTime));
+        when(electionForm.getEndDateTime()).thenReturn(LocalDateTime.of(endDate, endTime));
         boolean isValid = electionService.validateDateTime(electionForm, bindingResult);
-
         assertFalse(isValid);
-        verify(bindingResult).reject("invalidDateTime", "Start and End Time must be provided.");
+
+        verify(bindingResult).rejectValue("endDate", "invalid", "End date and time cannot be equal to the start date and time.");
     }
 
     @Test
-    public void testNullEndDate() {
-        when(electionForm.getEndDate()).thenReturn(null);
+    public void testStartDateBeforeCurrentDate() {
+        startDate = currentDate.minusDays(1);
+        when(electionForm.getStartDateTime()).thenReturn(LocalDateTime.of(startDate, startTime));
         boolean isValid = electionService.validateDateTime(electionForm, bindingResult);
 
         assertFalse(isValid);
-        verify(bindingResult).reject("invalidDateTime", "Start and End Date must be provided.");
+        verify(bindingResult).rejectValue("startDate", "invalid", "Start date and time must be after the current date and time.");
     }
 
 }
