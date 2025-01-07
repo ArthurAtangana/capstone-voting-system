@@ -5,6 +5,82 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/three-ballot.css">
     <title>Three Ballot Voting System</title>
+    <script>
+        function finalizeCandidate() {
+            // Disable all checkboxes
+            const ballotBoxes = document.querySelectorAll('.ballot-box');
+            ballotBoxes.forEach(box => box.disabled = true);
+
+            // Show the ballot selection buttons
+            const ballotButtons = document.getElementById('ballot-buttons');
+            ballotButtons.style.display = 'block';
+
+            // Hide the finalize candidate button
+            const finalizeCandidateButton = document.getElementById('finalize-candidate-button');
+            finalizeCandidateButton.style.display = 'none';
+
+            // Show the finalize receipt button container
+            const receiptButtonContainer = document.getElementById('receipt-button-container');
+            receiptButtonContainer.style.display = 'flex'; // Ensure 'flex' for proper centering
+        }
+
+        function finalizeReceipt() {
+            alert("Ballots cast to the blockchain");
+        }
+
+        function selectBallot(ballotNumber) {
+            const receiptButtons = document.querySelectorAll('.receipt-button');
+            receiptButtons.forEach(button => {
+                if (button.id !== ("rButton" + ballotNumber)) {
+                    button.style.background = 'gray';
+                } else {
+                    button.style.background = '#45a049' //green
+                }
+            });
+            const submitButton = document.getElementById('finalize-receipt-button');
+            submitButton.disabled = false;
+            submitButton.style.background = 'blue';
+            submitButton.style.cursor = 'pointer';
+        }
+
+        function handleCheckboxClick(checkbox) {
+            if (checkbox.checked) {
+                onCheck(checkbox);
+            } else {
+                onUncheck();
+            }
+        }
+        function onCheck(checkbox) {
+            const ballotBoxes = document.querySelectorAll('.ballot-box');
+            const finalizeButton = document.getElementById('finalize-candidate-button');
+
+            ballotBoxes.forEach(box => {
+                if (box !== checkbox) {
+                    box.disabled = true;
+                }
+            });
+
+            finalizeButton.disabled = false;
+            finalizeButton.style.background = 'blue';
+            finalizeButton.style.cursor = 'pointer';
+        }
+
+        function onUncheck() {
+            const ballotBoxes = document.querySelectorAll('.ballot-box');
+            const finalizeButton = document.getElementById('finalize-candidate-button');
+
+            ballotBoxes.forEach(box => {
+                if (box.dataset.premark === 'false') {
+                    box.disabled = false;
+                }
+            });
+
+            finalizeButton.disabled = true;
+            finalizeButton.style.background = 'gray';
+            finalizeButton.style.cursor = 'not-allowed';
+        }
+    </script>
+
 </head>
 <body>
     <h2>Three Ballot Voting System</h2>
@@ -30,20 +106,42 @@
                 <!-- autocomplete="off" to deal with firefox caching issue -->
                 <input type="checkbox" autocomplete="off"
                        th:checked="${firstBallotMarks[iterStat.index]}"
-                       th:attr="disabled=${threeBallot.getFirstBallot().isPremark(iterStat.index)}"/>
+                       th:attr="data-premark=${threeBallot.getFirstBallot().isPremark(iterStat.index)}, disabled=${threeBallot.getFirstBallot().isPremark(iterStat.index)}"
+                       class="ballot-box"
+                       onclick="handleCheckboxClick(this)"/>
             </td>
             <td>
                 <input type="checkbox" autocomplete="off"
                        th:checked="${secondBallotMarks[iterStat.index]}"
-                       th:attr="disabled=${threeBallot.getSecondBallot().isPremark(iterStat.index)}" />
+                       th:attr="data-premark=${threeBallot.getSecondBallot().isPremark(iterStat.index)}, disabled=${threeBallot.getSecondBallot().isPremark(iterStat.index)}"
+                       class="ballot-box"
+                       onclick="handleCheckboxClick(this)"/>
             </td>
             <td>
                 <input type="checkbox" autocomplete="off"
                        th:checked="${thirdBallotMarks[iterStat.index]}"
-                       th:attr="disabled=${threeBallot.getThirdBallot().isPremark(iterStat.index)}" />
+                       th:attr="data-premark=${threeBallot.getThirdBallot().isPremark(iterStat.index)}, disabled=${threeBallot.getThirdBallot().isPremark(iterStat.index)}"
+                       class="ballot-box"
+                       onclick="handleCheckboxClick(this)"/>
             </td>
         </tr>
         </tbody>
     </table>
+    <!-- Buttons for Ballot selection (initially hidden) -->
+    <div id="ballot-buttons" style="display: none; margin-top: 20px;">
+        <button id="rButton1" class="receipt-button" onclick="selectBallot(1)">Ballot 1</button>
+        <button id="rButton2" class="receipt-button" onclick="selectBallot(2)">Ballot 2</button>
+        <button id="rButton3" class="receipt-button" onclick="selectBallot(3)">Ballot 3</button>
+    </div>
+
+    <!-- Button to disable all checkboxes -->
+    <div class="button-container">
+        <button id="finalize-candidate-button" class="finalize-button tooltip" onclick="finalizeCandidate()" disabled data-tooltip="Must select candidate first" autocomplete="off">Submit Candidate</button>
+    </div>
+
+    <!-- Button to finalize receipt -->
+    <div class="button-container" id="receipt-button-container" style="display: none;">
+        <button id="finalize-receipt-button" class="finalize-button tooltip" onclick="finalizeReceipt()" disabled data-tooltip="Must select ballot first" autocomplete="off">Submit Ballot</button>
+    </div>
 </body>
 </html>
