@@ -29,6 +29,12 @@
 	<properties>
 		<java.version>17</java.version>
 	</properties>
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 	<dependencyManagement>
 		<dependencies>
 			<!-- protobuf BOM -->
@@ -90,6 +96,21 @@
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-netty-shaded</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hyperledger.fabric-chaincode-java</groupId>
+			<artifactId>fabric-chaincode-shim</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.owlike</groupId>
+			<artifactId>genson</artifactId>
+			<version>1.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.everit-org.json-schema</groupId>
+			<artifactId>org.everit.json.schema</artifactId>
+			<version>1.14.4</version>
 		</dependency>
 	</dependencies>
 
