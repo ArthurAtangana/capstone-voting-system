@@ -1,5 +1,6 @@
 package org.sysc4907.votingsystem.Elections;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -57,4 +58,33 @@ public class ElectionController {
         }
         return "unsuccessful-poll-config";
     }
+    @GetMapping("/view-election-details")
+    public String showElectionDetailsPage(Model model, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+
+        if (username == null) {
+            model.addAttribute("isLoggedIn", false);
+        }
+        model.addAttribute("isLoggedIn", true);
+
+
+        LocalDate currentDate = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
+
+        if (electionService.electionIsConfigured()) {
+            Election election = electionService.getElection();
+            model.addAttribute("election", election);
+            boolean preElection = election.START_DATE.isAfter(currentDate) || (election.START_DATE.isEqual(currentDate) && election.START_TIME.isAfter(currentTime));
+            model.addAttribute("preElection", preElection);
+            if (preElection){
+                model.addAttribute("currentCountdown", election.getElectionCountdown());
+            }
+            boolean postElection = ! preElection && election.END_DATE.isBefore(currentDate) || (election.END_DATE.isEqual(currentDate) && election.END_TIME.isBefore(currentTime));
+            model.addAttribute("postElection", postElection);
+        } else {
+            model.addAttribute("errorMessage", "No poll has been configured yet!");
+        }
+        return "election-details-orig";
+    }
+
 }

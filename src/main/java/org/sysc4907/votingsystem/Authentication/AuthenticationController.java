@@ -1,11 +1,13 @@
 package org.sysc4907.votingsystem.Authentication;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.sysc4907.votingsystem.Elections.Election;
 import org.sysc4907.votingsystem.Elections.ElectionService;
 
 /**
@@ -44,18 +46,26 @@ public class AuthenticationController {
      */
     @PostMapping("/login")
     public String compare(@RequestParam("userName") String userName,
-                          @RequestParam("password") String password, Model model) {
+                          @RequestParam("password") String password, Model model, HttpSession session) {
 
         model.addAttribute("name", userName);
 
         AuthenticationService.Response response = authenticationService.authenticate(userName, password);
         switch (response){
-            case ADMIN_AUTH_SUCCESS -> {return "successful-admin-login";}
+            case ADMIN_AUTH_SUCCESS -> {
+                session.setAttribute("username", userName);
+                return "successful-admin-login";}
             case VOTER_AUTH_SUCCESS -> {
+                session.setAttribute("username", userName);
                 model.addAttribute("isRegistered", true);
-                model.addAttribute("electionName", electionService.getElection().NAME);
-                model.addAttribute("endDate", electionService.getElection().END_DATE);
-                model.addAttribute("endTime", electionService.getElection().END_TIME);
+                if (electionService.electionIsConfigured()) {
+                    Election election = electionService.getElection();
+                    model.addAttribute("electionName", election.NAME);
+                    model.addAttribute("endDate", election.END_DATE);
+                    model.addAttribute("endTime", election.END_TIME);
+                } else {
+                    model.addAttribute("errorMessage", "No poll has been configured yet!");
+                }
                 return "successful-voter-login";
             }
             default -> { return "unsuccessful-login";}

@@ -132,8 +132,6 @@ public class ElectionService {
         }
         return keysList;
     }
-
-
 }
 
 

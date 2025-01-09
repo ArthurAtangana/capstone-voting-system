@@ -3,8 +3,7 @@ package org.sysc4907.votingsystem.Elections;
 import org.sysc4907.votingsystem.generators.BallotIdGenerator;
 import org.sysc4907.votingsystem.generators.CandidateOrderGenerator;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -91,5 +90,43 @@ public class Election {
     }
     public Set<Integer> getVoterKeys() {
         return voterKeys;
+    }
+    public String getElectionCountdown() {
+        LocalDateTime current = LocalDateTime.now();
+        LocalDateTime start = LocalDateTime.of(START_DATE, START_TIME);
+
+        // Calculate the countdown
+        if (current.isBefore(start)) {
+            Period dateDiff = Period.between(current.toLocalDate(), start.toLocalDate());
+            Duration timeDiff = Duration.between(current.toLocalTime(), start.toLocalTime());
+
+            if (timeDiff.isNegative()) {
+                // Adjust for negative time difference (i.e., cross midnight)
+                dateDiff = dateDiff.minusDays(1);
+                timeDiff = timeDiff.plusDays(1);
+            }
+
+            long hours = timeDiff.toHours();
+            long minutes = timeDiff.minusHours(hours).toMinutes();
+
+            StringBuilder countdown = new StringBuilder();
+            if (dateDiff.getYears() > 0) {
+                countdown.append(dateDiff.getYears()).append("y ");
+            }
+            if (dateDiff.getMonths() > 0) {
+                countdown.append(dateDiff.getMonths()).append("m ");
+            }
+            if (dateDiff.getDays() > 0) {
+                countdown.append(dateDiff.getDays()).append("d ");
+            }
+            if (hours > 0) {
+                countdown.append(hours).append("h ");
+            }
+            if (minutes > 0) {
+                countdown.append(minutes).append("m");
+            }
+            return countdown.toString();
+        }
+        return "";
     }
 }
