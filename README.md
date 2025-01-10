@@ -11,6 +11,8 @@
 
 ## Hyperledger Fabric
 
+Everything needed for the hyperledger fabric network and chaincode can be found in [this repository](https://github.com/ArthurAtangana/hyperledger)
+
 ### Prerequisites:
 - git
 - curl
@@ -20,12 +22,21 @@
 
 ### Installation:
 
-- In a directory outside of the project curl the installation script:
+- In a directory at the same level of this project, clone the capstone hyperledger repository and follow the instructions from that repostitory.
 
-```bash
-curl -sSLO https://raw.githubusercontent.com/hyperledger/fabric/main/scripts/install-fabric.sh && chmod +x install-fabric.sh
-```
-- Run the installation script:
-```bash
-./install-fabric --fabric-version 2.5.9 --ca-version 1.5.12 docker samples binaries
-```
+#### Directory structure
+|- capstone-voting-system
+    |- src
+    |- README.md
+    |- fabric-start.sh
+    |- ...
+|- hyperledger
+    |- asset-transfer-basic
+    |- test-network
+    |- README.md
+    |- install-fabric.sh
+
+### running hyperledger
+
+- in this project, run the fabric-start.sh script which should bring up the hyperledger network  with 2 peers and deploy the chaincode to it.
+
