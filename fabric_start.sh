@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # navigate up to the proper directory
-# cd ../hyperledger_network/fabric-samples/test-network
 cd ../hyperledger/test-network
 
 # bring any potential network down
@@ -10,4 +9,4 @@ cd ../hyperledger/test-network
 ./network.sh up createChannel -c mychannel -ca
 # deploy the chaincode (smart contract)
 ./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-java -ccl java
-# ./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-java/ -ccl java
+
