@@ -37,21 +37,10 @@ public class ElectionController {
             @RequestParam("voterKeys") MultipartFile voterKeys, Model model) {
 
         boolean validCandidates = electionService.validateCandidates(electionForm.getCandidates(), bindingResult);
-        if (!validCandidates) {
-            return "poll-configuration";
-        }
-
         boolean validVoterKeys = electionService.validateVoterKeys(voterKeys, bindingResult);
-        if (!validVoterKeys) {
-            return "poll-configuration";
-        }
-
         boolean isValidDateTime = electionService.validateDateTime(electionForm, bindingResult);
-        if (!isValidDateTime) {
-            return "poll-configuration";
-        }
 
-        if (bindingResult.hasErrors()) {
+        if (!validCandidates || !validVoterKeys || !isValidDateTime || bindingResult.hasErrors()) {
             return "poll-configuration";
         }
 

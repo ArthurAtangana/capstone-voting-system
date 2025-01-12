@@ -65,11 +65,18 @@ public class ElectionService {
     }
 
     public boolean validateVoterKeys(MultipartFile voterKeys, BindingResult bindingResult) {
+        if (voterKeys == null || voterKeys.isEmpty()) {
+            bindingResult.rejectValue("voterKeys", "invalid", "Voter key file is required and cannot be empty.");
+            return false;
+        }
+
         List<Integer> voterKeyList = convertFileToList(voterKeys);
 
         if (voterKeyList == null || voterKeyList.isEmpty()) {
+            bindingResult.rejectValue("voterKeys", "invalid", "Voter key file must contain at least one valid key.");
             return false;
         }
+
         Set<Integer> uniqueKeys = new HashSet<>(voterKeyList);
         if (uniqueKeys.size() != voterKeyList.size()) {
             bindingResult.rejectValue("voterKeys", "invalid", "There can be no duplicate voter keys.");

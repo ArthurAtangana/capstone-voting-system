@@ -165,9 +165,8 @@
             <textarea id="candidates" name="candidates" th:text="*{candidates}" placeholder="Enter each candidate's name on a new line" required></textarea>
         </div>
 
-        <!-- New section for Voter Keys upload -->
         <div class="form-group">
-            <label for="voterKeys">Voter Keys</label>
+            <label for="voterKeys">Eligible Voter Registration Keys</label>
             <div class="custom-file-input">
                 <label class="file-upload-label">
                     <p th:if="${#fields.hasErrors('voterKeys')}" th:errors="*{voterKeys}" class="error"></p>
