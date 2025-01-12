@@ -20,9 +20,6 @@ public class ElectionService {
 
     private Election election;
 
-    public AccountService getAccountService() {
-        return accountService;
-    }
     @Autowired
     private AccountService accountService;
 
@@ -45,7 +42,6 @@ public class ElectionService {
 
         return false;
     }
-
     /**
      * Returns current Election object (singleton).
      * @return Election
@@ -55,6 +51,19 @@ public class ElectionService {
             System.out.println("Election has not been configured yet.");
         }
         return election;
+    }
+
+    /**
+     * Should strictly be using validateAndConfigurePoll() to set election!
+     * Only use for testing purposes.
+     * @param election to configure for the application
+     */
+    public void setElection(Election election) {
+        this.election = election;
+    }
+
+    public AccountService getAccountService() {
+        return accountService;
     }
     public boolean electionIsConfigured() {
         return election != null;

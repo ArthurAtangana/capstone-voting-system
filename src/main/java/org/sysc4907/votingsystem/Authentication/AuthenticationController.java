@@ -31,7 +31,14 @@ public class AuthenticationController {
      * @return name of home page template
      */
     @GetMapping("/home")
-    public String showHomePage() {
+    public String showHomePage(HttpSession session, Model model) {
+        model.addAttribute("election", electionService.getElection());
+        String username = (String) session.getAttribute("username");
+        if (username != null) {
+            model.addAttribute("isLoggedIn", true);
+            model.addAttribute("username", username);
+            return "successful-voter-login";
+        }
         return "home-page";
     }
 
@@ -48,8 +55,7 @@ public class AuthenticationController {
     public String compare(@RequestParam("userName") String userName,
                           @RequestParam("password") String password, Model model, HttpSession session) {
 
-        model.addAttribute("name", userName);
-
+        model.addAttribute("username", userName);
         AuthenticationService.Response response = authenticationService.authenticate(userName, password);
         switch (response){
             case ADMIN_AUTH_SUCCESS -> {
@@ -57,12 +63,10 @@ public class AuthenticationController {
                 return "successful-admin-login";}
             case VOTER_AUTH_SUCCESS -> {
                 session.setAttribute("username", userName);
-                model.addAttribute("isRegistered", true);
+                model.addAttribute("isLoggedIn", true);
                 if (electionService.electionIsConfigured()) {
                     Election election = electionService.getElection();
-                    model.addAttribute("electionName", election.NAME);
-                    model.addAttribute("endDate", election.END_DATE);
-                    model.addAttribute("endTime", election.END_TIME);
+                    model.addAttribute("election", election);
                 } else {
                     model.addAttribute("errorMessage", "No poll has been configured yet!");
                 }

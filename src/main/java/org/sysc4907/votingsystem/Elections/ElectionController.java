@@ -62,11 +62,8 @@ public class ElectionController {
     public String showElectionDetailsPage(Model model, HttpSession session) {
         String username = (String) session.getAttribute("username");
 
-        if (username == null) {
-            model.addAttribute("isLoggedIn", false);
-        }
-        model.addAttribute("isLoggedIn", true);
-
+        model.addAttribute("isLoggedIn", username != null);
+        model.addAttribute("username", username);
 
         LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
@@ -84,7 +81,7 @@ public class ElectionController {
         } else {
             model.addAttribute("errorMessage", "No poll has been configured yet!");
         }
-        return "election-details-orig";
+        return "election-details";
     }
 
 }

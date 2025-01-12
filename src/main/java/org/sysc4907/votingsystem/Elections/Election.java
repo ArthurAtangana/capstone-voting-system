@@ -4,13 +4,12 @@ import org.sysc4907.votingsystem.generators.BallotIdGenerator;
 import org.sysc4907.votingsystem.generators.CandidateOrderGenerator;
 
 import java.time.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public class Election {
+
+    private int numberOfVotes;
     private Long id;
     public final LocalDate START_DATE;
     public final LocalDate END_DATE;
@@ -38,6 +37,7 @@ public class Election {
         this.voterKeys = voterKeys;
         tallier = new Tally(candidates.size(), voterKeys.size());
         this.candidateOrderGenerator = new CandidateOrderGenerator(candidates.size());
+        this.numberOfVotes = 0;
     }
 
     public Election() {
@@ -73,6 +73,16 @@ public class Election {
         return id;
     }
 
+    public int getNumberOfVotes() { // TODO determine this value dynamically, fetching from block chain
+        // For now, I will just have a field for this value
+        // This is just a placeholder for obtaining the real value, simply to allow the number of votes to be displayed on the details page
+        return numberOfVotes;
+    }
+
+    public void setNumberOfVotes(int numberOfVotes) { // TODO remove me once dynamic retreival of total number of votes is implemented
+        this.numberOfVotes = numberOfVotes;
+    }
+
     public BallotIdGenerator getBallotIdGenerator() {
         return ballotIdGenerator;
     }
@@ -91,6 +101,33 @@ public class Election {
     public Set<Integer> getVoterKeys() {
         return voterKeys;
     }
+
+    /**
+     *
+     * @return map of candidates and their total number of votes.
+     */
+    public Map<String, Integer> getVotingResults() { // TODO fetch real results based on the tally of votes stored on block chain
+        // Steps of future implementation:
+        // should verify that election is closed / past before attempting to acquire results
+        // retreive the tallies for each candidate
+        // construct map to return the results
+
+        // TODO remove dummy value return (added for purpose of testing election details page)
+        Map<String, Integer> candiateTallies = new HashMap<>(candidates.size());
+        int tally = 12345;
+        for (String candidate : candidates) {
+            candiateTallies.put(candidate, tally);
+            tally += 56789;
+        }
+        return candiateTallies;
+    }
+
+    /**
+     * Constructs a string to display the current countdown until the start of the election.
+     * The string form is _y _m _d _h _m (i.e., corresponding to year month day hour minutes, with 0 values ommited).
+     *
+     * @return string of current countdown to the start of the election.
+     */
     public String getElectionCountdown() {
         LocalDateTime current = LocalDateTime.now();
         LocalDateTime start = LocalDateTime.of(START_DATE, START_TIME);
