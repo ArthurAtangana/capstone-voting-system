@@ -68,7 +68,7 @@
         <p class="cast-vote-title">Cast Vote</p>
 
         <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-            <button type="button" class="election-button" th:text="'Election: ' + ${electionName}"></button>
+            <button type="button" class="election-button" th:text="'Election: ' + ${electionName}" onclick="window.location.href='/threeBallot';"></button>
             <span th:text="'Poll ends ' + ${endDate} + ' at ' + ${endTime}"
                   style="font-size: 14px; color: #555;"></span>
         </div>
