@@ -191,7 +191,7 @@
             </tr>
         </table>
 
-        <button th:if="${isLoggedIn && !postElection}" >Cast Your Vote</button>
+        <button th:if="${isLoggedIn && !postElection}" onclick="window.location.href='/threeBallot'" >Cast Your Vote</button>
 
         <div class="poll-results-container" th:if="${postElection}">
             <h2>Poll Results</h2>
