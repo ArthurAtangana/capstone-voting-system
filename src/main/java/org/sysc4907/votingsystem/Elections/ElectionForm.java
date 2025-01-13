@@ -31,8 +31,6 @@ public class ElectionForm {
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalTime endTime;
 
-    @NotEmpty(message = "Candidates are required")
-    @Size(min = 2, message = "At least two candidates are required")
     private String candidates;
 
     private MultipartFile voterKeys;

@@ -49,7 +49,13 @@ public class ElectionService {
 
     public boolean validateCandidates(String candidates, BindingResult bindingResult) {
         List<String> candidatesList = Arrays.asList(candidates.split("\\r?\\n"));
-        if (candidates == null || candidatesList.size() <= 1) {
+        if (candidates == null) {
+            bindingResult.rejectValue("candidates", "invalid", "List of candidates must be provided.");
+            return false;
+        }
+
+        if (candidatesList.size() <= 1) {
+            bindingResult.rejectValue("candidates", "invalid", "At least two candidates are required.");
             return false;
         }
 
