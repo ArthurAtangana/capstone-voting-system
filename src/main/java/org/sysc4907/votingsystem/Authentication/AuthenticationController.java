@@ -60,6 +60,7 @@ public class AuthenticationController {
         switch (response){
             case ADMIN_AUTH_SUCCESS -> {
                 session.setAttribute("username", userName);
+                model.addAttribute("isLoggedIn", true);
                 return "successful-admin-login";}
             case VOTER_AUTH_SUCCESS -> {
                 session.setAttribute("username", userName);
