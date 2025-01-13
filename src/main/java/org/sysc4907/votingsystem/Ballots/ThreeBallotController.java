@@ -4,19 +4,29 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.sysc4907.votingsystem.Elections.ElectionService;
 
 @Controller
 public class ThreeBallotController {
 
-    @GetMapping("/threeBallot")
-    public String threeBallot(@RequestParam String candidates, Model model){
-        // Split by comma, then collect into a List
-        List<String> candidatesAsList = Arrays.stream(candidates
-                        .split(","))
-                .map(String::trim)  // Trim any extra spaces
-                .toList();
+    @Autowired
+    private ElectionService electionService;
 
-        ThreeBallot threeBallot = new ThreeBallot(candidatesAsList);
+    @GetMapping("/threeBallotTest")
+    public String threeBallotTest(Model model) {
+        ThreeBallot threeBallot = new ThreeBallot(Arrays.asList("foo", "bar", "baz", "quux"));
+        model.addAttribute("threeBallot", threeBallot);
+        model.addAttribute("firstBallotMarks", threeBallot.getFirstBallot().getMarkValues());
+        model.addAttribute("secondBallotMarks", threeBallot.getSecondBallot().getMarkValues());
+        model.addAttribute("thirdBallotMarks", threeBallot.getThirdBallot().getMarkValues());
+        return "three-ballot";
+    }
+
+    @GetMapping("/threeBallot")
+    public String threeBallot(Model model) {
+        List<String> candidates = electionService.getElection().getCandidates();
+        ThreeBallot threeBallot = new ThreeBallot(candidates);
         model.addAttribute("threeBallot", threeBallot);
         model.addAttribute("firstBallotMarks", threeBallot.getFirstBallot().getMarkValues());
         model.addAttribute("secondBallotMarks", threeBallot.getSecondBallot().getMarkValues());
