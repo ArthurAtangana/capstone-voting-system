@@ -112,51 +112,70 @@
             color: #555;
             white-space: pre-wrap;
         }
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        .error p {
+            margin: 0;
+        }
+
     </style>
 </head>
 <body>
 <div class="container">
     <h1>Configure New Poll</h1>
 
-    <form th:action="@{/election}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/election}" th:object="${electionForm}" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="name">Name of Election</label>
-            <input type="text" id="name" name="name" placeholder="Enter election name" required>
+            <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></p>
+            <input type="text" id="name" name="name" th:value="*{name}" placeholder="Enter election name" required>
         </div>
 
         <div class="form-group">
             <label for="startDate">Start Date & Time</label>
+            <div class="error">
+                <p th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></p>
+                <p th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></p>
+            </div>
             <div class="date-time-group">
-                <input type="date" id="startDate" name="startDate" required>
-                <input type="time" id="startTime" name="startTime" required>
+                <input type="date" id="startDate" th:value="*{startDate}" name="startDate" required>
+                <input type="time" id="startTime" th:value="*{startTime}" name="startTime" required>
             </div>
         </div>
 
         <div class="form-group">
             <label for="endDate">End Date & Time</label>
+            <div class="error">
+                <p th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></p>
+                <p th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}"></p>
+            </div>
             <div class="date-time-group">
-                <input type="date" id="endDate" name="endDate" required>
-                <input type="time" id="endTime" name="endTime" required>
+                <input type="date" id="endDate" th:value="*{endDate}" name="endDate" required>
+                <input type="time" id="endTime" th:value="*{endTime}" name="endTime" required>
             </div>
         </div>
 
+
         <div class="form-group">
             <label for="candidates">List of Candidates</label>
-            <textarea id="candidates" name="candidates" placeholder="Enter each candidate's name on a new line" required></textarea>
+            <p th:if="${#fields.hasErrors('candidates')}" th:errors="*{candidates}" class="error"></p>
+            <textarea id="candidates" name="candidates" th:text="*{candidates}" placeholder="Enter each candidate's name on a new line" required></textarea>
         </div>
 
-        <!-- New section for Voter Keys upload -->
         <div class="form-group">
-            <label for="voterKeys">Voter Keys</label>
+            <label for="voterKeys">Eligible Voter Registration Keys</label>
             <div class="custom-file-input">
                 <label class="file-upload-label">
-                    <input type="file" id="voterKeys" name="voterKeys" accept=".txt" onchange="previewFile()" style="display: none;">
+                    <p th:if="${#fields.hasErrors('voterKeys')}" th:errors="*{voterKeys}" class="error"></p>
+                    <input type="file" id="voterKeys" name="voterKeys" th:name="voterKeys" accept=".txt" onchange="previewFile()" style="display: none;">
                     <button type="button" onclick="document.getElementById('voterKeys').click()">Choose File (.txt)</button>
                 </label>
                 <div id="filePreview" style="display:none;"></div>
             </div>
         </div>
-
         <button type="submit" id="submitButton">Submit</button>
     </form>
 </div>

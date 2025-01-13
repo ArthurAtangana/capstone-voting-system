@@ -1,14 +1,12 @@
 package org.sysc4907.votingsystem.Elections;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 import org.sysc4907.votingsystem.Accounts.AccountService;
-import org.sysc4907.votingsystem.Elections.Election;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -16,9 +14,14 @@ import java.util.*;
  */
 @Service
 public class ElectionService {
-
-
     private Election election;
+    private final AccountService accountService;
+    private Set<Integer> voterKeysList;
+    private List<String> candidatesList;
+
+    public ElectionService(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     @Autowired
     private AccountService accountService;
@@ -26,21 +29,10 @@ public class ElectionService {
     public boolean validateAndConfigurePoll(LocalDate startDate, LocalTime startTime, LocalDate endDate,
                                             LocalTime endTime, String name, String candidates, MultipartFile voterKeysFile) {
 
-        boolean validDateTime = validateDateTime(startDate, endDate, startTime, endTime);
-        boolean validName = validateElectionName(name);
-        List<String> splitCandidates = Arrays.asList(candidates.split("\\r?\\n"));
-        boolean validCandidates = validateCandidates(splitCandidates);
-        List<Integer> voterKeyList = convertFileToList(voterKeysFile);
-        boolean validVoterKeys = validateVoterKeys(voterKeyList);
-
-
-        if (validDateTime && validName && validCandidates && validVoterKeys) {
-            election = new Election(startDate, startTime, endDate, endTime, name, splitCandidates, new HashSet<>(voterKeyList));
-            accountService.initAccountService(new HashSet<>(voterKeyList));
-            return true;
-        }
-
-        return false;
+    public boolean createElection(ElectionForm electionForm) {
+        election = new Election(electionForm.getStartDateTime(), electionForm.getEndDateTime(), electionForm.getName(), candidatesList, voterKeysList);
+        accountService.initAccountService(new HashSet<>(voterKeysList));
+        return true;
     }
     /**
      * Returns current Election object (singleton).
@@ -69,57 +61,79 @@ public class ElectionService {
         return election != null;
     }
 
+    public boolean validateCandidates(String candidates, BindingResult bindingResult) {
+        List<String> candidatesList = Arrays.asList(candidates.split("\\r?\\n"));
+        if (candidates == null) {
+            bindingResult.rejectValue("candidates", "invalid", "List of candidates must be provided.");
+            return false;
+        }
 
-    private boolean validateDateTime(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime)  {
-        LocalDate currentDate = LocalDate.now();
-        LocalTime currentTime = LocalTime.now();
+        if (candidatesList.size() <= 1) {
+            bindingResult.rejectValue("candidates", "invalid", "At least two candidates are required.");
+            return false;
+        }
 
-        if (startDate == null || endDate == null || startTime == null || endTime == null) {
+        Set<String> uniqueCandidates = new HashSet<>(candidatesList);
+
+        if (uniqueCandidates.size() != candidatesList.size()) {
+            bindingResult.rejectValue("candidates", "invalid", "There can be no duplicate candidates.");
             return false;
         }
-        if (startDate.isBefore(currentDate) || endDate.isBefore(currentDate)) {
-            return false;
-        }
-        if (startDate.isAfter(endDate)) {
-            return false;
-        }
-        if (startTime.isBefore(currentTime) || endTime.isBefore(currentTime)) {
-            return false;
-        }
-        if (startDate.equals(endDate)) {
-            if (endTime.isBefore(startTime) || startTime.equals(endTime)) {
-                return false;
-            }
-            if (startDate.equals(currentDate) && (startTime.isBefore(currentTime)) || endTime.isBefore(currentTime)) {
-                return false;
-            }
-        }
+
+        this.candidatesList = candidatesList;
         return true;
     }
 
-    private boolean validateElectionName(String electionName) {
-        if (electionName == null || electionName.trim().isEmpty() || electionName.length() > 100) {
-            return false;
-        }
-        return true;
-    }
-
-    private boolean validateCandidates(List<String> candidates) {
-
-        if (candidates == null || candidates.size() <= 1) {
+    public boolean validateVoterKeys(MultipartFile voterKeys, BindingResult bindingResult) {
+        if (voterKeys == null || voterKeys.isEmpty()) {
+            bindingResult.rejectValue("voterKeys", "invalid", "Voter key file is required and cannot be empty.");
             return false;
         }
 
-        Set<String> uniqueCandidates = new HashSet<>(candidates);
-        return uniqueCandidates.size() == candidates.size();
-    }
+        List<Integer> voterKeyList = convertFileToList(voterKeys);
 
-    private boolean validateVoterKeys(List<Integer> voterKeyList) {
         if (voterKeyList == null || voterKeyList.isEmpty()) {
+            bindingResult.rejectValue("voterKeys", "invalid", "Voter key file must contain at least one valid key.");
             return false;
         }
+
         Set<Integer> uniqueKeys = new HashSet<>(voterKeyList);
-        return uniqueKeys.size() == voterKeyList.size();
+        if (uniqueKeys.size() != voterKeyList.size()) {
+            bindingResult.rejectValue("voterKeys", "invalid", "There can be no duplicate voter keys.");
+            return false;
+        }
+        this.voterKeysList = uniqueKeys;
+        return true;
+    }
+
+    public boolean validateDateTime(ElectionForm electionForm, BindingResult bindingResult){
+        LocalDateTime startDateTime = electionForm.getStartDateTime();
+        LocalDateTime endDateTime = electionForm.getEndDateTime();
+        LocalDateTime now = LocalDateTime.now();
+
+
+        if (endDateTime.isBefore(startDateTime)) {
+            bindingResult.rejectValue("endDate", "invalid", "End date and time must be after start date and time.");
+            return false;
+        }
+
+        if (endDateTime.isBefore(now)) {
+            bindingResult.rejectValue("endDate", "invalid", "End date and time must be after the current date and time.");
+            return false;
+        }
+
+        if (startDateTime.isBefore(now)) {
+            bindingResult.rejectValue("startDate", "invalid", "Start date and time must be after the current date and time.");
+            return false;
+        }
+
+        if (endDateTime.equals(startDateTime)) {
+            bindingResult.rejectValue("endDate", "invalid", "End date and time cannot be equal to the start date and time.");
+            return false;
+        }
+
+        return true;
+
     }
 
     private List<Integer> convertFileToList(MultipartFile voterKeysFile) {
