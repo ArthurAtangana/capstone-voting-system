@@ -73,3 +73,80 @@ input[type="checkbox"]:checked {
 .button:hover {
     background-color: #45a049;
 }
+
+.finalize-button {
+    font-size: 18px;
+    padding: 10px 20px;
+    background-color: gray;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: not-allowed;
+    transition: background-color 0.3s ease;
+    margin: 10px;
+}
+
+.finalize-button:hover {
+    background-color: #0056b3;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Style for the ballot buttons */
+#ballot-buttons button {
+    font-size: 20px;
+    padding: 15px 30px;
+    margin: 10px;
+    background-color: #28A745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#ballot-buttons button:hover {
+    background-color: #1e7e34;
+    transform: scale(1.05);
+}
+
+#ballot-buttons button:active {
+    background-color: #155724;
+    transform: scale(0.95);
+}
+
+/* Center the buttons */
+#ballot-buttons {
+    text-align: center;
+}
+
+.tooltip {
+    position: relative;
+}
+
+.tooltip[disabled]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out;
+    z-index: 1000;
+}
+
+.tooltip[disabled]:hover::after {
+    opacity: 1;
+}
