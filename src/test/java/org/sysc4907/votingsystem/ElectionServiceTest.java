@@ -1,35 +1,40 @@
 package org.sysc4907.votingsystem;
 
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.sysc4907.votingsystem.Accounts.AccountService;
-import org.sysc4907.votingsystem.Elections.Election;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
+import org.sysc4907.votingsystem.Accounts.AccountService;
+import org.sysc4907.votingsystem.Elections.ElectionForm;
 import org.sysc4907.votingsystem.Elections.ElectionService;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ElectionServiceTest {
+    private ElectionService electionService;
     @Mock
     private AccountService accountService;
-    @InjectMocks
-    private ElectionService electionService;
-    private LocalDate startDate = LocalDate.now().plusDays(1);
-    private LocalTime startTime = LocalTime.now().plusHours(1);
-    private LocalDate endDate = LocalDate.now().plusDays(2);
-    private LocalTime endTime = LocalTime.now().plusHours(2);
-    private String name = "Favourite Drink";
+    @Mock
+    private BindingResult bindingResult;
+    @Mock
+    private ElectionForm electionForm;
     private String candidates = "Espresso\nLatte\nMocha";
+    private LocalDate startDate;
+    private LocalTime startTime;
+    private LocalDate endDate;
+    private LocalTime endTime;
+    private LocalDate currentDate;
+    private LocalTime currentTime;
+
 
     /** Simulates MultipartFile*/
     private MultipartFile mockFile;
@@ -37,204 +42,208 @@ public class ElectionServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        //electionService = new ElectionService();
+        electionService = new ElectionService(accountService);
+        bindingResult = mock(BindingResult.class);
+        doNothing().when(bindingResult).rejectValue(anyString(), anyString(), anyString());
         mockFile = mock(MultipartFile.class);
+        electionForm = mock(ElectionForm.class);
+        electionForm.setName("Favourite Drink");
+        when(electionForm.getName()).thenReturn("Favourite Drink");
+        when(electionForm.getCandidates()).thenReturn(List.of("Espresso", "Latte", "Mocha").toString());
+
+        currentDate = LocalDate.now();
+        currentTime = LocalTime.now();
+
+        // Set the start date to be tomorrow (future date)
+        startDate = currentDate.plusDays(1);  // Tomorrow
+        startTime = currentTime.plusHours(1); // 1 hour after the current time
+
+        endDate = startDate.plusDays(5);   // 5 days after start
+        endTime = startTime.plusHours(2);   // 2 hours after start time
+
+        when(electionForm.getStartDate()).thenReturn(startDate);
+        when(electionForm.getStartTime()).thenReturn(startTime);
+        when(electionForm.getEndDate()).thenReturn(endDate);
+        when(electionForm.getEndTime()).thenReturn(endTime);
+
+        when(electionForm.getStartDateTime()).thenReturn(LocalDateTime.of(startDate, startTime));
+        when(electionForm.getEndDateTime()).thenReturn(LocalDateTime.of(endDate, endTime));
     }
 
     @Test
-    public void testValidPollConfiguration() throws IOException {
-
-        // when(mockFile.getBytes()) is executed return "123\n456".getBytes()
-        when(mockFile.getBytes()).thenReturn("123\n456".getBytes());
-
-        boolean result = electionService.validateAndConfigurePoll(startDate, startTime, endDate, endTime, name, candidates, mockFile);
-
-        assertTrue(result);
-
-        Election election = electionService.getElection();
-        assertNotNull(election);
-        assertEquals(name, election.NAME);
-        assertEquals(startDate, election.START_DATE);
-        assertEquals(startTime, election.START_TIME);
-        assertEquals(endDate, election.END_DATE);
-        assertEquals(endTime, election.END_TIME);
-        assertEquals(Arrays.asList("Espresso", "Latte", "Mocha"), election.getCandidates());
+    public void testValidateCandidates() {
+        when(bindingResult.hasErrors()).thenReturn(false);
+        boolean isValid = electionService.validateCandidates(candidates, bindingResult);
+        assertTrue(isValid);
     }
 
-    /**
-     * Assert that the election does not get configured due to an invalid start date.
-     * @throws IOException
-     */
     @Test
-    public void testInvalidStartDate() throws IOException {
-        // Invalid start date (before current date)
-        LocalDate startDate = LocalDate.now().minusDays(1);
-
-        when(mockFile.getBytes()).thenReturn("123\n456".getBytes());
-
-        boolean result = electionService.validateAndConfigurePoll(startDate, startTime, endDate, endTime, name, candidates, mockFile);
-
-        assertFalse(result);
+    public void testDuplicateCandidates() {
+        String candidates = "Coffee\nCoffee";
+        when(bindingResult.hasErrors()).thenReturn(true);
+        boolean isValid = electionService.validateCandidates(candidates, bindingResult);
+        assertFalse(isValid);
+        verify(bindingResult, times(1)).rejectValue(eq("candidates"), eq("invalid"), eq("There can be no duplicate candidates."));
     }
 
-    /**
-     * Assert that the election does not get configured due to an invalid start time.
-     * @throws IOException
-     */
     @Test
-    public void testInvalidStartTime() throws IOException {
-        // Invalid start time (before current time)
-        LocalTime startTime = LocalTime.now().minusMinutes(1);
-
-        when(mockFile.getBytes()).thenReturn("123\n456".getBytes());
-
-        boolean result = electionService.validateAndConfigurePoll(startDate, startTime, endDate, endTime, name, candidates, mockFile);
-
-        assertFalse(result);
+    public void testOneCandidate() {
+        String candidates = "Mocha";
+        boolean isValid = electionService.validateCandidates(candidates, bindingResult);
+        assertFalse(isValid);
     }
 
-    /**
-     * Assert that the election does not get configured due to an invalid end date.
-     * @throws IOException
-     */
     @Test
-    public void testInvalidEndDate() throws IOException {
-        // Invalid end date (before start date)
-        LocalDate endDate = LocalDate.now();
-
-        when(mockFile.getBytes()).thenReturn("12345\n67890".getBytes());
-
-        boolean result = electionService.validateAndConfigurePoll(startDate, startTime, endDate, endTime, name, candidates, mockFile);
-
-        assertFalse(result);
-    }
-
-    /**
-     * Assert that the election does not get configured due to an invalid end time.
-     * @throws IOException
-     */
-    @Test
-    public void testInvalidEndTime() throws IOException {
-        // Invalid end time (before current time)
-        LocalTime endTime = LocalTime.now().minusMinutes(1);
-
-        when(mockFile.getBytes()).thenReturn("123\n456".getBytes());
-
-        boolean result = electionService.validateAndConfigurePoll(startDate, startTime, endDate, endTime, name, candidates, mockFile);
-
-        assertFalse(result);
-    }
-
-    /**
-     * Assert that the election does not get configured due to an invalid start/end time for the current date.
-     * @throws IOException
-     */
-    @Test
-    public void testInvalidTimeOnCurrentDate() throws IOException {
-        LocalDate startDate = LocalDate.now();
-        LocalTime startTime = LocalTime.now().minusMinutes(1);
-        LocalDate endDate = LocalDate.now();
-        LocalTime endTime = LocalTime.now().minusMinutes(1);
-
-        when(mockFile.getBytes()).thenReturn("123\n456".getBytes());
-
-        boolean result = electionService.validateAndConfigurePoll(startDate, startTime, endDate, endTime, name, candidates, mockFile);
-
-        assertFalse(result);
-    }
-
-    /**
-     * Assert that the election does not get configured due to having no candidates.
-     * @throws IOException
-     */
-    @Test
-    public void testEmptyCandidates() throws IOException {
+    public void testNoCandidates() {
         String candidates = "\n";
-
-        when(mockFile.getBytes()).thenReturn("123\n456".getBytes());
-
-        boolean result = electionService.validateAndConfigurePoll(startDate, startTime, endDate, endTime, name, candidates, mockFile);
-
-        assertFalse(result);
+        boolean isValid = electionService.validateCandidates(candidates, bindingResult);
+        assertFalse(isValid);
     }
 
-    /**
-     * Assert that the election does not get configured due to duplicate candidates.
-     * @throws IOException
-     */
     @Test
-    public void testDuplicateCandidates() throws IOException {
-        String candidates = "Espresso\nLatte\nLatte";
+    public void testValidVoterKeys() {
+        try {
+            when(mockFile.getBytes()).thenReturn("123\n456".getBytes());
+        } catch (IOException e) {
+            System.out.println(e);
+        }
 
-        when(mockFile.getBytes()).thenReturn("123\n456".getBytes());
-
-        boolean result = electionService.validateAndConfigurePoll(startDate, startTime, endDate, endTime, name, candidates, mockFile);
-
-        assertFalse(result);
+        boolean isValid = electionService.validateVoterKeys(mockFile, bindingResult);
+        assertTrue(isValid);
     }
 
-    /**
-     * Assert that the election does not get configured if there is only one candidate.
-     * @throws IOException
-     */
     @Test
-    public void testMultipleCandidates() throws IOException {
-        String candidates = "Espresso";
+    public void testInValidVoterKeys() {
+        try {
+            when(mockFile.getBytes()).thenReturn("abc\ndef".getBytes());
+        } catch (IOException e) {
+            System.out.println(e);
+        }
 
-        when(mockFile.getBytes()).thenReturn("123\n456".getBytes());
-
-        boolean result = electionService.validateAndConfigurePoll(startDate, startTime, endDate, endTime, name, candidates, mockFile);
-
-        assertFalse(result);
+        boolean isValid = electionService.validateVoterKeys(mockFile, bindingResult);
+        assertFalse(isValid);
     }
 
-    /**
-     * Assert that the election does not get configured due to invalid voter keys (non-integer).
-     * @throws IOException
-     */
     @Test
-    public void testInvalidVoterKeys() throws IOException {
-        when(mockFile.getBytes()).thenReturn("abc\ndef".getBytes());
+    public void testEmptyVoterKeys() {
+        try {
+            when(mockFile.getBytes()).thenReturn("".getBytes());
+        } catch (IOException e) {
+            System.out.println(e);
+        }
 
-        boolean result = electionService.validateAndConfigurePoll(startDate, startTime, endDate, endTime, name, candidates, mockFile);
-
-        assertFalse(result);
+        boolean isValid = electionService.validateVoterKeys(mockFile, bindingResult);
+        assertFalse(isValid);
     }
 
-    /**
-     * Assert that the election does not get configured due to not having voter keys.
-     * @throws IOException
-     */
     @Test
-    public void testEmptyVoterKeys() throws IOException {
-        when(mockFile.getBytes()).thenReturn("".getBytes());
+    public void testDuplicateVoterKeys() {
+        try {
+            when(mockFile.getBytes()).thenReturn("123\n123".getBytes());
+        } catch (IOException e) {
+            System.out.println(e);
+        }
 
-        boolean result = electionService.validateAndConfigurePoll(startDate, startTime, endDate, endTime, name, candidates, mockFile);
-
-        assertFalse(result);
+        boolean isValid = electionService.validateVoterKeys(mockFile, bindingResult);
+        assertFalse(isValid);
     }
 
-    /**
-     * Assert that the election does not get configured due to having duplicate voter keys.
-     * @throws IOException
-     */
     @Test
-    public void testDuplicateVoterKeys() throws IOException {
-        when(mockFile.getBytes()).thenReturn("abc\nabc".getBytes());
-
-        boolean result = electionService.validateAndConfigurePoll(startDate, startTime, endDate, endTime, name, candidates, mockFile);
-
-        assertFalse(result);
+    public void testGetAccountService() {
+        assertSame(accountService, electionService.getAccountService());
     }
 
-    /**
-     * Assert that a non-configured election returns null.
-     */
     @Test
-    public void testNonConfiguredElection() {
-        Election election = electionService.getElection();
+    public void testValidDateTime() {
+        boolean isValid = electionService.validateDateTime(electionForm, bindingResult);
+        assertTrue(isValid);
+    }
 
-        assertNull(election);
+    @Test
+    public void testEndDateBeforeStartDate() {
+        // endDate before startDate
+        startDate = currentDate.plusDays(1);
+        endDate = startDate.minusDays(2);
+        when(electionForm.getEndDateTime()).thenReturn(LocalDateTime.of(endDate, endTime));
+        when(electionForm.getStartDateTime()).thenReturn(LocalDateTime.of(startDate, startTime));
+        boolean isValid = electionService.validateDateTime(electionForm, bindingResult);
+        assertFalse(isValid);
+    }
+
+    @Test
+    public void testEndDateInThePast() {
+        // endDate in the past
+        endDate = currentDate.minusDays(5);
+        when(electionForm.getEndDateTime()).thenReturn(LocalDateTime.of(endDate, endTime));
+        boolean isValid = electionService.validateDateTime(electionForm, bindingResult);
+        assertFalse(isValid);
+
+        verify(bindingResult).rejectValue("endDate", "invalid", "End date and time must be after start date and time.");
+    }
+
+    @Test
+    public void testStartDateInThePast() {
+        // startDate in the past
+        startDate = currentDate.minusDays(2);
+        when(electionForm.getStartDate()).thenReturn(startDate);
+        boolean isValid = electionService.validateDateTime(electionForm, bindingResult);
+        assertTrue(isValid);
+    }
+
+    @Test
+    public void testStartDateEqualsEndDate() {
+        // startDate equals endDate
+        startDate = currentDate.plusDays(2);
+        endDate = currentDate.plusDays(2);
+        boolean isValid = electionService.validateDateTime(electionForm, bindingResult);
+        assertTrue(isValid);
+    }
+
+    @Test
+    public void testStartEndDateEqualsCurrentDate() {
+        // startDate/endDate currentDate
+        startDate = currentDate;
+        endDate = currentDate;
+        boolean isValid = electionService.validateDateTime(electionForm, bindingResult);
+        assertTrue(isValid);
+    }
+
+    @Test
+    public void testEndTimeBeforeStartTime() {
+        // endTime before startTime on the same day
+        startDate = currentDate.plusDays(1);
+        startTime = currentTime.plusHours(2);
+        endDate = currentDate.plusDays(1);
+        endTime = currentTime.plusHours(1);
+        when(electionForm.getStartDateTime()).thenReturn(LocalDateTime.of(startDate, startTime));
+        when(electionForm.getEndDateTime()).thenReturn(LocalDateTime.of(endDate, endTime));
+        boolean isValid = electionService.validateDateTime(electionForm, bindingResult);
+        assertFalse(isValid);
+    }
+
+    @Test
+    public void testEqualStartEndDateTime() {
+        // same day and same time
+        startDate = currentDate.plusDays(1);
+        startTime = currentTime.plusHours(2);
+        endDate = currentDate.plusDays(1);
+        endTime = currentTime.plusHours(2);
+        when(electionForm.getStartDateTime()).thenReturn(LocalDateTime.of(startDate, startTime));
+        when(electionForm.getEndDateTime()).thenReturn(LocalDateTime.of(endDate, endTime));
+        boolean isValid = electionService.validateDateTime(electionForm, bindingResult);
+        assertFalse(isValid);
+
+        verify(bindingResult).rejectValue("endDate", "invalid", "End date and time cannot be equal to the start date and time.");
+    }
+
+    @Test
+    public void testStartDateBeforeCurrentDate() {
+        startDate = currentDate.minusDays(1);
+        when(electionForm.getStartDateTime()).thenReturn(LocalDateTime.of(startDate, startTime));
+        boolean isValid = electionService.validateDateTime(electionForm, bindingResult);
+
+        assertFalse(isValid);
+        verify(bindingResult).rejectValue("startDate", "invalid", "Start date and time must be after the current date and time.");
     }
 
 }
