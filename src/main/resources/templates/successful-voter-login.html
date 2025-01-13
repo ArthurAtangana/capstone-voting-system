@@ -66,9 +66,9 @@
 
     <div th:if="${isLoggedIn}">
         <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-            <form action="/view-election-details" method="get" th:if="${election}">
-                <button type="submit" class="election-button" th:text="'Election: ' + ${election.NAME}"></button>
-                <span th:if="${election.NAME}" th:text="'Poll ends ' + ${election.END_DATE} + ' at ' + ${election.END_TIME}"
+            <form action="/view-election-details" method="get" th:if="${electionName}">
+                <button type="submit" class="election-button" th:text="'Election: ' + ${electionName}"></button>
+                <span th:text="|${electionStatus} ${dateTimeInfo}|"
                       style="font-size: 14px; color: #555;"></span>
             </form>
             <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>

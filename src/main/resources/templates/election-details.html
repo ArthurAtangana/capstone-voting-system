@@ -22,6 +22,7 @@
             background: #a2eca5;
             color: #336e33;
             font-size: 30px;
+            min-height: 40px;
         }
         .home-btn {
             position: absolute;
@@ -53,12 +54,6 @@
 
         h2 {
             margin: 20px 0 10px;
-        }
-
-        .highlight {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #1b5e20;
         }
 
         /* Table Styling */
@@ -115,16 +110,6 @@
             margin: auto;
         }
 
-        .status {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #1b5e20;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .details-container {
-
-        }
         .graph-container {
             display: flex;
             flex-direction: row;
@@ -157,25 +142,23 @@
             <p th:text="${username}"></p>
         </div>
 
-
-
-        <h1 th:text="|Election Details: ${election.NAME}|"></h1>
-
+        <h1 th:if="${election}" th:text="|Election Details: ${election.NAME}|"></h1>
+        <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
     </header>
 
-    <div class="details-container">
-        <div th:if="${preElection}">
-            <h2 class="status">Starts in: <span class="highlight" th:text="${currentCountdown}"></span></h2>
+    <div th:if="${election}" class="details-container">
+        <div th:if="${currentCountdown}">
+            <h2 th:text="|Starts in ${currentCountdown}|"></h2>
         </div>
 
         <table>
             <tr>
                 <th>Start</th>
-                <td th:text="|${#temporals.format(election.START_DATE, 'MMMM d, yyyy')} @ ${#temporals.format(election.START_TIME, 'h:mm a')}"></td>
+                <td th:text="${formattedStart}"></td>
             </tr>
             <tr>
                 <th>End</th>
-                <td th:text="|${#temporals.format(election.END_DATE, 'MMMM d, yyyy')} @ ${#temporals.format(election.END_TIME, 'h:mm a')}"></td>
+                <td th:text="${formattedEnd}"></td>
             </tr>
             <tr>
                 <th>Candidates</th>
@@ -185,13 +168,13 @@
                 <th># of Eligible Voters</th>
                 <td th:text="${election.getNumberOfVoterKeys()}"></td>
             </tr>
-            <tr th:if="!${preElection}">
+            <tr th:if="!${currentCountdown}">
                 <th># of Votes</th>
                 <td th:text="${election.getNumberOfVotes()}"></td>
             </tr>
         </table>
 
-        <button th:if="${isLoggedIn && !postElection}" onclick="window.location.href='/threeBallot'" >Cast Your Vote</button>
+        <button th:if="${isLoggedIn} and !${currentCountdown} and !${postElection}" onclick="window.location.href='/threeBallot'" >Cast Your Vote</button>
 
         <div class="poll-results-container" th:if="${postElection}">
             <h2>Poll Results</h2>
@@ -209,16 +192,20 @@
 </body>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    // Directly inject the HashMap into JavaScript as an object
-    var candidates = /*[[${election.getVotingResults()}]]*/;
+    /* Check if the election object is defined */
+    var candidates = /*[[${election != null ? election.getVotingResults() : {}}]]*/;
 
-    // Extract candidate names and vote tallies
-    var candidateNames = Object.keys(candidates);
-    var voteTallies = Object.values(candidates);
+    if (Object.keys(candidates).length > 0) {
+        // Extract candidate names and vote tallies
+        var candidateNames = Object.keys(candidates);
+        var voteTallies = Object.values(candidates);
 
-    // Now you can use candidateNames and voteTallies in your charts
-    console.log(candidateNames);  // Candidate names
-    console.log(voteTallies);     // Vote tallies
+        // Now you can use candidateNames and voteTallies in your charts
+        console.log(candidateNames);  // Candidate names
+        console.log(voteTallies);     // Vote tallies
+    } else {
+        console.warn("Election data is not available.");
+    }
     /*]]>*/
 </script>
 

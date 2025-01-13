@@ -1,5 +1,6 @@
 package org.sysc4907.votingsystem.Elections;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,12 +23,6 @@ public class ElectionService {
     public ElectionService(AccountService accountService) {
         this.accountService = accountService;
     }
-
-    @Autowired
-    private AccountService accountService;
-
-    public boolean validateAndConfigurePoll(LocalDate startDate, LocalTime startTime, LocalDate endDate,
-                                            LocalTime endTime, String name, String candidates, MultipartFile voterKeysFile) {
 
     public boolean createElection(ElectionForm electionForm) {
         election = new Election(electionForm.getStartDateTime(), electionForm.getEndDateTime(), electionForm.getName(), candidatesList, voterKeysList);

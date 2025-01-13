@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.sysc4907.votingsystem.Elections.Election;
 import org.sysc4907.votingsystem.Elections.ElectionService;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
  * Controller class responsible for handling authentication-related requests.
  * This class provides endpoints for login, authentication, and showing the home page.
@@ -32,14 +35,39 @@ public class AuthenticationController {
      */
     @GetMapping("/home")
     public String showHomePage(HttpSession session, Model model) {
-        model.addAttribute("election", electionService.getElection());
         String username = (String) session.getAttribute("username");
-        if (username != null) {
-            model.addAttribute("isLoggedIn", true);
-            model.addAttribute("username", username);
-            return "successful-voter-login";
+        if (username == null) {
+            model.addAttribute("isLoggedIn", false);
+            return "home-page";
         }
-        return "home-page";
+        model.addAttribute("isLoggedIn", true);
+        model.addAttribute("username", username);
+        LocalDateTime now = LocalDateTime.now();
+
+        String electionStatus;
+        String dateTimeInfo;
+        if (electionService.electionIsConfigured()) {
+            Election election = electionService.getElection();
+            model.addAttribute("electionName", election.NAME);
+
+            if (now.isBefore(election.START_DATE_TIME)) {
+                electionStatus = "Starts on";
+                dateTimeInfo = election.START_DATE_TIME.format(DateTimeFormatter.ofPattern("MMMM d, yyyy @ h:mm a"));
+            } else if (now.isAfter(election.END_DATE_TIME)) {
+                electionStatus = "Ended on";
+                dateTimeInfo = election.END_DATE_TIME.format(DateTimeFormatter.ofPattern("MMMM d, yyyy @ h:mm a"));
+            } else {
+                electionStatus = "Ends on";
+                dateTimeInfo = election.END_DATE_TIME.format(DateTimeFormatter.ofPattern("MMMM d, yyyy @ h:mm a"));
+            }
+
+            model.addAttribute("electionStatus", electionStatus);
+            model.addAttribute("dateTimeInfo", dateTimeInfo);
+        } else {
+            model.addAttribute("errorMessage", "No poll has been configured yet!");
+        }
+
+        return "successful-voter-login";
     }
 
     /**
@@ -64,14 +92,7 @@ public class AuthenticationController {
                 return "successful-admin-login";}
             case VOTER_AUTH_SUCCESS -> {
                 session.setAttribute("username", userName);
-                model.addAttribute("isLoggedIn", true);
-                if (electionService.electionIsConfigured()) {
-                    Election election = electionService.getElection();
-                    model.addAttribute("election", election);
-                } else {
-                    model.addAttribute("errorMessage", "No poll has been configured yet!");
-                }
-                return "successful-voter-login";
+                return "redirect:/home";
             }
             default -> { return "unsuccessful-login";}
         }

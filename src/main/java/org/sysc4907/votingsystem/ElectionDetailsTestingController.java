@@ -8,6 +8,7 @@ import org.sysc4907.votingsystem.Elections.Election;
 import org.sysc4907.votingsystem.Elections.ElectionService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -41,35 +42,28 @@ public class ElectionDetailsTestingController {
         Election election;
         List<String> candidateList = Arrays.asList("candidateX", "candidateY", "candidateZ");
         Set<Integer> keys =  new HashSet<>(Arrays.asList(123,456, 789));
-
+        LocalDate today = LocalDate.now();
         switch (type) {
             case "past":
                 election =  new Election (
-                        LocalDate.of(2024, 12, 01),
-                        LocalTime.of(9, 0),
-                        LocalDate.of(2024, 12, 02),
-                        LocalTime.of(17, 0),
+                        LocalDateTime.of(today.minusDays(5), LocalTime.of(9, 0)),
+                        LocalDateTime.of(today.minusDays(3), LocalTime.of(17, 0)),
                         "Past Election",
                         candidateList,
                         keys);
                 break;
             case "ongoing":
-
                 election =  new Election (
-                        LocalDate.now().minusDays(1),
-                        LocalTime.of(9, 0),
-                        LocalDate.now().plusDays(1),
-                        LocalTime.of(17, 0),
+                        LocalDateTime.of(today.minusDays(1), LocalTime.of(9, 0)),
+                        LocalDateTime.of(today.plusDays(1), LocalTime.of(17, 0)),
                         "Ongoing Election",
                         candidateList,
                         keys);
                 break;
             case "upcoming":
                 election =  new Election (
-                        LocalDate.now().plusDays(5),
-                        LocalTime.of(9, 0),
-                        LocalDate.now().plusDays(6),
-                        LocalTime.of(17, 0),
+                        LocalDateTime.of(today.plusDays(5), LocalTime.of(9, 0)),
+                        LocalDateTime.of(today.plusDays(6), LocalTime.of(17, 0)),
                         "Future Election",
                         candidateList,
                         keys);

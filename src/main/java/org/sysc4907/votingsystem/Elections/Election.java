@@ -123,7 +123,7 @@ public class Election {
      */
     public String getElectionCountdown() {
         LocalDateTime current = LocalDateTime.now();
-        LocalDateTime start = LocalDateTime.of(START_DATE, START_TIME);
+        LocalDateTime start = START_DATE_TIME;
 
         // Calculate the countdown
         if (current.isBefore(start)) {
@@ -157,6 +157,6 @@ public class Election {
             }
             return countdown.toString();
         }
-        return "";
+        return null;
     }
 }
