@@ -62,18 +62,18 @@
 </head>
 <body>
 <div class="container">
-    <h1 th:text="|Welcome VOTER, ${name}!|"></h1>
+    <h1 th:text="|Welcome VOTER, ${username}!|"></h1>
 
-    <div th:if="${isRegistered}">
-        <p class="cast-vote-title">Cast Vote</p>
-
+    <div th:if="${isLoggedIn}">
         <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-            <button type="button" class="election-button" th:text="'Election: ' + ${electionName}" onclick="window.location.href='/threeBallot';"></button>
-            <span th:text="'Poll ends ' + ${endDate} + ' at ' + ${endTime}"
-                  style="font-size: 14px; color: #555;"></span>
+            <form action="/view-election-details" method="get" th:if="${electionName}">
+                <button type="submit" class="election-button" th:text="'Election: ' + ${electionName}"></button>
+                <span th:text="|${electionStatus} ${dateTimeInfo}|"
+                      style="font-size: 14px; color: #555;"></span>
+            </form>
+            <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
         </div>
     </div>
-
     <div class="footer">
         <p>&copy; 2024 Secure and Transparent Voting System</p>
     </div>
