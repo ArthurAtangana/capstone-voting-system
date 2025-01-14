@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/three-ballot.css">
     <title>Three Ballot Voting System</title>
+    <script th:inline="javascript"> /*<![CDATA[*/ let globalThreeBallot = /*[(${threeBallot})]*/ {}; /*]]>*/ </script>
     <script>
         function finalizeCandidate() {
             // Disable all checkboxes
@@ -27,6 +28,13 @@
         function finalizeReceipt() {
             // Hide all ballots except the selected one
             const selectedBallotNumber = document.querySelector('.receipt-button[style*="background: rgb(69, 160, 73);"]').id.slice(-1);
+
+            // Find the corresponding ballot from ballotAttributes
+            const selectedBallot = attributes[selectedBallotNumber - 1]; // Adjust index for 0-based array
+            const ballotId = selectedBallot.id;
+            const candidateOrder = selectedBallot.candidateOrder;
+
+
             const ballotColumns = document.querySelectorAll('td:nth-child(n+2)');
             ballotColumns.forEach((column, index) => {
                 if ((index % 3) + 1 != selectedBallotNumber) {
@@ -42,15 +50,10 @@
                 }
             });
 
-            // // Retrieve the selected ballot's ID and candidate order
-            // const selectedBallot = threeBallot.selectReceipt(parseInt(selectedBallotNumber));
-            // const ballotId = selectedBallot.getId();
-            // const candidateOrder = selectedBallot.getCandidateOrder();
-
             // Show Ballot ID and Candidate Order columns
-            // document.getElementById('ballot-id-value').textContent = ballotId;
-            // document.getElementById('candidate-order-value').textContent = candidateOrder;
-            // document.getElementById('additional-info').style.display = 'block';
+            document.getElementById('ballot-id-value').textContent = ballotId;
+            document.getElementById('candidate-order-value').textContent = candidateOrder;
+            document.getElementById('additional-info').style.display = 'block';
 
             // Hide ballot selection buttons
             const ballotButtons = document.getElementById('ballot-buttons');
@@ -120,6 +123,30 @@
 <body>
     <h2>Three Ballot Voting System</h2>
 
+    <div th:text="${attributes}"></div>
+
+<!--    <button onclick="callJavaScriptFunction()">Click Me</button>-->
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        // Convert the Thymeleaf attribute to a JavaScript array
+        let attributes = /*[[${attributes}]]*/ [];
+
+        // console.log(attributes);  // This will log the array of IDs
+        //
+        // // JavaScript function to use the array
+        // function callJavaScriptFunction() {
+        //     // Map each attribute to a readable string
+        //     let attributeStrings = attributes.map(attr =>
+        //         `ID: ${attr.id}, Candidate Order: ${attr.candidateOrder}, Markable Boxes: ${attr.markableBoxes}`
+        //     );
+        //
+        //     alert('Attributes:\n' + attributeStrings.join('\n')); // Show attributes in an alert
+        // }
+
+        /*]]>*/
+    </script>
+
     <table>
         <thead>
         <tr>
@@ -179,5 +206,11 @@
     <div class="button-container" id="receipt-button-container" style="display: none;">
         <button id="finalize-receipt-button" class="finalize-button tooltip" onclick="finalizeReceipt()" disabled data-tooltip="Must select ballot first" autocomplete="off">Submit Ballot</button>
     </div>
+
+    <div id="additional-info" style="display: none;">
+        <p id="ballot-id-value"></p>
+        <p id="candidate-order-value"></p>
+    </div>
+
 </body>
 </html>

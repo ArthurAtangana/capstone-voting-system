@@ -17,6 +17,11 @@ public class ThreeBallotController {
     public String threeBallotTest(Model model) {
         ThreeBallot threeBallot = new ThreeBallot(Arrays.asList("foo", "bar", "baz", "quux"));
         model.addAttribute("threeBallot", threeBallot);
+        // Extract the IDs from the ballots
+        List<Map<String, Object>> attributes = threeBallot.getBallotAttributes();
+        model.addAttribute("attributes", attributes);
+
+        model.addAttribute("message", "hey");
         model.addAttribute("firstBallotMarks", threeBallot.getFirstBallot().getMarkValues());
         model.addAttribute("secondBallotMarks", threeBallot.getSecondBallot().getMarkValues());
         model.addAttribute("thirdBallotMarks", threeBallot.getThirdBallot().getMarkValues());

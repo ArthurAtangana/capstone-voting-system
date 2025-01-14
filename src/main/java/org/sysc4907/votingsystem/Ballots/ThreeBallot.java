@@ -4,7 +4,9 @@ import org.sysc4907.votingsystem.generators.CandidateOrderGenerator;
 import org.sysc4907.votingsystem.generators.PremarkGenerator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ThreeBallot {
     private final Ballot firstBallot;
@@ -63,4 +65,29 @@ public class ThreeBallot {
     public List<String> getCandidateList() {
         return candidateList;
     }
+
+    public List<Map<String, Object>> getBallotAttributes() {
+        List<Map<String, Object>> ballotsData = new ArrayList<>();
+
+        // Process each ballot and add its attributes to the list
+        for (Ballot ballot : List.of(firstBallot, secondBallot, thirdBallot)) {
+            Map<String, Object> ballotMap = new HashMap<>();
+            ballotMap.put("id", ballot.getId());
+            ballotMap.put("candidateOrder", ballot.getCandidateOrder());
+            ballotMap.put("markableBoxes", ballot.getMarkValues());
+            ballotsData.add(ballotMap);
+        }
+
+        return ballotsData;
+    }
+
+//    @Override
+//    public String toString() {
+//        return "ThreeBallot{" +
+//                "firstBallotId=" + firstBallot.getId() +
+//                ", secondBallotId=" + secondBallot.getId() +
+//                ", thirdBallotId=" + thirdBallot.getId() +
+//                ", candidateList=" + candidateList +
+//                '}';
+//    }
 }
