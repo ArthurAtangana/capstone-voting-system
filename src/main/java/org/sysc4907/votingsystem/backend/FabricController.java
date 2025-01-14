@@ -3,6 +3,9 @@ package org.sysc4907.votingsystem.backend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/fabric")
 public class FabricController {
@@ -22,11 +25,12 @@ public class FabricController {
     }
 
     @PostMapping("/submit")
-    public String submitTransaction(
-            @RequestParam String function,
-            @RequestParam(required = false) String[] args) {
+    public String submitTransaction(@RequestBody Map<String, Object> payload) {
         try {
-            return fabricGatewayService.submitTransaction(function, args);
+            // Extract function and args from the request body
+            String function = (String) payload.get("function");
+            List<String> args = (List<String>) payload.get("args");
+            return fabricGatewayService.submitTransaction(function, args.toArray(new String[args.size()]));
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
