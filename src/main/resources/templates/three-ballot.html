@@ -28,12 +28,17 @@
         function finalizeReceipt() {
             // Hide all ballots except the selected one
             const selectedBallotNumber = document.querySelector('.receipt-button[style*="background: rgb(69, 160, 73);"]').id.slice(-1);
+            const booleanArray = [];
+            const ballotCheckboxes = document.querySelectorAll(`td:nth-child(${parseInt(selectedBallotNumber) + 1}) .ballot-box`);
+
+            ballotCheckboxes.forEach(checkbox => {
+                booleanArray.push(checkbox.checked);
+            });
 
             // Find the corresponding ballot from ballotAttributes
             const selectedBallot = attributes[selectedBallotNumber - 1]; // Adjust index for 0-based array
             const ballotId = selectedBallot.id;
             const candidateOrder = selectedBallot["candidateOrder"];
-            const markedBoxes = selectedBallot["markableBoxes"];
 
             const ballotColumns = document.querySelectorAll('td:nth-child(n+2)');
             ballotColumns.forEach((column, index) => {
@@ -53,7 +58,7 @@
             // Show Ballot ID and Candidate Order columns
             document.getElementById('ballot-id-value').textContent = ballotId;
             document.getElementById('candidate-order-value').textContent = candidateOrder;
-            document.getElementById('marked-boxes').textContent = markedBoxes;
+            document.getElementById('marked-boxes').textContent = JSON.stringify(booleanArray);
             document.getElementById('additional-info').style.display = 'block';
 
             // Hide ballot selection buttons
@@ -127,6 +132,8 @@
 </head>
 <body>
     <h2>Three Ballot Voting System</h2>
+
+    <a href="#" class="help-link" onclick="window.open('/instructions', '_blank')">Three-Ballot Voting Instructions</a>
 
     <div id="hey">Instruction Picture</div>
 
