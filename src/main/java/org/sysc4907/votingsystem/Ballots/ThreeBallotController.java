@@ -18,7 +18,6 @@ public class ThreeBallotController {
         List<Map<String, Object>> attributes = threeBallot.getBallotAttributes();
         model.addAttribute("attributes", attributes);
         model.addAttribute("threeBallot", threeBallot);
-        model.addAttribute("message", "hey");
         model.addAttribute("firstBallotMarks", threeBallot.getFirstBallot().getMarkValues());
         model.addAttribute("secondBallotMarks", threeBallot.getSecondBallot().getMarkValues());
         model.addAttribute("thirdBallotMarks", threeBallot.getThirdBallot().getMarkValues());
