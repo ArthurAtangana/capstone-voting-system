@@ -24,10 +24,8 @@
             receiptButtonContainer.style.display = 'flex'; // Ensure 'flex' for proper centering
         }
 
-        function finalizeReceipt(ballotID, candidateOrder) {
+        function finalizeReceipt() {
             // Hide all ballots except the selected one
-            console.log(ballotID);
-            console.log(candidateOrder);
             const selectedBallotNumber = document.querySelector('.receipt-button[style*="background: rgb(69, 160, 73);"]').id.slice(-1);
             const ballotColumns = document.querySelectorAll('td:nth-child(n+2)');
             ballotColumns.forEach((column, index) => {
@@ -179,7 +177,7 @@
 
     <!-- Button to finalize receipt -->
     <div class="button-container" id="receipt-button-container" style="display: none;">
-        <button id="finalize-receipt-button" class="finalize-button tooltip" onclick="finalizeReceipt(${threeBallot.getFirstBallot().getId()}, ${threeBallot.getFirstBallot().getCandidateOrder()})" disabled data-tooltip="Must select ballot first" autocomplete="off">Submit Ballot</button>
+        <button id="finalize-receipt-button" class="finalize-button tooltip" onclick="finalizeReceipt()" disabled data-tooltip="Must select ballot first" autocomplete="off">Submit Ballot</button>
     </div>
 </body>
 </html>
