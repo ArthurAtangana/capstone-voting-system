@@ -21,6 +21,20 @@ public class ThreeBallotController {
         List<Map<String, Object>> attributes = threeBallot.getBallotAttributes();
         model.addAttribute("attributes", attributes);
 
+        for (Map<String, Object> attribute : attributes) {
+            System.out.println("Ballot: ");
+            for (Map.Entry<String, Object> entry : attribute.entrySet()) {
+                // Print the markableBoxes array in a readable format
+                if (entry.getKey().equals("markableBoxes")) {
+                    boolean[] markValues = (boolean[]) entry.getValue(); // Assuming it's a boolean array
+                    String marksReadable = Arrays.toString(markValues); // Converts the array to a string representation
+                    System.out.println("Markable Boxes: " + marksReadable);
+                } else {
+                    System.out.println(entry.getKey() + ": " + entry.getValue());
+                }
+            }
+        }
+
         model.addAttribute("message", "hey");
         model.addAttribute("firstBallotMarks", threeBallot.getFirstBallot().getMarkValues());
         model.addAttribute("secondBallotMarks", threeBallot.getSecondBallot().getMarkValues());

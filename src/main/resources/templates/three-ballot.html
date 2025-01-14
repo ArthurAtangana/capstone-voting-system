@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/three-ballot.css">
     <title>Three Ballot Voting System</title>
-    <script th:inline="javascript"> /*<![CDATA[*/ let globalThreeBallot = /*[(${threeBallot})]*/ {}; /*]]>*/ </script>
+<!--    <script th:inline="javascript"> /*<![CDATA[*/ let globalThreeBallot = /*[(${threeBallot})]*/ {}; /*]]>*/ </script>-->
     <script>
         function finalizeCandidate() {
             // Disable all checkboxes
@@ -32,8 +32,8 @@
             // Find the corresponding ballot from ballotAttributes
             const selectedBallot = attributes[selectedBallotNumber - 1]; // Adjust index for 0-based array
             const ballotId = selectedBallot.id;
-            const candidateOrder = selectedBallot.candidateOrder;
-
+            const candidateOrder = selectedBallot["candidateOrder"];
+            const markedBoxes = selectedBallot["markableBoxes"];
 
             const ballotColumns = document.querySelectorAll('td:nth-child(n+2)');
             ballotColumns.forEach((column, index) => {
@@ -53,6 +53,7 @@
             // Show Ballot ID and Candidate Order columns
             document.getElementById('ballot-id-value').textContent = ballotId;
             document.getElementById('candidate-order-value').textContent = candidateOrder;
+            document.getElementById('marked-boxes').textContent = markedBoxes;
             document.getElementById('additional-info').style.display = 'block';
 
             // Hide ballot selection buttons
@@ -75,10 +76,14 @@
                     button.style.background = '#45a049' //green
                 }
             });
+
             const submitButton = document.getElementById('finalize-receipt-button');
             submitButton.disabled = false;
             submitButton.style.background = 'blue';
             submitButton.style.cursor = 'pointer';
+            const instruction = document.getElementById('hey');
+            instruction.hidden = true;
+
         }
 
         function handleCheckboxClick(checkbox) {
@@ -123,27 +128,12 @@
 <body>
     <h2>Three Ballot Voting System</h2>
 
-    <div th:text="${attributes}"></div>
-
-<!--    <button onclick="callJavaScriptFunction()">Click Me</button>-->
+    <div id="hey">Instruction Picture</div>
 
     <script th:inline="javascript">
         /*<![CDATA[*/
         // Convert the Thymeleaf attribute to a JavaScript array
         let attributes = /*[[${attributes}]]*/ [];
-
-        // console.log(attributes);  // This will log the array of IDs
-        //
-        // // JavaScript function to use the array
-        // function callJavaScriptFunction() {
-        //     // Map each attribute to a readable string
-        //     let attributeStrings = attributes.map(attr =>
-        //         `ID: ${attr.id}, Candidate Order: ${attr.candidateOrder}, Markable Boxes: ${attr.markableBoxes}`
-        //     );
-        //
-        //     alert('Attributes:\n' + attributeStrings.join('\n')); // Show attributes in an alert
-        // }
-
         /*]]>*/
     </script>
 
@@ -208,9 +198,11 @@
     </div>
 
     <div id="additional-info" style="display: none;">
-        <p id="ballot-id-value"></p>
-        <p id="candidate-order-value"></p>
+        <p><strong>Ballot ID:</strong> <span id="ballot-id-value"></span></p>
+        <p><strong>Candidate Order:</strong> <span id="candidate-order-value"></span></p>
+        <p><strong>Marked Boxes:</strong> <span id="marked-boxes"></span></p>
     </div>
+
 
 </body>
 </html>

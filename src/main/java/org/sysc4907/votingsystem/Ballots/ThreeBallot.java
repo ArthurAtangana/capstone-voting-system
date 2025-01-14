@@ -81,13 +81,4 @@ public class ThreeBallot {
         return ballotsData;
     }
 
-//    @Override
-//    public String toString() {
-//        return "ThreeBallot{" +
-//                "firstBallotId=" + firstBallot.getId() +
-//                ", secondBallotId=" + secondBallot.getId() +
-//                ", thirdBallotId=" + thirdBallot.getId() +
-//                ", candidateList=" + candidateList +
-//                '}';
-//    }
 }
