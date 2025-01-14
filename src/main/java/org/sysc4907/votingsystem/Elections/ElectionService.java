@@ -1,5 +1,6 @@
 package org.sysc4907.votingsystem.Elections;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,16 +24,11 @@ public class ElectionService {
         this.accountService = accountService;
     }
 
-    public AccountService getAccountService() {
-        return accountService;
-    }
-
     public boolean createElection(ElectionForm electionForm) {
         election = new Election(electionForm.getStartDateTime(), electionForm.getEndDateTime(), electionForm.getName(), candidatesList, voterKeysList);
         accountService.initAccountService(new HashSet<>(voterKeysList));
         return true;
     }
-
     /**
      * Returns current Election object (singleton).
      * @return Election
@@ -42,6 +38,19 @@ public class ElectionService {
             System.out.println("Election has not been configured yet.");
         }
         return election;
+    }
+
+    /**
+     * Should strictly be using validateAndConfigurePoll() to set election!
+     * Only use for testing purposes.
+     * @param election to configure for the application
+     */
+    public void setElection(Election election) {
+        this.election = election;
+    }
+
+    public AccountService getAccountService() {
+        return accountService;
     }
     public boolean electionIsConfigured() {
         return election != null;
@@ -141,8 +150,6 @@ public class ElectionService {
         }
         return keysList;
     }
-
-
 }
 
 

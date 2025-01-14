@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Details</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0fdf4; /* Soft green background */
+            color: #2e7d32;
+            display: unset;
+        }
+        header {
+            padding: 15px;
+            text-align: center;
+            background: #a2eca5;
+            color: #336e33;
+            font-size: 30px;
+            min-height: 40px;
+        }
+        .home-btn {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: fit-content;
+        }
+
+        .user-details {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: fit-content;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin: 20px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #2e7d32;
+        }
+
+        h1 {
+            margin-top: 50px;
+            font-size: xxx-large;
+        }
+
+        h2 {
+            margin: 20px 0 10px;
+        }
+
+        /* Table Styling */
+        table {
+            width: 90%;
+            margin: 20px auto 20px auto;
+            border-collapse: collapse;
+            background-color: #ffffff; /* White background for contrast */
+            border: 1px solid #c8e6c9; /* Soft green border */
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        table th, table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0f2f1;
+        }
+
+        table th {
+            background-color: #66bb6a; /* Medium green */
+            color: white;
+            text-transform: uppercase;
+        }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Button Styling */
+        button {
+            display: block;
+            margin: 20px 20px;
+            padding: 10px 20px;
+            background-color: #66bb6a; /* Green button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #43a047; /* Darker green on hover */
+        }
+        .details-container {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            justify-content: center;
+            width: 50%;
+            height: 100%;
+            margin: auto;
+        }
+
+        .graph-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-content: center;
+            justify-content: center;
+            align-items: center;
+
+            background-color: #b5edc2;
+            border-radius: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            gap: 20px;
+        }
+        .chartBox {
+            width: 400px;
+            padding: 20px;
+            border-radius: 20px;
+            border: solid 3px rgb(82, 175, 82);
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button th:if="${isLoggedIn}" class="home-btn" onclick="window.location.href='/home'">Back To Elections</button>
+        <button th:if="${!isLoggedIn}" class="home-btn" onclick="window.location.href='/home'">Login/Register</button>
+        <div class="user-details" th:if="${isLoggedIn}">
+            <img src="/images/user_icon.png" style="width=25px;height=25px">
+            <p th:text="${username}"></p>
+        </div>
+
+        <h1 th:if="${election}" th:text="|Election Details: ${election.NAME}|"></h1>
+        <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
+    </header>
+
+    <div th:if="${election}" class="details-container">
+        <div th:if="${currentCountdown}">
+            <h2 th:text="|Starts in ${currentCountdown}|"></h2>
+        </div>
+
+        <table>
+            <tr>
+                <th>Start</th>
+                <td th:text="${formattedStart}"></td>
+            </tr>
+            <tr>
+                <th>End</th>
+                <td th:text="${formattedEnd}"></td>
+            </tr>
+            <tr>
+                <th>Candidates</th>
+                <td th:text="${#strings.listJoin(election.getCandidates(), ', ')}"></td>
+            </tr>
+            <tr>
+                <th># of Eligible Voters</th>
+                <td th:text="${election.getNumberOfVoterKeys()}"></td>
+            </tr>
+            <tr th:if="!${currentCountdown}">
+                <th># of Votes</th>
+                <td th:text="${election.getNumberOfVotes()}"></td>
+            </tr>
+        </table>
+
+        <button th:if="${isLoggedIn} and !${currentCountdown} and !${postElection}" onclick="window.location.href='/threeBallot'" >Cast Your Vote</button>
+
+        <div class="poll-results-container" th:if="${postElection}">
+            <h2>Poll Results</h2>
+            <div class="graph-container">
+                <div class="chartBox">
+                    <canvas id="barChart"></canvas>
+                </div>
+                <div class="chartBox">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    /* Check if the election object is defined */
+    var candidates = /*[[${election != null ? election.getVotingResults() : {}}]]*/;
+
+    if (Object.keys(candidates).length > 0) {
+        // Extract candidate names and vote tallies
+        var candidateNames = Object.keys(candidates);
+        var voteTallies = Object.values(candidates);
+
+        // Now you can use candidateNames and voteTallies in your charts
+        console.log(candidateNames);  // Candidate names
+        console.log(voteTallies);     // Vote tallies
+    } else {
+        console.warn("Election data is not available.");
+    }
+    /*]]>*/
+</script>
+
+<script>
+
+    // Bar Chart configuration
+    var barChartContext = document.getElementById('barChart').getContext('2d');
+    var barChart = new Chart(barChartContext, {
+        type: 'bar',
+        data: {
+            labels: candidateNames,
+            datasets: [{
+                label: 'Votes',
+                data: voteTallies,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            aspectRatio: 1,
+            indexAxis: 'y',
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Pie Chart configuration
+    var pieChartContext = document.getElementById('pieChart').getContext('2d');
+    var pieChart = new Chart(pieChartContext, {
+        type: 'pie',
+        data: {
+            labels: candidateNames,
+            datasets: [{
+                label: 'Votes',
+                data: voteTallies,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        }
+    });
+</script>
+</html>
