@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/three-ballot.css">
     <title>Three Ballot Voting System</title>
-<!--    <script th:inline="javascript"> /*<![CDATA[*/ let globalThreeBallot = /*[(${threeBallot})]*/ {}; /*]]>*/ </script>-->
     <script>
         function finalizeCandidate() {
             // Disable all checkboxes
@@ -69,6 +68,10 @@
             const finalizeReceiptButton = document.getElementById('finalize-receipt-button');
             finalizeReceiptButton.style.display = 'none';
 
+            // Hide the help link
+            const helpLink = document.querySelector('.help-link');
+            helpLink.style.display = 'none';
+
             alert("Ballots cast to the blockchain");
         }
 
@@ -86,9 +89,6 @@
             submitButton.disabled = false;
             submitButton.style.background = 'blue';
             submitButton.style.cursor = 'pointer';
-            const instruction = document.getElementById('hey');
-            instruction.hidden = true;
-
         }
 
         function handleCheckboxClick(checkbox) {
@@ -132,10 +132,6 @@
 </head>
 <body>
     <h2>Three Ballot Voting System</h2>
-
-    <a href="#" class="help-link" onclick="window.open('/instructions', '_blank')">Three-Ballot Voting Instructions</a>
-
-    <div id="hey">Instruction Picture</div>
 
     <script th:inline="javascript">
         /*<![CDATA[*/
@@ -208,8 +204,11 @@
         <p><strong>Ballot ID:</strong> <span id="ballot-id-value"></span></p>
         <p><strong>Candidate Order:</strong> <span id="candidate-order-value"></span></p>
         <p><strong>Marked Boxes:</strong> <span id="marked-boxes"></span></p>
+        <button id="downloadReceipt" class="button">Download Receipt</button>
+        <button id="emailReceipt" class="button">Email Receipt</button>
     </div>
 
+    <a href="#" class="help-link" onclick="window.open('/instructions', '_blank')" style="margin-top: 100px;">Three-Ballot Voting Instructions</a>
 
 </body>
 </html>
