@@ -52,4 +52,9 @@ public class ThreeBallotController {
         model.addAttribute("thirdBallotMarks", threeBallot.getThirdBallot().getMarkValues());
         return "three-ballot";
     }
+
+    @GetMapping("/instructions")
+    public String showInstructionsPage() {
+        return "instructions";
+    }
 }
