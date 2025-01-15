@@ -134,10 +134,7 @@
     <h2>Three Ballot Voting System</h2>
 
     <script th:inline="javascript">
-        /*<![CDATA[*/
-        // Convert the Thymeleaf attribute to a JavaScript array
-        let attributes = /*[[${attributes}]]*/ [];
-        /*]]>*/
+        let attributes = [[${attributes}]];
     </script>
 
     <table>
