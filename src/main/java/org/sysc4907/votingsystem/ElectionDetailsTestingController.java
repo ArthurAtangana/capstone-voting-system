@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.sysc4907.votingsystem.Elections.Election;
+import org.sysc4907.votingsystem.Elections.ElectionForm;
 import org.sysc4907.votingsystem.Elections.ElectionService;
 
 import java.time.LocalDate;
@@ -43,36 +44,51 @@ public class ElectionDetailsTestingController {
         List<String> candidateList = Arrays.asList("candidateX", "candidateY", "candidateZ");
         Set<Integer> keys =  new HashSet<>(Arrays.asList(123,456, 789));
         LocalDate today = LocalDate.now();
+        String name;
+        LocalDate startDate;
+        LocalTime startTime;
+        LocalDate endDate;
+        LocalTime endTime;
+
         switch (type) {
             case "past":
-                election =  new Election (
-                        LocalDateTime.of(today.minusDays(5), LocalTime.of(9, 0)),
-                        LocalDateTime.of(today.minusDays(3), LocalTime.of(17, 0)),
-                        "Past Election",
-                        candidateList,
-                        keys);
+                name = "Past Election";
+                startDate = today.minusDays(5);
+                startTime = LocalTime.of(9, 0);
+                endDate = today.minusDays(3);
+                endTime = LocalTime.of(17, 0);
                 break;
             case "ongoing":
-                election =  new Election (
-                        LocalDateTime.of(today.minusDays(1), LocalTime.of(9, 0)),
-                        LocalDateTime.of(today.plusDays(1), LocalTime.of(17, 0)),
-                        "Ongoing Election",
-                        candidateList,
-                        keys);
+                name = "Ongoing Election";
+                startDate = today.minusDays(1);
+                startTime = LocalTime.of(9, 0);
+                endDate = today.plusDays(1);
+                endTime = LocalTime.of(17, 0);
                 break;
             case "upcoming":
-                election =  new Election (
-                        LocalDateTime.of(today.plusDays(5), LocalTime.of(9, 0)),
-                        LocalDateTime.of(today.plusDays(6), LocalTime.of(17, 0)),
-                        "Future Election",
-                        candidateList,
-                        keys);
+                name = "Future Election";
+                startDate = today.plusDays(5);
+                startTime = LocalTime.of(9, 0);
+                endDate = today.plusDays(6);
+                endTime = LocalTime.of(17, 0);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown election type");
         }
-        election.setNumberOfVotes(207402);
-        electionService.setElection(election);
+
+        ElectionForm electionForm = new ElectionForm();
+        electionForm.setName(name);
+        electionForm.setStartDate(startDate);
+        electionForm.setStartTime(startTime);
+        electionForm.setEndDate(endDate);
+        electionForm.setEndTime(endTime);
+        electionService.validateCandidates(String.join("\n", candidateList), null);
+        electionService.setVoterKeysList(keys); // used to bypass validateVoterKeys since it requires a MultiPartFile
+        electionService.createElection(electionForm);
+
+        if (! type.equals("upcoming")) {
+            electionService.getElection().setNumberOfVotes(207402);
+        }
 
         // Redirect to the election details page
         return "redirect:/view-election-details";

@@ -41,12 +41,22 @@ public class ElectionService {
     }
 
     /**
-     * Should strictly be using validateAndConfigurePoll() to set election!
+     * Should strictly be using createElection() to set election!
      * Only use for testing purposes.
      * @param election to configure for the application
      */
     public void setElection(Election election) {
+        System.out.println("warning: only use setter for election if using /test-elections to configure the elections");
         this.election = election;
+    }
+    /**
+     * Should strictly be using validateVoterKeys() to set voterKeysList!
+     * Only use for testing purposes.
+     * @param voterKeysList of registration keys
+     */
+    public void setVoterKeysList(Set<Integer> voterKeysList) {
+        System.out.println("warning: only use setter for voterKeysList if using /test-elections to configure the elections");
+        this.voterKeysList = voterKeysList;
     }
 
     public AccountService getAccountService() {
