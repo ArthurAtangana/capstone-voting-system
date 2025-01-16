@@ -1,6 +1,7 @@
 package org.sysc4907.votingsystem.backend;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/fabric")
+@ConditionalOnProperty(name = "fabric.enabled", havingValue = "true")
 public class FabricController {
 
     @Autowired

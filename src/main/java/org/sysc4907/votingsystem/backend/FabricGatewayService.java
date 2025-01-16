@@ -8,6 +8,7 @@ import io.grpc.TlsChannelCredentials;
 import org.hyperledger.fabric.client.*;
 
 import org.hyperledger.fabric.client.identity.*;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@ConditionalOnProperty(name = "fabric.enabled", havingValue = "true")
 public class FabricGatewayService {
     private static final String MSP_ID = "Org1MSP";
     private static final String CHANNEL_NAME = "mychannel";
