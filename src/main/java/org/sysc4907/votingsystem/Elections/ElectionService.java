@@ -7,8 +7,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.sysc4907.votingsystem.Accounts.AccountService;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 
 /**
  * Service class responsible for logic of processing poll configuration.
@@ -19,9 +22,23 @@ public class ElectionService {
     private final AccountService accountService;
     private Set<Integer> voterKeysList;
     private List<String> candidatesList;
+    private final List<java.security.PrivateKey> privateOrderKeys = new ArrayList<>();
+    private final List<java.security.PublicKey> publicOrderKeys = new ArrayList<>();
 
     public ElectionService(AccountService accountService) {
         this.accountService = accountService;
+
+        KeyPairGenerator keyGen = null;
+        try {
+            keyGen = KeyPairGenerator.getInstance("RSA");
+            keyGen.initialize(2048); // Key size (2048 or higher is recommended)
+            KeyPair keyPair = keyGen.generateKeyPair();
+            privateOrderKeys.add(keyPair.getPrivate());
+            publicOrderKeys.add(keyPair.getPublic());
+
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean createElection(ElectionForm electionForm) {
@@ -150,6 +167,9 @@ public class ElectionService {
         }
         return keysList;
     }
+
+    public List<java.security.PublicKey> getPublicOrderKeys() {return publicOrderKeys;}
+    public List<java.security.PrivateKey> getPrivateOrderKeys() {return privateOrderKeys;}
 }
 
 
