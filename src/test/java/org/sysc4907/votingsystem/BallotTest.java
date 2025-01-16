@@ -20,8 +20,7 @@ public class BallotTest {
 
     @BeforeEach
     public void setUp() {
-        KeyPairGenerator keyGen = null;
-        ThreeBallot threeBallot;
+        KeyPairGenerator keyGen;
         try {
             keyGen = KeyPairGenerator.getInstance("RSA");
             keyGen.initialize(2048); // Key size (2048 or higher is recommended)
@@ -71,7 +70,7 @@ public class BallotTest {
     }
 
     @Test
-    public void testOrderObfuscation() throws Exception {
+    public void testOrderObfuscation() {
         int order = 132;
         int moduloNumber = 555;
         int obfuscated = order + 555 * (int)(Math.random() * 10);

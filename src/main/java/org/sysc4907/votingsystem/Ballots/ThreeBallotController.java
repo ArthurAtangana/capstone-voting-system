@@ -18,7 +18,7 @@ public class ThreeBallotController {
 
     @GetMapping("/threeBallotTest")
     public String threeBallotTest(Model model) {
-        KeyPairGenerator keyGen = null;
+        KeyPairGenerator keyGen;
         ThreeBallot threeBallot;
         try {
             keyGen = KeyPairGenerator.getInstance("RSA");

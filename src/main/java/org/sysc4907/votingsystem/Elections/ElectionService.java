@@ -28,7 +28,7 @@ public class ElectionService {
     public ElectionService(AccountService accountService) {
         this.accountService = accountService;
 
-        KeyPairGenerator keyGen = null;
+        KeyPairGenerator keyGen;
         try {
             keyGen = KeyPairGenerator.getInstance("RSA");
             keyGen.initialize(2048); // Key size (2048 or higher is recommended)
