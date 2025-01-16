@@ -22,21 +22,19 @@ Everything needed for the hyperledger fabric network and chaincode can be found 
 
 ### Installation:
 
-- In a directory at the same level of this project, clone the capstone hyperledger repository and follow the instructions from that repostitory.
+- In a directory at the same level of this project, clone the hyperledger repository and follow the instructions from that repostitory.
+- To run the app without the network, set the flag "fabric.enabled" to false in application.properties
 
 #### Directory structure
 |- capstone-voting-system
     |- src
     |- README.md
-    |- fabric-start.sh
     |- ...
 |- hyperledger
     |- asset-transfer-basic
     |- test-network
     |- README.md
+    |- fabric-start.sh
     |- install-fabric.sh
-
-### running hyperledger
-
-- in this project, run the fabric-start.sh script which should bring up the hyperledger network  with 2 peers and deploy the chaincode to it.
+    |- ...
 
