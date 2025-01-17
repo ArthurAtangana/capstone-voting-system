@@ -27,18 +27,13 @@ public class ThreeBallot {
             this.candidateList.add(candidates.get(Character.getNumericValue(order.charAt(i)) - 1));
         }
 
-        // TODO: call id generator
-        int id1 = 0; // returned by generator
-        int id2 = 0; // returned by generator
-        int id3 = 0; // returned by generator
-
         // call generator to randomly mark each candidate once
         PremarkGenerator pGen = new PremarkGenerator(numCandidates);
         boolean[][] premarked = pGen.generateMarks();
 
-        firstBallot = new Ballot(id1, numCandidates, candidateOrder, premarked[0]);
-        secondBallot = new Ballot(id2, numCandidates, candidateOrder, premarked[1]);
-        thirdBallot = new Ballot(id3, numCandidates, candidateOrder, premarked[2]);
+        firstBallot = new Ballot(numCandidates, candidateOrder, premarked[0]);
+        secondBallot = new Ballot(numCandidates, candidateOrder, premarked[1]);
+        thirdBallot = new Ballot(numCandidates, candidateOrder, premarked[2]);
     }
 
     public Ballot selectReceipt(int ballotNumber) {

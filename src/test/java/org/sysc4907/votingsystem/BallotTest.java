@@ -11,13 +11,12 @@ public class BallotTest {
 
     @BeforeEach
     public void setUp() {
-        b1 = new Ballot(1, 3, 231, new boolean[]{false, false, true});
+        b1 = new Ballot( 3, 231, new boolean[]{false, false, true});
 
     }
 
     @Test
     public void testBallot() {
-        assertEquals(b1.getId(), 1);
         assertEquals(b1.getCandidateOrder(), 231);
         assertEquals(3, b1.getMarkValues().length);
         assertFalse(b1.getMarkValues()[0]);

@@ -5,8 +5,9 @@ public class Ballot {
     private final Marks[] markableBoxes; // true if voting for candidate in that row, false otherwise.
     private final int candidateOrder; // plain text to start but will need to be encrypted in the future.
 
-    public Ballot(int id, int numberOfCandidates, int candidateOrder, boolean[] premarkedBoxes) {
-        this.id = id;
+    public Ballot(int numberOfCandidates, int candidateOrder, boolean[] premarkedBoxes) {
+        // this isn't big enough for real use but a sufficiently large random number would ensure uniqueness and non-sequential ids
+        this.id = (int)(Math.random() * 9999999);
         markableBoxes = new Marks[numberOfCandidates];
         this.candidateOrder = candidateOrder;
         for (int i = 0; i < premarkedBoxes.length; i++) {
