@@ -72,7 +72,21 @@
             const helpLink = document.querySelector('.help-link');
             helpLink.style.display = 'none';
 
-            alert("Ballots cast to the blockchain");
+            fetch('/submit-ballot-transactions', {
+                method: 'POST',
+                body: {"ballot1": "test1", // TODO change the values to contain actual ballot data
+                    "ballot2": "test2",
+                    "ballot3": "test3"},
+            })
+                .then(response => response.json())  // assuming the server returns JSON
+                .then(data => {
+                    console.log('Success:', data);
+                    // Handle success - update DOM without reloading
+                    alert("Ballots cast to the blockchain");
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
         }
 
         function selectBallot(ballotNumber) {
@@ -131,7 +145,8 @@
 
 </head>
 <body>
-    <h2>Three Ballot Voting System</h2>
+    <h1 th:text="${electionName}"></h1>
+    <h2>Three Ballot Candidate Selection</h2>
 
     <script th:inline="javascript">
         let attributes = [[${attributes}]];
@@ -206,6 +221,23 @@
     </div>
 
     <a href="#" class="help-link" onclick="window.open('/instructions', '_blank')" style="margin-top: 100px;">Three-Ballot Voting Instructions</a>
-
+    <div th:if="!${validKey}" class="keyModal">
+        <div class="pop-up-container">
+            <h2>Please Enter Your Signing Key</h2>
+            <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
+            <form id="signingKeyForm" th:action="@{/verify-signing-key}" method="post">
+                <div class="form-group">
+                    <textarea class="key-input" required
+                              name="key"
+                              id="signingKeyInput"
+                              placeholder="Enter your signing key here"
+                              maxlength="226"
+                    ></textarea>
+                    <button type="submit" id="submit-key-btn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
+
 </html>

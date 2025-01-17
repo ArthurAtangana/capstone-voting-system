@@ -64,7 +64,7 @@ class LirisiCommandExecutorTest {
             //printFileContents(publicKeyFile);
 
             // Fold single public key into file
-            assertDoesNotThrow(() -> executor.genFoldedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory));
+            assertDoesNotThrow(() -> executor.genAggregatedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory));
 
             // Sign a message
             assertThrows(RuntimeException.class, () -> executor.signMessage(message,  privateKeyFile, foldedPublicKeysFile, signatureFile)); // exepecting error due to insufficient number of public keys
@@ -90,8 +90,8 @@ class LirisiCommandExecutorTest {
             assertDoesNotThrow(()->executor.genPublicKey(privateKeyFile, publicKeyFile));
             //printFileContents(publicKeyFile);
 
-            // Fold single public key into file
-            assertDoesNotThrow(() -> executor.genFoldedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory));
+            // Create aggregated file of all public keys
+            assertDoesNotThrow(() -> executor.genAggregatedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory));
 
             // Sign a message
             assertDoesNotThrow(() -> executor.signMessage(message,  privateKeyFile, foldedPublicKeysFile, signatureFile));
@@ -116,8 +116,8 @@ class LirisiCommandExecutorTest {
             // Generate public key from private key
             executor.genPublicKey(privateKeyFile, publicKeyFile);
 
-            // Fold all public keys into a single file
-            assertDoesNotThrow(() -> executor.genFoldedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory));
+            // Create aggregated file of all public keys
+            assertDoesNotThrow(() -> executor.genAggregatedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory));
             assertTrue(FileHelper.getFileContents(foldedPublicKeysFile).contains("NumberOfKeys: 10"));
 
             // Sign a message
@@ -152,8 +152,8 @@ class LirisiCommandExecutorTest {
             System.out.println("Done generating public keys...");
             executor.debugMode = true;
 
-            // Fold all public keys into a single file
-            assertDoesNotThrow(() -> executor.genFoldedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory));
+            // Create aggregated file of all public keys
+            assertDoesNotThrow(() -> executor.genAggregatedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory));
             assertTrue(FileHelper.getFileContents(foldedPublicKeysFile).contains("NumberOfKeys: 101"));
 
             // Sign a message
@@ -180,8 +180,8 @@ class LirisiCommandExecutorTest {
             // Generate public key from private key
             executor.genPublicKey(privateKeyFile, publicKeyFile);
 
-            // Fold all public keys into a single file
-            executor.genFoldedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory);
+            // Create aggregated file of all public keys
+            executor.genAggregatedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory);
 
             // Sign a message
             executor.signMessage(message, privateKeyFile, foldedPublicKeysFile, signatureFile);
@@ -192,9 +192,9 @@ class LirisiCommandExecutorTest {
             // Create another dummy public key
             generateDummyPublicKeys(new String[]{"test2"});
 
-            // Generate new folded public keys fle
+            // Create new aggregated file of all public keys
             FileHelper.deleteFileIfExists(foldedPublicKeysFile);
-            executor.genFoldedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory);
+            executor.genAggregatedPublicKeysFile(foldedPublicKeysFile, publicKeysDirectory);
             assertTrue(FileHelper.getFileContents(foldedPublicKeysFile).contains("NumberOfKeys: 3"));
 
             // Verify the signature with new folded public keys file
@@ -224,8 +224,8 @@ class LirisiCommandExecutorTest {
             executor.genPublicKey(privateKeyFile, publicKeysDirectory + "/" + name + ".pem");
             FileHelper.deleteFileIfExists(privateKeyFile); // we don't need the private keys
         }
-
     }
+
     /**
      * Deletes all public keys in a "public-keys" directory.
      * @throws IOException

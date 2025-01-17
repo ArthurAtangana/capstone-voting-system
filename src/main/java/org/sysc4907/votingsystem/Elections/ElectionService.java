@@ -1,12 +1,13 @@
 package org.sysc4907.votingsystem.Elections;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 import org.sysc4907.votingsystem.Accounts.AccountService;
+import org.sysc4907.votingsystem.LirisiCommandExecutor;
 
 import java.io.IOException;
+
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -27,8 +28,12 @@ public class ElectionService {
     public boolean createElection(ElectionForm electionForm) {
         election = new Election(electionForm.getStartDateTime(), electionForm.getEndDateTime(), electionForm.getName(), candidatesList, voterKeysList);
         accountService.initAccountService(new HashSet<>(voterKeysList));
+        // generate public & private keys
+        LirisiCommandExecutor executor = new LirisiCommandExecutor();
+        executor.generateRingSignatureKeys(voterKeysList.size(), LirisiCommandExecutor.DEFAULT_LIRISI_GENERATED_DIR);
         return true;
     }
+
     /**
      * Returns current Election object (singleton).
      * @return Election
@@ -40,15 +45,6 @@ public class ElectionService {
         return election;
     }
 
-    /**
-     * Should strictly be using createElection() to set election!
-     * Only use for testing purposes.
-     * @param election to configure for the application
-     */
-    public void setElection(Election election) {
-        System.out.println("warning: only use setter for election if using /test-elections to configure the elections");
-        this.election = election;
-    }
     /**
      * Should strictly be using validateVoterKeys() to set voterKeysList!
      * Only use for testing purposes.
