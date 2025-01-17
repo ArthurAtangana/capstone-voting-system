@@ -82,7 +82,22 @@
                 .then(data => {
                     console.log('Success:', data);
                     // Handle success - update DOM without reloading
-                    alert("Ballots cast to the blockchain");
+                    fetch('/fabric/submit', {
+                        method: 'POST',
+                        body: {
+                            "function": "CreateBallot",
+                            "args": ["vote1", "[true,false,false]", "12", "signature"]}, // TODO change the values to contain actual ballot data
+                    })
+                        .then(response => response.json())  // assuming the server returns JSON
+                        .then(data => {
+                            console.log('Success:', data);
+                            // Handle success - update DOM without reloading
+
+                            alert("Ballots cast to the blockchain");
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
                 })
                 .catch((error) => {
                     console.error('Error:', error);
