@@ -72,59 +72,22 @@ public class ThreeBallotController {
         return "redirect:/threeBallot";
     }
 
-//    @PostMapping("submit-ballot-transactions")
-//    @ResponseBody
-//    public ResponseEntity<String> submitBallotTransactions(@RequestParam("ballot1") String ballot1Data, @RequestParam("ballot2")  String ballot2Data, @RequestParam("ballot3") String ballot3Data){
-//        /* Ring signature component of the transaction */
-//        String[] ballotData = {ballot1Data, ballot2Data, ballot3Data};
-//
-//        LirisiCommandExecutor executor = new LirisiCommandExecutor();
-//        String signature;
-//        for (String data : ballotData) {
-//            System.out.println(FileHelper.getFileContents(LirisiCommandExecutor.DEFAULT_LIRISI_GENERATED_DIR + LirisiCommandExecutor.DEFAULT_SIGNING_KEY_FILENAME));
-//            System.out.println(FileHelper.getFileContents(LirisiCommandExecutor.DEFAULT_LIRISI_GENERATED_DIR + LirisiCommandExecutor.DEFAULT_AGGREGATED_RING_PUBLIC_KEYS_FILENAME));
-//            try {
-//                signature = executor.signMessage(data,
-//                        LirisiCommandExecutor.DEFAULT_LIRISI_GENERATED_DIR + LirisiCommandExecutor.DEFAULT_SIGNING_KEY_FILENAME,
-//                        LirisiCommandExecutor.DEFAULT_LIRISI_GENERATED_DIR + LirisiCommandExecutor.DEFAULT_AGGREGATED_RING_PUBLIC_KEYS_FILENAME,
-//                        "");
-//                System.out.println("Generated signature:\n" + signature);
-//            } catch (Exception e) {
-//                return new ResponseEntity<>("The private key should have been verified prior but we still can't generate a signature.", HttpStatus.BAD_REQUEST);
-//                //throw new RuntimeException("Could not generate signature, despite prior private key verification");
-//            }
-//            System.out.println("ballotData: " + ballot1Data);
-//
-//            // POST to blockchain... // TODO..
-//        }
-//        // Assuming everything works, you can return a success response
-//        return ResponseEntity.ok().body("Ballot submitted successfully");
-//    }
-
-    @PostMapping("submit-ballot-transactions")
+    @PostMapping("/submit-ballot-transactions")
     @ResponseBody
-    public ResponseEntity<String> submitBallotTransactions(@RequestBody Map<String, String> ballots) {
-        String ballot1 = ballots.get("ballot1");
-        String ballot2 = ballots.get("ballot2");
-        String ballot3 = ballots.get("ballot3");
-
-        String[] ballotData = {ballot1, ballot2, ballot3};
-
+    public ResponseEntity<String> submitBallotTransactions(@RequestBody Map<String, Object> payload) {
+        // Extract the 'ballot' field from the JSON payload
+        String ballotData = (String) payload.get("ballot");
         LirisiCommandExecutor executor = new LirisiCommandExecutor();
         String signature;
-        for (String data : ballotData) {
-            try {
-                signature = executor.signMessage(data,
-                        LirisiCommandExecutor.DEFAULT_LIRISI_GENERATED_DIR + LirisiCommandExecutor.DEFAULT_SIGNING_KEY_FILENAME,
-                        LirisiCommandExecutor.DEFAULT_LIRISI_GENERATED_DIR + LirisiCommandExecutor.DEFAULT_AGGREGATED_RING_PUBLIC_KEYS_FILENAME,
-                        "");
-                System.out.println("Generated signature:\n" + signature);
-            } catch (Exception e) {
-                return new ResponseEntity<>("The private key should have been verified prior but we still can't generate a signature.", HttpStatus.BAD_REQUEST);
-                //throw new RuntimeException("Could not generate signature, despite prior private key verification");
-            }
+        try {
+            signature = executor.signMessage(ballotData,
+                    LirisiCommandExecutor.DEFAULT_LIRISI_GENERATED_DIR + LirisiCommandExecutor.DEFAULT_SIGNING_KEY_FILENAME,
+                    LirisiCommandExecutor.DEFAULT_LIRISI_GENERATED_DIR + LirisiCommandExecutor.DEFAULT_AGGREGATED_RING_PUBLIC_KEYS_FILENAME,
+                    "");
+                System.out.println("Generated signature: successfully\n");
+        } catch (Exception e) {
+            return new ResponseEntity<>("The private key should have been verified prior but we still can't generate a signature.", HttpStatus.BAD_REQUEST);
         }
-        // Process the data
-        return ResponseEntity.ok("Ballots received");
+        return ResponseEntity.ok(signature);
     }
 }

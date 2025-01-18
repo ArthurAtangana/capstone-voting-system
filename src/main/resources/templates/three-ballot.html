@@ -29,10 +29,8 @@
             const selectedBallotNumber = parseInt(
                 document.querySelector('.receipt-button[style*="background: rgb(69, 160, 73);"]').id.slice(-1)
             );
-
             // Initialize an array to store data for all ballots
             const ballotsData = [];
-
             // Loop through all ballot attributes
             attributes.forEach((ballot, index) => {
                 const ballotNumber = index + 1; // Convert index to 1-based numbering
@@ -61,18 +59,60 @@
             return ballotsData;
         }
 
-        function finalizeReceipt() {
+        async function submitAllBallots() {
             const allBallots = processAllBallots();
-            console.log("attributes:" + attributes);
-            console.log("allBallots:" + allBallots);
-            allBallots.forEach((ballot, index) => {
-                console.log(`Ballot ${index + 1}:`);
-                Object.entries(ballot).forEach(([key, value]) => {
-                    console.log(`  ${key}: ${value}`);
-                });
-            });
+            for (const ballot of allBallots) {
+                console.log(JSON.stringify(ballot));
+                try {
+                    // Step 1: Obtain the signature for the ballot
+                    const signatureResponse = await fetch('/submit-ballot-transactions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            ballot: JSON.stringify(ballot)}),
+                    });
 
+                    if (!signatureResponse.ok) {
+                        throw new Error(`Failed to obtain signature: ${signatureResponse.statusText}`);
+                    }
 
+                    const signature = await signatureResponse.text();
+                    console.log(signature);
+
+                    // Step 2: Prepare the payload for the /fabric/submit endpoint
+                    const payload = {
+                        function: 'CreateBallot',
+                        args: [
+                            ballot.ballotId.toString(),
+                            JSON.stringify(ballot.markedBoxes),
+                            ballot.candidateOrder.toString(),
+                            signature,
+                        ],
+                    };
+                    console.log("payload:" + JSON.stringify(payload));
+
+                    // Step 3: Send the signed ballot to the /fabric/submit endpoint
+                    const submitResponse = await fetch('/fabric/submit', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(payload),
+                    });
+                    if (!submitResponse.ok) {
+                        throw new Error(`Failed to submit ballot: ${submitResponse.statusText}`);
+                    }
+                    const result = await submitResponse.json();
+                    console.log(`Ballot ${ballot.ballotId} submitted successfully:`, result);
+                } catch (error) {
+                    console.error(`Error processing ballot ${ballot.ballotId}:`, error);
+                }
+            }
+        }
+
+        function finalizeReceipt() {
             // Hide all ballots except the selected one
             const selectedBallotNumber = document.querySelector('.receipt-button[style*="background: rgb(69, 160, 73);"]').id.slice(-1);
             const booleanArray = [];
@@ -120,53 +160,7 @@
             const helpLink = document.querySelector('.help-link');
             helpLink.style.display = 'none';
 
-            // First POST request
-            fetch('/submit-ballot-transactions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    ballot1: "test1", // TODO change the values to contain actual ballot data
-                    ballot2: "test2",
-                    ballot3: "test3",
-                }),
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.text(); // Assuming the server returns plain text
-                })
-                .then(data => {
-                    console.log('First request success:', data);
-
-                    // Second POST request
-                    return fetch('/fabric/submit', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            "function": "CreateBallot",
-                            "args": ["vote1", "[true,false,false]", "12", "signature"], // TODO: Replace with actual ballot data
-                        }),
-                    });
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json(); // Assuming the server returns JSON
-                })
-                .then(data => {
-                    console.log('Second request success:', data);
-                    alert("Ballots cast and confirmed on the blockchain");
-                })
-                .catch(error => {
-                    console.error('Error during requests:', error);
-                });
-
+            submitAllBallots();
         }
 
         function selectBallot(ballotNumber) {
