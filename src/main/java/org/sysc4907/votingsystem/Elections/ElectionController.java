@@ -78,4 +78,32 @@ public class ElectionController {
         return "election-details";
     }
 
+    @GetMapping("/ledger")
+    public String showElectionLedger(Model model, HttpSession session) {
+
+        String username = (String) session.getAttribute("username");
+
+        model.addAttribute("isLoggedIn", username != null);
+        model.addAttribute("username", username);
+
+        LocalDateTime now = LocalDateTime.now();
+
+        if (electionService.electionIsConfigured()) {
+            Election election = electionService.getElection();
+            model.addAttribute("election", election);
+
+            model.addAttribute("formattedStart", election.START_DATE_TIME.format(DateTimeFormatter.ofPattern("MMMM d, yyyy @ h:mm a")));
+            model.addAttribute("formattedEnd", election.END_DATE_TIME.format(DateTimeFormatter.ofPattern("MMMM d, yyyy @ h:mm a")));
+            model.addAttribute("currentCountdown", election.getElectionCountdown());
+            model.addAttribute("postElection", election.END_DATE_TIME.isBefore(now));
+
+            System.out.println(model.getAttribute("isLoggedIn"));
+            System.out.println(election.END_DATE_TIME);
+
+        } else {
+            model.addAttribute("errorMessage", "No poll has been configured yet!");
+        }
+        return "ledger-all-votes";
+    }
+
 }
