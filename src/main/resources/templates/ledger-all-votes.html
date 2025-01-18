@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Ledger</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0fdf4; /* Soft green background */
+            color: #2e7d32;
+            display: unset;
+        }
+        header {
+            padding: 15px;
+            text-align: center;
+            background: #a2eca5;
+            color: #336e33;
+            font-size: 30px;
+            min-height: 40px;
+        }
+        .home-btn {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: fit-content;
+        }
+
+        .user-details {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: fit-content;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin: 20px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #2e7d32;
+        }
+
+        h1 {
+            margin-top: 50px;
+            font-size: xxx-large;
+        }
+
+        h2 {
+            margin: 20px 0 10px;
+        }
+
+        /* Table Styling */
+        table {
+            width: 90%;
+            margin: 20px auto 20px auto;
+            border-collapse: collapse;
+            background-color: #ffffff; /* White background for contrast */
+            border: 1px solid #c8e6c9; /* Soft green border */
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        table th, table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0f2f1;
+        }
+
+        table th {
+            background-color: #66bb6a; /* Medium green */
+            color: white;
+            text-transform: uppercase;
+        }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Button Styling */
+        button {
+            display: block;
+            margin: 20px 20px;
+            padding: 10px 20px;
+            background-color: #66bb6a; /* Green button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #43a047; /* Darker green on hover */
+        }
+        .details-container {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            justify-content: center;
+            width: 50%;
+            height: 100%;
+            margin: auto;
+        }
+
+        .graph-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-content: center;
+            justify-content: center;
+            align-items: center;
+
+            background-color: #b5edc2;
+            border-radius: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            gap: 20px;
+        }
+        .chartBox {
+            width: 400px;
+            padding: 20px;
+            border-radius: 20px;
+            border: solid 3px rgb(82, 175, 82);
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button th:if="${isLoggedIn}" class="home-btn" onclick="window.location.href='/home'">Back To Elections</button>
+        <button th:if="${!isLoggedIn}" class="home-btn" onclick="window.location.href='/home'">Login/Register</button>
+        <div class="user-details" th:if="${isLoggedIn}">
+            <img src="/images/user_icon.png" style="width=25px;height=25px">
+            <p th:text="${username}"></p>
+        </div>
+
+        <h1 th:if="${election}" th:text="|Election: ${election.NAME}|"></h1>
+        <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
+    </header>
+
+    <div th:if="${election}" class="details-container">
+        <div th:if="${currentCountdown}">
+            <h2 th:text="|Starts in ${currentCountdown}|"></h2>
+        </div>
+
+        <table>
+            <tr>
+                <th>Start</th>
+                <td th:text="${formattedStart}"></td>
+            </tr>
+            <tr>
+                <th>End</th>
+                <td th:text="${formattedEnd}"></td>
+            </tr>
+            <tr>
+                <th>Candidates</th>
+                <td th:text="${#strings.listJoin(election.getCandidates(), ', ')}"></td>
+            </tr>
+            <tr>
+                <th># of Eligible Voters</th>
+                <td th:text="${election.getNumberOfVoterKeys()}"></td>
+            </tr>
+            <tr th:if="!${currentCountdown}">
+                <th># of Votes</th>
+                <td th:text="${election.getNumberOfVotes()}"></td>
+            </tr>
+        </table>
+
+        <!-- TODO: Toggle this line to make ledger available only after election is terminated.
+        <div class="poll-results-container" th:if="${postElection}">
+        -->
+        <div class="ledger-container">
+            <h2>Election Ledger</h2>
+            <table>
+                <tr>
+                    <th>Ballot ID</th>
+                    <th>Ballot Marks</th>
+                    <th>Candidate Order</th>
+                    <th>Ring</th>
+                </tr>
+                <tr>
+                    <td>ballotId</td>
+                    <td>ballotMarks</td>
+                    <td>candidateOrder</td>
+                    <td>ring</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>
+
