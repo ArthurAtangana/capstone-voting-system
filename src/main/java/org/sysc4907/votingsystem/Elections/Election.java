@@ -30,7 +30,7 @@ public class Election {
         NAME = name;
         this.candidates = List.copyOf(candidates);
         this.voterKeys = voterKeys;
-        tallier = new Tally(candidates.size(), voterKeys.size());
+        tallier = new Tally(candidates.size());
         this.candidateOrderGenerator = new CandidateOrderGenerator(candidates.size());
         this.numberOfVotes = 0;
     }
@@ -41,7 +41,7 @@ public class Election {
         NAME = "";
         candidates = new ArrayList<>();
         voterKeys = new HashSet<>();
-        tallier = new Tally(0,0);
+        tallier = new Tally(0);
         candidateOrderGenerator = new CandidateOrderGenerator(0);
     }
 
@@ -55,7 +55,7 @@ public class Election {
         // count votes
 
 
-        int[] FinalTally = tallier.getTallyOfVotes();
+        List<Integer> FinalTally = tallier.getTallyOfVotes();
     }
 
     public void setId(Long id) {

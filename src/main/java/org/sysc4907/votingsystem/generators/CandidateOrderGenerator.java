@@ -14,8 +14,8 @@ public class CandidateOrderGenerator {
     public int generateRandomCandidateOrder() {
         List<Integer> numbers = new ArrayList<>();
 
-        // Add numbers from 1 to n to the list
-        for (int i = 1; i <= numberOfCandidates; i++) {
+        // Add numbers from 0 to n to the list
+        for (int i = 0; i <= numberOfCandidates; i++) {
             numbers.add(i);
         }
 
