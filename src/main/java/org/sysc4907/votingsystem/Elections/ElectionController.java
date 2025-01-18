@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.sysc4907.votingsystem.backend.FabricGatewayService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,6 +29,9 @@ public class ElectionController {
     public ElectionController(ElectionService electionService) {
         this.electionService = electionService;
     }
+
+    @Autowired
+    private FabricGatewayService fabricGatewayService;
 
 
     @GetMapping("/create-election")
@@ -81,6 +85,8 @@ public class ElectionController {
     @GetMapping("/ledger")
     public String showElectionLedger(Model model, HttpSession session) {
 
+        /* Preserve election details here */
+
         String username = (String) session.getAttribute("username");
 
         model.addAttribute("isLoggedIn", username != null);
@@ -103,6 +109,23 @@ public class ElectionController {
         } else {
             model.addAttribute("errorMessage", "No poll has been configured yet!");
         }
+
+        /* GET the ledger and print the whole thing */
+
+        // String holding all contents of ledger (JSON)
+        String ledgerString;
+        // Strings for call to FabricGatewayService
+        String function = "GetAllBallots";
+        String[] args = {};
+        // Populate the ledger string in entirety
+        try {
+            ledgerString = fabricGatewayService.evaluateTransaction(function, args);
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+
+        model.addAttribute("ledgerString", ledgerString);
+
         return "ledger-all-votes";
     }
 

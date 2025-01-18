@@ -142,7 +142,7 @@
             <p th:text="${username}"></p>
         </div>
 
-        <h1 th:if="${election}" th:text="|Election: ${election.NAME}|"></h1>
+        <h1 th:if="${election}" th:text="|Ledger for Election: ${election.NAME}|"></h1>
         <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
     </header>
 
@@ -193,6 +193,12 @@
                     <td>ring</td>
                 </tr>
             </table>
+        </div>
+        <div>
+            <h3>big dirty ledger string</h3>
+            <hr/>
+            <p th:text="${ledgerString}">magic</p>
+            <hr/>
         </div>
     </div>
 
