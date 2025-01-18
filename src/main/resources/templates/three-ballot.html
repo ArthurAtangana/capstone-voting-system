@@ -24,7 +24,55 @@
             receiptButtonContainer.style.display = 'flex'; // Ensure 'flex' for proper centering
         }
 
+        function processAllBallots() {
+            // Identify the selected ballot number
+            const selectedBallotNumber = parseInt(
+                document.querySelector('.receipt-button[style*="background: rgb(69, 160, 73);"]').id.slice(-1)
+            );
+
+            // Initialize an array to store data for all ballots
+            const ballotsData = [];
+
+            // Loop through all ballot attributes
+            attributes.forEach((ballot, index) => {
+                const ballotNumber = index + 1; // Convert index to 1-based numbering
+
+                // Grab ballot ID and candidate order
+                const ballotId = ballot.id;
+                const candidateOrder = ballot.candidateOrder;
+
+                // Find all checkbox elements for this ballot
+                const ballotCheckboxes = document.querySelectorAll(`td:nth-child(${ballotNumber + 1}) .ballot-box`);
+                const markedBoxes = Array.from(ballotCheckboxes).map(checkbox => checkbox.checked);
+
+                // Check if the ballot is selected
+                const isSelected = ballotNumber === selectedBallotNumber;
+
+                // Store the data for this ballot
+                ballotsData.push({
+                    ballotNumber,
+                    ballotId,
+                    candidateOrder,
+                    markedBoxes,
+                    isSelected, // Add a flag to indicate whether this ballot is the selected one
+                });
+            });
+
+            return ballotsData;
+        }
+
         function finalizeReceipt() {
+            const allBallots = processAllBallots();
+            console.log("attributes:" + attributes);
+            console.log("allBallots:" + allBallots);
+            allBallots.forEach((ballot, index) => {
+                console.log(`Ballot ${index + 1}:`);
+                Object.entries(ballot).forEach(([key, value]) => {
+                    console.log(`  ${key}: ${value}`);
+                });
+            });
+
+
             // Hide all ballots except the selected one
             const selectedBallotNumber = document.querySelector('.receipt-button[style*="background: rgb(69, 160, 73);"]').id.slice(-1);
             const booleanArray = [];
