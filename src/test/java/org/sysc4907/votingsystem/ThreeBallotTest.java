@@ -3,6 +3,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.sysc4907.votingsystem.Ballots.Ballot;
 import org.sysc4907.votingsystem.Ballots.ThreeBallot;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,7 +16,7 @@ public class ThreeBallotTest {
 
     @BeforeEach
     public void setUp() {
-        threeBallot = new ThreeBallot(Arrays.asList("foo", "bar", "baz", "qux"));
+        threeBallot = new ThreeBallot(Arrays.asList("foo", "bar", "baz", "qux"), new ArrayList<>());
     }
 
     @Test
@@ -28,21 +30,21 @@ public class ThreeBallotTest {
         assertEquals(4, b3.getMarkValues().length);
 
         // candidate order is 4 digits and contains 1, 2, 3, 4 in any order
-        String candidateOrder1 = String.valueOf(b1.getCandidateOrder());
+        String candidateOrder1 = String.valueOf(b1.getEncryptedCandidateOrder());
         assertEquals(4, candidateOrder1.length());
         assertTrue(candidateOrder1.contains("1"));
         assertTrue(candidateOrder1.contains("2"));
         assertTrue(candidateOrder1.contains("3"));
         assertTrue(candidateOrder1.contains("4"));
 
-        String candidateOrder2 = String.valueOf(b2.getCandidateOrder());
+        String candidateOrder2 = String.valueOf(b2.getEncryptedCandidateOrder());
         assertEquals(4, candidateOrder2.length());
         assertTrue(candidateOrder2.contains("1"));
         assertTrue(candidateOrder2.contains("2"));
         assertTrue(candidateOrder2.contains("3"));
         assertTrue(candidateOrder2.contains("4"));
 
-        String candidateOrder3 = String.valueOf(b3.getCandidateOrder());
+        String candidateOrder3 = String.valueOf(b3.getEncryptedCandidateOrder());
         assertEquals(4, candidateOrder3.length());
         assertTrue(candidateOrder3.contains("1"));
         assertTrue(candidateOrder3.contains("2"));

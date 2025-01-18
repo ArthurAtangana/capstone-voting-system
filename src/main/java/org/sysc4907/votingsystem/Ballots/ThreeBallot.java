@@ -14,7 +14,7 @@ public class ThreeBallot {
     private final Ballot thirdBallot;
     private final List<String> candidateList = new ArrayList<>();
 
-    public ThreeBallot(List<String> candidates) {
+    public ThreeBallot(List<String> candidates, List<java.security.PublicKey> orderKeys) {
         int numCandidates = candidates.size();
 
         // call order generator
@@ -31,9 +31,9 @@ public class ThreeBallot {
         PremarkGenerator pGen = new PremarkGenerator(numCandidates);
         boolean[][] premarked = pGen.generateMarks();
 
-        firstBallot = new Ballot(numCandidates, candidateOrder, premarked[0]);
-        secondBallot = new Ballot(numCandidates, candidateOrder, premarked[1]);
-        thirdBallot = new Ballot(numCandidates, candidateOrder, premarked[2]);
+        firstBallot = new Ballot(numCandidates, candidateOrder, premarked[0], orderKeys);
+        secondBallot = new Ballot(numCandidates, candidateOrder, premarked[1], orderKeys);
+        thirdBallot = new Ballot(numCandidates, candidateOrder, premarked[2], orderKeys);
     }
 
     public Ballot selectReceipt(int ballotNumber) {
@@ -68,7 +68,7 @@ public class ThreeBallot {
         for (Ballot ballot : List.of(firstBallot, secondBallot, thirdBallot)) {
             Map<String, Object> ballotMap = new HashMap<>();
             ballotMap.put("id", ballot.getId());
-            ballotMap.put("candidateOrder", ballot.getCandidateOrder());
+            ballotMap.put("candidateOrder", ballot.getEncryptedCandidateOrder());
             ballotMap.put("markableBoxes", ballot.getMarkValues());
             ballotsData.add(ballotMap);
         }
