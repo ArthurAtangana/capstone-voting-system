@@ -72,36 +72,53 @@
             const helpLink = document.querySelector('.help-link');
             helpLink.style.display = 'none';
 
+            // First POST request
             fetch('/submit-ballot-transactions', {
                 method: 'POST',
-                body: {"ballot1": "test1", // TODO change the values to contain actual ballot data
-                    "ballot2": "test2",
-                    "ballot3": "test3"},
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ballot1: "test1", // TODO change the values to contain actual ballot data
+                    ballot2: "test2",
+                    ballot3: "test3",
+                }),
             })
-                .then(response => response.json())  // assuming the server returns JSON
-                .then(data => {
-                    console.log('Success:', data);
-                    // Handle success - update DOM without reloading
-                    fetch('/fabric/submit', {
-                        method: 'POST',
-                        body: {
-                            "function": "CreateBallot",
-                            "args": ["vote1", "[true,false,false]", "12", "signature"]}, // TODO change the values to contain actual ballot data
-                    })
-                        .then(response => response.json())  // assuming the server returns JSON
-                        .then(data => {
-                            console.log('Success:', data);
-                            // Handle success - update DOM without reloading
-
-                            alert("Ballots cast to the blockchain");
-                        })
-                        .catch((error) => {
-                            console.error('Error:', error);
-                        });
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text(); // Assuming the server returns plain text
                 })
-                .catch((error) => {
-                    console.error('Error:', error);
+                .then(data => {
+                    console.log('First request success:', data);
+
+                    // Second POST request
+                    return fetch('/fabric/submit', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "function": "CreateBallot",
+                            "args": ["vote1", "[true,false,false]", "12", "signature"], // TODO: Replace with actual ballot data
+                        }),
+                    });
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json(); // Assuming the server returns JSON
+                })
+                .then(data => {
+                    console.log('Second request success:', data);
+                    alert("Ballots cast and confirmed on the blockchain");
+                })
+                .catch(error => {
+                    console.error('Error during requests:', error);
                 });
+
         }
 
         function selectBallot(ballotNumber) {
