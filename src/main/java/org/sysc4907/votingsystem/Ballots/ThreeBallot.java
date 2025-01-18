@@ -24,7 +24,7 @@ public class ThreeBallot {
         //store candidate in the random order
         String order = String.valueOf(candidateOrder);
         for (int i = 0; i < numCandidates; i++) {
-            this.candidateList.add(candidates.get(Character.getNumericValue(order.charAt(i)) - 1));
+            this.candidateList.add(candidates.get(Character.getNumericValue(order.charAt(i))));
         }
 
         // call generator to randomly mark each candidate once
