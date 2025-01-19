@@ -1,6 +1,7 @@
 package org.sysc4907.votingsystem.Elections;
 
 import org.json.JSONArray;
+import org.springframework.core.env.Environment;
 import org.sysc4907.votingsystem.generators.BallotIdGenerator;
 import org.sysc4907.votingsystem.generators.CandidateOrderGenerator;
 
@@ -12,7 +13,7 @@ import java.time.*;
 import java.util.*;
 
 public class Election {
-    private boolean fabricEnabled = true;
+    private boolean fabricEnabled = false;
 
     private int numberOfVotes;
     private Long id;
@@ -30,15 +31,16 @@ public class Election {
 
     private final Set<Integer> voterKeys;
 
-    public Election(LocalDateTime startDateTime, LocalDateTime endDateTime, String name, List<String> candidates, Set<Integer> voterKeys) {
+    public Election(Environment environment, LocalDateTime startDateTime, LocalDateTime endDateTime, String name, List<String> candidates, Set<Integer> voterKeys) {
         START_DATE_TIME = startDateTime;
         END_DATE_TIME = endDateTime;
         NAME = name;
         this.candidates = List.copyOf(candidates);
         this.voterKeys = voterKeys;
-        tallier = new Tally(candidates.size());
+        tallier = new Tally(environment, candidates.size());
         this.candidateOrderGenerator = new CandidateOrderGenerator(candidates.size());
         this.numberOfVotes = 0;
+        fabricEnabled = environment.getProperty("fabric.enabled", Boolean.class, true);
     }
 
     public Election() {
@@ -47,7 +49,7 @@ public class Election {
         NAME = "";
         candidates = new ArrayList<>();
         voterKeys = new HashSet<>();
-        tallier = new Tally(0);
+        tallier = new Tally();
         candidateOrderGenerator = new CandidateOrderGenerator(0);
     }
 

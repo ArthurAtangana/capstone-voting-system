@@ -1,5 +1,7 @@
 package org.sysc4907.votingsystem.Elections;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,9 +26,12 @@ public class ElectionService {
     private List<String> candidatesList;
     private final List<java.security.PrivateKey> privateOrderKeys = new ArrayList<>();
     private final List<java.security.PublicKey> publicOrderKeys = new ArrayList<>();
+    Environment environment;
 
-    public ElectionService(AccountService accountService) {
+    @Autowired
+    public ElectionService(AccountService accountService,  Environment environment) {
         this.accountService = accountService;
+        this.environment = environment;
 
         KeyPairGenerator keyGen;
         try {
@@ -42,7 +47,7 @@ public class ElectionService {
     }
 
     public boolean createElection(ElectionForm electionForm) {
-        election = new Election(electionForm.getStartDateTime(), electionForm.getEndDateTime(), electionForm.getName(), candidatesList, voterKeysList);
+        election = new Election(environment, electionForm.getStartDateTime(), electionForm.getEndDateTime(), electionForm.getName(), candidatesList, voterKeysList);
         accountService.initAccountService(new HashSet<>(voterKeysList));
         // generate public & private keys
         LirisiCommandExecutor executor = new LirisiCommandExecutor();

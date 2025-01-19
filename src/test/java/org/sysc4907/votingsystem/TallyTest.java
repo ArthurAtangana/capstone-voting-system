@@ -3,6 +3,9 @@ package org.sysc4907.votingsystem;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
 import org.sysc4907.votingsystem.Elections.Tally;
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -11,8 +14,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+@SpringBootTest
 public class TallyTest {
+    @Autowired
+    private Environment environment;
     Tally tally;
     String jsonString = "[" +
             "{\"ballotId\":\"1\",\"ballotMarks\":\"[true,false,true]\",\"candidateOrder\":\"102\",\"ring\":\"31\"}," +
@@ -33,7 +38,7 @@ public class TallyTest {
 
     @BeforeEach
     public void setUpBeforeClass() {
-        tally = new Tally(candidateList.size());
+        tally = new Tally(environment, candidateList.size());
     }
 
     @Test
