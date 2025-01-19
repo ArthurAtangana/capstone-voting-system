@@ -2,6 +2,8 @@ package org.sysc4907.votingsystem.Elections;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,7 @@ import org.sysc4907.votingsystem.backend.FabricGatewayService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -94,8 +97,11 @@ public class ElectionController {
 
         LocalDateTime now = LocalDateTime.now();
 
+        // Pull this out for scope
+        Election election;
+
         if (electionService.electionIsConfigured()) {
-            Election election = electionService.getElection();
+            election = electionService.getElection();
             model.addAttribute("election", election);
 
             model.addAttribute("formattedStart", election.START_DATE_TIME.format(DateTimeFormatter.ofPattern("MMMM d, yyyy @ h:mm a")));
@@ -108,6 +114,7 @@ public class ElectionController {
 
         } else {
             model.addAttribute("errorMessage", "No poll has been configured yet!");
+            return "error";
         }
 
         /* GET the ledger and print the whole thing */
@@ -117,6 +124,7 @@ public class ElectionController {
         // Strings for call to FabricGatewayService
         String function = "GetAllBallots";
         String[] args = {};
+
         // Populate the ledger string in entirety
         try {
             ledgerString = fabricGatewayService.evaluateTransaction(function, args);
@@ -124,7 +132,31 @@ public class ElectionController {
             return "Error: " + e.getMessage();
         }
 
+        // TODO: delete after you remove big dirty string
         model.addAttribute("ledgerString", ledgerString);
+
+        // Convert the JSON string to a JSONArray (list of lists)
+        JSONArray ledgerJsonArray = new JSONArray(ledgerString);
+
+        // Container to hold LedgerRecord objects for pass to model
+        ArrayList<LedgerEntry> ledgerEntries = new ArrayList<>();
+
+        // Populate
+        for (int i = 0; i < ledgerJsonArray.length(); i++) {
+            JSONObject ledgerTransaction = (JSONObject) ledgerJsonArray.get(i);
+            // If valid number of fields, cast as LedgerRecord and add to array
+            if (ledgerTransaction.length() == 4) {
+                LedgerEntry lr = new LedgerEntry(
+                        (String) ledgerTransaction.getString("ballotId"),
+                        (String) ledgerTransaction.getString("ballotMarks"),
+                        (String) ledgerTransaction.getString("candidateOrder"),
+                        (String) ledgerTransaction.getString("ring"));
+                ledgerEntries.add(lr);
+            }
+        }
+
+        // Now, should have an ArrayList of LedgerRecords we can pass to model
+        model.addAttribute("ledgerEntries", ledgerEntries);
 
         return "ledger-all-votes";
     }
