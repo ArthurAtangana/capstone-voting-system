@@ -67,6 +67,9 @@ public class AuthenticationController {
             model.addAttribute("errorMessage", "No poll has been configured yet!");
         }
 
+        if (session.getAttribute("accountType").equals("admin")) {
+            return "successful-admin-login";
+        }
         return "successful-voter-login";
     }
 
@@ -88,14 +91,24 @@ public class AuthenticationController {
         switch (response){
             case ADMIN_AUTH_SUCCESS -> {
                 session.setAttribute("username", userName);
+                session.setAttribute("accountType", "admin");
                 model.addAttribute("isLoggedIn", true);
-                return "successful-admin-login";}
+                return "redirect:/home";}
             case VOTER_AUTH_SUCCESS -> {
                 session.setAttribute("username", userName);
+                session.setAttribute("accountType", "voter");
+                model.addAttribute("isLoggedIn", true);
                 return "redirect:/home";
             }
             default -> { return "unsuccessful-login";}
         }
+    }
+
+    @GetMapping("/logout")
+    public String logout(Model model, HttpSession session) {
+        session.setAttribute("username", null);
+        // Redirect to the home page
+        return "redirect:/home";
     }
 
 

@@ -47,19 +47,8 @@ public class ElectionController {
         if (!validCandidates || !validVoterKeys || !isValidDateTime || bindingResult.hasErrors()) {
             return "poll-configuration";
         }
-
-        model.addAttribute("name", electionForm.getName());
-        model.addAttribute("startDate", electionForm.getStartDate());
-        model.addAttribute("startTime", electionForm.getStartTime());
-        model.addAttribute("endDate", electionForm.getEndDate());
-        model.addAttribute("endTime", electionForm.getEndTime());
-        List<String> splitCandidates = Arrays.asList(electionForm.getCandidates().split("\\r?\\n"));
-        model.addAttribute("candidates", splitCandidates);
-        model.addAttribute("voterKeys", electionForm.getVoterKeys());
-
         electionService.createElection(electionForm);
-
-        return "successful-poll-config";
+        return "redirect:/home";
     }
     @GetMapping("/view-election-details")
     public String showElectionDetailsPage(Model model, HttpSession session) {
