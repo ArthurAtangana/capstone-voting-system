@@ -13,8 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Controller class responsible for handling web requests and responses for endpoints relating to poll configuration.
@@ -28,7 +26,6 @@ public class ElectionController {
     public ElectionController(ElectionService electionService) {
         this.electionService = electionService;
     }
-
 
     @GetMapping("/create-election")
     public String showElectionForm(Model model) {

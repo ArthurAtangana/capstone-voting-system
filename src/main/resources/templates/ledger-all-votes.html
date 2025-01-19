@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Election Details</title>
+    <title>Election Ledger</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="/css/styles.css">
     <style>
@@ -142,7 +142,7 @@
             <p th:text="${username}"></p>
         </div>
 
-        <h1 th:if="${election}" th:text="|Election Details: ${election.NAME}|"></h1>
+        <h1 th:if="${election}" th:text="|Ledger for Election: ${election.NAME}|"></h1>
         <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
     </header>
 
@@ -174,103 +174,65 @@
             </tr>
         </table>
 
-        <!-- Link to ledger -->
-        <!-- TODO: make this available only after election is over with this:
-        <button th:if="${isLoggedIn} and ${postElection}" onclick="window.location.href='/ledger'" >View Ledger</button>
-        Leave in view for demo for now.
-        -->
-        <button th:if="${isLoggedIn}" onclick="window.location.href='/ledger'" >View Election Ledger</button>
+        <!-- LEDGER -->
 
-        <button th:if="${isLoggedIn} and !${currentCountdown} and !${postElection}" onclick="window.location.href='/threeBallot'" >Cast Your Vote</button>
-
+        <!-- TODO: wrap in a conditional div to only show if election is terminated
         <div class="poll-results-container" th:if="${postElection}">
-            <h2>Poll Results</h2>
-            <div class="graph-container">
-                <div class="chartBox">
-                    <canvas id="barChart"></canvas>
-                </div>
-                <div class="chartBox">
-                    <canvas id="pieChart"></canvas>
-                </div>
-            </div>
+        ...
+        </div>
+        -->
+        <div class="ledger-container">
+            <h2>Election Ledger</h2>
+            <!-- Click me to download Ledger JSON -->
+            <a href="/download-ledger" id="download-ledger">
+                <button>Download Ledger (JSON)</button>
+            </a>
+            <!-- Input field for filtering by Ballot ID -->
+            <label for="filter-by-ballot-id">Enter Ballot ID to Filter Results: </label>
+            <input type="text" id="filter-by-ballot-id" placeholder="Ballot ID">
+            <table id="ledger-table">
+                <tr>
+                    <th>Ballot ID</th>
+                    <th>Ballot Marks</th>
+                    <th>Candidate Order</th>
+                    <th>Ring</th>
+                </tr>
+                <tr th:each="ledgerEntry : ${ledgerEntries}">
+                    <td th:text="${ledgerEntry.ballotId()}">magic</td>
+                    <td th:text="${ledgerEntry.ballotMarks()}">magic</td>
+                    <td th:text="${ledgerEntry.candidateOrder()}">magic</td>
+                    <td th:text="${ledgerEntry.ring()}">magic</td>
+                </tr>
+            </table>
         </div>
     </div>
 
-</body>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    /* Check if the election object is defined */
-    var candidates = /*[[${election != null ? election.getVotingResults() : {}}]]*/;
+    <script>
+    // Register event listener to filter table by Ballot ID string
+    document.getElementById("filter-by-ballot-id").addEventListener("input", function() {
+        // Value from the text input box
+        const filterValue = this.value.toLowerCase();
+        // The table of ledger results, already constructed and populated
+        const table = document.getElementById("ledger-table");
+        // All the rows in the table
+        const rows = table.getElementsByTagName("tr");
 
-    if (Object.keys(candidates).length > 0) {
-        // Extract candidate names and vote tallies
-        var candidateNames = Object.keys(candidates);
-        var voteTallies = Object.values(candidates);
+        // Loop through table rows (after header row)
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            const firstColumnText = row.cells[0].textContent.toLowerCase(); // Get text of the first column
 
-        // Now you can use candidateNames and voteTallies in your charts
-        console.log(candidateNames);  // Candidate names
-        console.log(voteTallies);     // Vote tallies
-    } else {
-        console.warn("Election data is not available.");
-    }
-    /*]]>*/
-</script>
-
-<script>
-
-    // Bar Chart configuration
-    var barChartContext = document.getElementById('barChart').getContext('2d');
-    var barChart = new Chart(barChartContext, {
-        type: 'bar',
-        data: {
-            labels: candidateNames,
-            datasets: [{
-                label: 'Votes',
-                data: voteTallies,
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            aspectRatio: 1,
-            indexAxis: 'y',
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
+            // If column 1 Ballot ID content matches entered text, display that row
+            if (firstColumnText.includes(filterValue)) {
+                row.style.display = "";
+            // If not, hide the row
+            } else {
+                row.style.display = "none";
             }
         }
     });
+    </script>
 
-    // Pie Chart configuration
-    var pieChartContext = document.getElementById('pieChart').getContext('2d');
-    var pieChart = new Chart(pieChartContext, {
-        type: 'pie',
-        data: {
-            labels: candidateNames,
-            datasets: [{
-                label: 'Votes',
-                data: voteTallies,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        }
-    });
-</script>
+</body>
 </html>
+
