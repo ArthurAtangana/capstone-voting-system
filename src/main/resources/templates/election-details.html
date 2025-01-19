@@ -170,7 +170,7 @@
             </tr>
             <tr th:if="!${currentCountdown}">
                 <th># of Votes</th>
-                <td th:text="${election.getNumberOfVotes()}"></td>
+                <td th:text="${election.numVotesCast()}"></td>
             </tr>
         </table>
 
@@ -199,21 +199,35 @@
 </body>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    /* Check if the election object is defined */
-    var candidates = /*[[${election != null ? election.getVotingResults() : {}}]]*/;
-
-    if (Object.keys(candidates).length > 0) {
-        // Extract candidate names and vote tallies
-        var candidateNames = Object.keys(candidates);
-        var voteTallies = Object.values(candidates);
-
-        // Now you can use candidateNames and voteTallies in your charts
-        console.log(candidateNames);  // Candidate names
-        console.log(voteTallies);     // Vote tallies
-    } else {
-        console.warn("Election data is not available.");
-    }
+    const tallyOfVotes = /*[[${tally}]]*/ [];
+    const candidates = /*[[${election.getCandidates}]]*/ [];
     /*]]>*/
+
+    // Bar Chart
+    const barCtx = document.getElementById('barChart').getContext('2d');
+    new Chart(barCtx, {
+        type: 'bar',
+        data: {
+            labels: candidates,
+            datasets: [{
+                label: 'Votes',
+                data: tallyOfVotes
+            }]
+        }
+    });
+
+    // Pie Chart
+    const pieCtx = document.getElementById('pieChart').getContext('2d');
+    new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: candidates,
+            datasets: [{
+                label: 'Votes',
+                data: tallyOfVotes
+            }]
+        }
+    });
 </script>
 
 <script>
@@ -223,10 +237,10 @@
     var barChart = new Chart(barChartContext, {
         type: 'bar',
         data: {
-            labels: candidateNames,
+            labels: candidates,
             datasets: [{
                 label: 'Votes',
-                data: voteTallies,
+                data: tallyOfVotes,
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1
@@ -248,10 +262,10 @@
     var pieChart = new Chart(pieChartContext, {
         type: 'pie',
         data: {
-            labels: candidateNames,
+            labels: candidates,
             datasets: [{
                 label: 'Votes',
-                data: voteTallies,
+                data: tallyOfVotes,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',

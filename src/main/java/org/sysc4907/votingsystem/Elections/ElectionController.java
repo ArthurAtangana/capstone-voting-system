@@ -66,6 +66,9 @@ public class ElectionController {
             model.addAttribute("currentCountdown", election.getElectionCountdown());
             model.addAttribute("postElection", election.END_DATE_TIME.isBefore(now));
 
+            model.addAttribute("numVotesCast", electionService.getNumVotesCast());
+                model.addAttribute("tally", electionService.getTally());
+
             System.out.println(model.getAttribute("isLoggedIn"));
             System.out.println(election.END_DATE_TIME);
 

@@ -42,7 +42,7 @@ public class ElectionServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        electionService = new ElectionService(accountService);
+        electionService = new ElectionService(accountService, null);
         bindingResult = mock(BindingResult.class);
         doNothing().when(bindingResult).rejectValue(anyString(), anyString(), anyString());
         mockFile = mock(MultipartFile.class);
