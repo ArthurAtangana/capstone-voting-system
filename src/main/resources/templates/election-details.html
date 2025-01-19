@@ -183,7 +183,8 @@
 
         <button th:if="${isLoggedIn} and !${currentCountdown} and !${postElection}" onclick="window.location.href='/threeBallot'" >Cast Your Vote</button>
 
-        <div class="poll-results-container" th:if="${postElection}">
+        <!--<div class="poll-results-container" th:if="${postElection}"> -->
+        <div class="poll-results-container">
             <h2>Poll Results</h2>
             <div class="graph-container">
                 <div class="chartBox">
