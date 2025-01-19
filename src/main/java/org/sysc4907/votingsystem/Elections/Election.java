@@ -1,7 +1,6 @@
 package org.sysc4907.votingsystem.Elections;
 
 import org.json.JSONArray;
-import org.springframework.beans.factory.annotation.Value;
 import org.sysc4907.votingsystem.generators.BallotIdGenerator;
 import org.sysc4907.votingsystem.generators.CandidateOrderGenerator;
 
@@ -13,6 +12,7 @@ import java.time.*;
 import java.util.*;
 
 public class Election {
+    private boolean fabricEnabled = true;
 
     private int numberOfVotes;
     private Long id;
@@ -29,9 +29,6 @@ public class Election {
     private final CandidateOrderGenerator candidateOrderGenerator;
 
     private final Set<Integer> voterKeys;
-
-    @Value("${fabric.enabled}")
-    private boolean fabricEnabled;
 
     public Election(LocalDateTime startDateTime, LocalDateTime endDateTime, String name, List<String> candidates, Set<Integer> voterKeys) {
         START_DATE_TIME = startDateTime;

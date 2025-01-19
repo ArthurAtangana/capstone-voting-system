@@ -2,7 +2,6 @@ package org.sysc4907.votingsystem.Elections;
 
 
 import org.json.JSONArray;
-import org.springframework.beans.factory.annotation.Value;
 import org.sysc4907.votingsystem.Ballots.Ballot;
 
 import org.json.JSONObject;
@@ -15,8 +14,7 @@ public class Tally {
     private final List<Integer> tallyOfVotes = new ArrayList<>();
     private final List<Integer> tallyOfVotesAdjusted = new ArrayList<>(); // Adjusted to compensate for three ballot system
 
-    @Value("${fabric.enabled}")
-    private boolean fabricEnabled;
+    private boolean fabricEnabled = true;
 
     public Tally(int numCandidates) {
         for (int i = 0; i < numCandidates; i++) {
