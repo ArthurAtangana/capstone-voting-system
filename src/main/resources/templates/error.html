@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Election Ledger</title>
+    <title>Error</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="/css/styles.css">
     <style>
@@ -135,74 +135,9 @@
 </head>
 <body>
     <header>
-        <button th:if="${isLoggedIn}" class="home-btn" onclick="window.location.href='/home'">Back To Elections</button>
-        <button th:if="${!isLoggedIn}" class="home-btn" onclick="window.location.href='/home'">Login/Register</button>
-        <div class="user-details" th:if="${isLoggedIn}">
-            <img src="/images/user_icon.png" style="width=25px;height=25px">
-            <p th:text="${username}"></p>
-        </div>
-
-        <h1 th:if="${election}" th:text="|Ledger for Election: ${election.NAME}|"></h1>
+        <div><h1>ERROR</h1></div>
         <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
     </header>
-
-    <div th:if="${election}" class="details-container">
-        <div th:if="${currentCountdown}">
-            <h2 th:text="|Starts in ${currentCountdown}|"></h2>
-        </div>
-
-        <table>
-            <tr>
-                <th>Start</th>
-                <td th:text="${formattedStart}"></td>
-            </tr>
-            <tr>
-                <th>End</th>
-                <td th:text="${formattedEnd}"></td>
-            </tr>
-            <tr>
-                <th>Candidates</th>
-                <td th:text="${#strings.listJoin(election.getCandidates(), ', ')}"></td>
-            </tr>
-            <tr>
-                <th># of Eligible Voters</th>
-                <td th:text="${election.getNumberOfVoterKeys()}"></td>
-            </tr>
-            <tr th:if="!${currentCountdown}">
-                <th># of Votes</th>
-                <td th:text="${election.getNumberOfVotes()}"></td>
-            </tr>
-        </table>
-
-        <!-- TODO: Toggle this line to make ledger available only after election is terminated.
-        <div class="poll-results-container" th:if="${postElection}">
-        -->
-        <div class="ledger-container">
-            <h2>Election Ledger</h2>
-            <p>(TABULAR)</p>
-            <table>
-                <tr>
-                    <th>Ballot ID</th>
-                    <th>Ballot Marks</th>
-                    <th>Candidate Order</th>
-                    <th>Ring</th>
-                </tr>
-                <tr th:each="ledgerEntry : ${ledgerEntries}">
-                    <td th:text="${ledgerEntry.ballotId()}">magic</td>
-                    <td th:text="${ledgerEntry.ballotMarks()}">magic</td>
-                    <td th:text="${ledgerEntry.candidateOrder()}">magic</td>
-                    <td th:text="${ledgerEntry.ring()}">magic</td>
-                </tr>
-            </table>
-        </div>
-        <div>
-            <h3>big dirty ledger string</h3>
-            <hr/>
-            <p th:text="${ledgerString}">magic</p>
-            <hr/>
-        </div>
-    </div>
-
 </body>
-</html>
 
+</html>
