@@ -14,20 +14,25 @@ import java.util.List;
 public class Tally {
     private final List<Integer> tallyOfVotes = new ArrayList<>();
     private final List<Integer> tallyOfVotesAdjusted = new ArrayList<>(); // Adjusted to compensate for three ballot system
+    private final int numCandidates;
 
     private boolean fabricEnabled = false;
 
     public Tally(Environment environment, int numCandidates) {
         fabricEnabled = environment.getProperty("fabric.enabled", Boolean.class, true);
+        this.numCandidates = numCandidates;
+    }
+
+    public Tally() {
+        numCandidates = 2;
+    }
+
+    public List<Integer> tallyVotes(JSONArray jsonArray, List<PrivateKey> privateKeys) {
+        tallyOfVotes.clear();
+        tallyOfVotesAdjusted.clear();
         for (int i = 0; i < numCandidates; i++) {
             tallyOfVotes.add(0);
         }
-    }
-
-    public Tally() {}
-
-    public List<Integer> tallyVotes(JSONArray jsonArray, List<PrivateKey> privateKeys) {
-
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonTransaction = jsonArray.getJSONObject(i);
             if (jsonTransaction.has("ballotId")) {
