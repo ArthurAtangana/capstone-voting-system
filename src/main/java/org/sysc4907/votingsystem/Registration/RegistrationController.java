@@ -1,5 +1,6 @@
 package org.sysc4907.votingsystem.Registration;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,7 +45,7 @@ public class RegistrationController {
 
     @PostMapping("/register/credentials")
     public String createAccount(@RequestParam("userName") String userName,
-                                @RequestParam("password") String password, Model model) {
+                                @RequestParam("password") String password, Model model, HttpSession session) {
 
         RegistrationService.Response registrationResponse = registrationService.submitAccountCredentials(userName, password);
 
@@ -52,8 +53,16 @@ public class RegistrationController {
             model.addAttribute("name", userName);
             // redirect to the appropriate page according to the type of account.
             switch (registrationResponse) {
-                case VOTER_REG_SUCCESS -> {return "successful-voter-login";}
-                case ADMIN_REG_SUCCESS -> {return "successful-admin-login";}
+                case VOTER_REG_SUCCESS -> {
+                    session.setAttribute("username", userName);
+                    session.setAttribute("accountType", "voter");
+                    model.addAttribute("isLoggedIn", true);
+                    return "redirect:/home";}
+                case ADMIN_REG_SUCCESS -> {
+                    session.setAttribute("username", userName);
+                    session.setAttribute("accountType", "admin");
+                    model.addAttribute("isLoggedIn", true);
+                    return "redirect:/home";}
                 default ->  throw new RuntimeException("Unexpected response from registration service: " + registrationResponse.name());
             }
         } else {
