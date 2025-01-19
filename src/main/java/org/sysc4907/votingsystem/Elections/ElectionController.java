@@ -70,10 +70,7 @@ public class ElectionController {
             model.addAttribute("postElection", election.END_DATE_TIME.isBefore(now));
 
             model.addAttribute("numVotesCast", electionService.getNumVotesCast());
-
-            if (election.END_DATE_TIME.isBefore(now)) {
                 model.addAttribute("tally", electionService.getTally());
-            }
 
             System.out.println(model.getAttribute("isLoggedIn"));
             System.out.println(election.END_DATE_TIME);
