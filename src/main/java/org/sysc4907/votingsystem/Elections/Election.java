@@ -1,8 +1,14 @@
 package org.sysc4907.votingsystem.Elections;
 
+import org.json.JSONArray;
+import org.springframework.beans.factory.annotation.Value;
 import org.sysc4907.votingsystem.generators.BallotIdGenerator;
 import org.sysc4907.votingsystem.generators.CandidateOrderGenerator;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.*;
 import java.util.*;
 
@@ -23,6 +29,9 @@ public class Election {
     private final CandidateOrderGenerator candidateOrderGenerator;
 
     private final Set<Integer> voterKeys;
+
+    @Value("${fabric.enabled}")
+    private boolean fabricEnabled;
 
     public Election(LocalDateTime startDateTime, LocalDateTime endDateTime, String name, List<String> candidates, Set<Integer> voterKeys) {
         START_DATE_TIME = startDateTime;
@@ -158,5 +167,72 @@ public class Election {
             return countdown.toString();
         }
         return null;
+    }
+
+    private JSONArray getAllTransactions() {
+        String responseData = "";
+        if (!fabricEnabled) {
+            String jsonString = "[" +
+                    "{\"ballotId\":\"1\",\"ballotMarks\":\"[true,false,true]\",\"candidateOrder\":\"102\",\"ring\":\"31\"}," +
+                    "{\"ballotId\":\"2\",\"ballotMarks\":\"[true,true,false]\",\"candidateOrder\":\"102\",\"ring\":\"31\"}," +
+                    "{\"ballotId\":\"3\",\"ballotMarks\":\"[false,false,false]\",\"candidateOrder\":\"102\",\"ring\":\"31\"}," +
+                    "{\"ballotId\":\"4\",\"ballotMarks\":\"[true,true,true]\",\"candidateOrder\":\"102\",\"ring\":\"31\"}," +
+                    "{\"ballotId\":\"5\",\"ballotMarks\":\"[false,true,false]\",\"candidateOrder\":\"102\",\"ring\":\"31\"}," +
+                    "{\"ballotId\":\"6\",\"ballotMarks\":\"[false,false,false]\",\"candidateOrder\":\"102\",\"ring\":\"31\"}]";
+            System.out.println("WARNING: using mocked blockchain response!");
+            return new JSONArray(jsonString);
+        }
+        try {
+            // Specify the endpoint URL
+            String endpoint = "https://api.example.com/data";
+
+            // Create a URL object
+            URL url = new URL(endpoint);
+
+            // Open a connection
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            // Set the request method (GET, POST, etc.)
+            connection.setRequestMethod("GET");
+
+            // Set request headers if needed
+            connection.setRequestProperty("Accept", "application/json");
+
+            // Get the response code
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) { // 200 OK
+                // Read the response
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+
+                // Store the response in a variable
+                responseData = response.toString();
+
+                // Print the response
+                System.out.println("Response: " + responseData);
+            } else {
+                System.out.println("GET request failed. Response code: " + responseCode);
+            }
+
+            // Disconnect the connection
+            connection.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new JSONArray(responseData);
+
+    }
+
+    public List<Integer> tallyOfVotes(List<java.security.PrivateKey> privateKeys) {
+        return tallier.tallyVotes(getAllTransactions(), privateKeys);
+    }
+
+    public int numVotesCast() {
+        return tallier.totalNumVotes(getAllTransactions());
     }
 }

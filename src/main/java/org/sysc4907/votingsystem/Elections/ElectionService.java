@@ -173,6 +173,14 @@ public class ElectionService {
         return keysList;
     }
 
+    public List<Integer> getTally() {
+        return election.tallyOfVotes(privateOrderKeys);
+    }
+
+    public int getNumVotesCast() {
+        return election.numVotesCast();
+    }
+
     public List<java.security.PublicKey> getPublicOrderKeys() {return publicOrderKeys;}
     public List<java.security.PrivateKey> getPrivateOrderKeys() {return privateOrderKeys;}
 }
