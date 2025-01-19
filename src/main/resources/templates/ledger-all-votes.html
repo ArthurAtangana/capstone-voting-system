@@ -174,7 +174,7 @@
             </tr>
         </table>
 
-        <!-- TODO: Toggle this line to make ledger available only after election is terminated.
+        <!-- TODO: wrap in a conditional div to only show if election is terminated
         <div class="poll-results-container" th:if="${postElection}">
         -->
         <div class="ledger-container">
@@ -193,6 +193,10 @@
                     <td th:text="${ledgerEntry.ring()}">magic</td>
                 </tr>
             </table>
+            <!-- Click me to download Ledger JSON -->
+            <a href="/download-ledger" id="downloadLedger">
+                <button>Download Ledger</button>
+            </a>
         </div>
     </div>
 

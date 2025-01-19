@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.sysc4907.votingsystem.backend.FabricGatewayService;
 
+import org.springframework.http.HttpHeaders;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -154,7 +157,40 @@ public class ElectionController {
         // Now, have an ArrayList of LedgerRecords we can pass to model
         model.addAttribute("ledgerEntries", ledgerEntries);
 
+        /* File for Download */
+
         return "ledger-all-votes";
+    }
+
+    // Example endpoint for downloading a string as a JSON file
+    @GetMapping("/download-ledger")
+    public ResponseEntity<String> downloadJsonFile(Model model, HttpSession session) {
+
+        /* GET the Ledger as a String */
+
+        // String holding all contents of ledger (JSON)
+        String ledgerString;
+
+        // Strings for call to FabricGatewayService
+        String function = "GetAllBallots";
+        String[] args = {};
+
+        // Retrieve ledger string from HyperLedger
+        try {
+            ledgerString = fabricGatewayService.evaluateTransaction(function, args);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error: Failed to retrieve JSON content.", HttpStatus.BAD_REQUEST);
+        }
+        model.addAttribute("ledgerString", ledgerString);
+
+        // Set headers for the file download
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=ledger.json");
+        headers.add("Content-Type", "application/json");
+
+        // Return the ResponseEntity with the JSON string
+        ResponseEntity responseEntity = new ResponseEntity<>(ledgerString, headers, HttpStatus.OK);
+        return responseEntity;
     }
 
 }
