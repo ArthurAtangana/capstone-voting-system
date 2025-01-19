@@ -11,7 +11,7 @@ public class CandidateOrderGenerator {
         this.numberOfCandidates = numberOfCandidates;
     }
 
-    public int generateRandomCandidateOrder() {
+    public String generateRandomCandidateOrder() {
         List<Integer> numbers = new ArrayList<>();
 
         // Add numbers from 0 to n to the list
@@ -22,10 +22,10 @@ public class CandidateOrderGenerator {
         // Shuffle the list to get a random order
         Collections.shuffle(numbers);
 
-        // Convert the list to a single integer
-        int result = 0;
+        // Convert the list to a single string
+        String result = "";
         for (int num : numbers) {
-            result = result * 10 + num;
+            result += num;
         }
 
         return result;

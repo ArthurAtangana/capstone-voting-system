@@ -19,12 +19,11 @@ public class ThreeBallot {
 
         // call order generator
         CandidateOrderGenerator cGen = new CandidateOrderGenerator(numCandidates);
-        int candidateOrder = cGen.generateRandomCandidateOrder(); // returned by generator
+        String candidateOrder = cGen.generateRandomCandidateOrder(); // returned by generator
 
         //store candidate in the random order
-        String order = String.valueOf(candidateOrder);
         for (int i = 0; i < numCandidates; i++) {
-            this.candidateList.add(candidates.get(Character.getNumericValue(order.charAt(i))));
+            this.candidateList.add(candidates.get(Character.getNumericValue(candidateOrder.charAt(i))));
         }
 
         // call generator to randomly mark each candidate once

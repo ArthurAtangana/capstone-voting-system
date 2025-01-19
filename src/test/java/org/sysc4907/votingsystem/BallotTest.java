@@ -27,7 +27,7 @@ public class BallotTest {
             KeyPair keyPair = keyGen.generateKeyPair();
             privateKey = keyPair.getPrivate();
             publicKey = keyPair.getPublic();
-            b1 = new Ballot(3, 201, new boolean[]{false, false, true},  Collections.singletonList(keyPair.getPublic()));
+            b1 = new Ballot(3, "201", new boolean[]{false, false, true},  Collections.singletonList(keyPair.getPublic()));
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }

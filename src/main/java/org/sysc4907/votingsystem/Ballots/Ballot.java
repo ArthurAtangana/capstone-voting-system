@@ -12,7 +12,7 @@ public class Ballot {
     private final String encryptedCandidateOrder;
     private final static long moduloNumber = 9999999999999999L; // must be at least the length of the number of candidates
 
-    public Ballot( int numberOfCandidates, int candidateOrder, boolean[] premarkedBoxes, List<PublicKey> orderKeys) {
+    public Ballot( int numberOfCandidates, String candidateOrder, boolean[] premarkedBoxes, List<PublicKey> orderKeys) {
         // this isn't big enough for real use but a sufficiently large random number would ensure uniqueness and non-sequential ids
         this.id = (int)(Math.random() * 9999999);
         markableBoxes = new Marks[numberOfCandidates];
@@ -23,7 +23,7 @@ public class Ballot {
                 markableBoxes[i] = new Marks(false, false);
             }
         }
-        String temp = Integer.toString(candidateOrder);
+        String temp = candidateOrder;
         for (PublicKey orderKey : orderKeys) {
             try {
                 temp = encrypt(temp, orderKey);
