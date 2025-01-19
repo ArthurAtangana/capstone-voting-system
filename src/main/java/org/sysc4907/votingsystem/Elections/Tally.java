@@ -2,6 +2,7 @@ package org.sysc4907.votingsystem.Elections;
 
 
 import org.json.JSONArray;
+import org.springframework.core.env.Environment;
 import org.sysc4907.votingsystem.Ballots.Ballot;
 
 import org.json.JSONObject;
@@ -14,11 +15,16 @@ public class Tally {
     private final List<Integer> tallyOfVotes = new ArrayList<>();
     private final List<Integer> tallyOfVotesAdjusted = new ArrayList<>(); // Adjusted to compensate for three ballot system
 
-    public Tally(int numCandidates) {
+    private boolean fabricEnabled = false;
+
+    public Tally(Environment environment, int numCandidates) {
+        fabricEnabled = environment.getProperty("fabric.enabled", Boolean.class, true);
         for (int i = 0; i < numCandidates; i++) {
             tallyOfVotes.add(0);
         }
     }
+
+    public Tally() {}
 
     public List<Integer> tallyVotes(JSONArray jsonArray, List<PrivateKey> privateKeys) {
 
@@ -47,7 +53,7 @@ public class Tally {
     private void addVotes(CastBallot ballot) {
         for (int i = 0; i < ballot.marks.size(); i++) {
             if (ballot.marks.get(i)) {
-                tallyOfVotes.set(ballot.candidateOrder.get(i), tallyOfVotes.get(i) + 1);
+                tallyOfVotes.set(ballot.candidateOrder.get(i), tallyOfVotes.get(ballot.candidateOrder.get(i)) + 1);
             }
         }
 
@@ -65,13 +71,15 @@ public class Tally {
 
     private List<Integer> decryptOrder(JSONObject ballot, List<PrivateKey> privateKeys) {
         String decryptedOrder = ballot.getString("candidateOrder");
-        for (PrivateKey privateKey : privateKeys) {
-            try {
-                decryptedOrder = Ballot.decrypt(decryptedOrder, privateKey);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+        if (fabricEnabled) {
+            for (PrivateKey privateKey : privateKeys) {
+                try {
+                    decryptedOrder = Ballot.decrypt(decryptedOrder, privateKey);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
-        }
+        } // if fabric is not enabled we are using mocked data
         List<Integer> order = new ArrayList<>();
         for (char digitChar : decryptedOrder.toCharArray()) {
             order.add(Character.getNumericValue(digitChar));

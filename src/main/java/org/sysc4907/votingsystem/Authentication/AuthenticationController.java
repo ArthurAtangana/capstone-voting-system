@@ -107,6 +107,7 @@ public class AuthenticationController {
     @GetMapping("/logout")
     public String logout(Model model, HttpSession session) {
         session.setAttribute("username", null);
+        session.setAttribute("validKey", null);
         // Redirect to the home page
         return "redirect:/home";
     }
