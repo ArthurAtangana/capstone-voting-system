@@ -168,7 +168,8 @@
                 <th># of Eligible Voters</th>
                 <td th:text="${election.getNumberOfVoterKeys()}"></td>
             </tr>
-            <tr th:if="!${currentCountdown}">
+            <!-- <tr th:if="!${currentCountdown}">  -->
+            <tr>
                 <th># of Votes</th>
                 <td th:text="${election.numVotesCast()}"></td>
             </tr>
@@ -181,7 +182,7 @@
         -->
         <button th:if="${isLoggedIn}" onclick="window.location.href='/ledger'" >View Election Ledger</button>
 
-        <button th:if="${isLoggedIn} and !${currentCountdown} and !${postElection}" onclick="window.location.href='/threeBallot'" >Cast Your Vote</button>
+        <button th:if="${isLoggedIn} and !${currentCountdown} and !${postElection} and ${voter}" onclick="window.location.href='/threeBallot'" >Cast Your Vote</button>
 
         <!--<div class="poll-results-container" th:if="${postElection}"> -->
         <div class="poll-results-container">
