@@ -24,6 +24,94 @@
             receiptButtonContainer.style.display = 'flex'; // Ensure 'flex' for proper centering
         }
 
+        function processAllBallots() {
+            // Identify the selected ballot number
+            const selectedBallotNumber = parseInt(
+                document.querySelector('.receipt-button[style*="background: rgb(69, 160, 73);"]').id.slice(-1)
+            );
+            // Initialize an array to store data for all ballots
+            const ballotsData = [];
+            // Loop through all ballot attributes
+            attributes.forEach((ballot, index) => {
+                const ballotNumber = index + 1; // Convert index to 1-based numbering
+
+                // Grab ballot ID and candidate order
+                const ballotId = ballot.id;
+                const candidateOrder = ballot.candidateOrder;
+
+                // Find all checkbox elements for this ballot
+                const ballotCheckboxes = document.querySelectorAll(`td:nth-child(${ballotNumber + 1}) .ballot-box`);
+                const markedBoxes = Array.from(ballotCheckboxes).map(checkbox => checkbox.checked);
+
+                // Check if the ballot is selected
+                const isSelected = ballotNumber === selectedBallotNumber;
+
+                // Store the data for this ballot
+                ballotsData.push({
+                    ballotNumber,
+                    ballotId,
+                    candidateOrder,
+                    markedBoxes,
+                    isSelected, // Add a flag to indicate whether this ballot is the selected one
+                });
+            });
+
+            return ballotsData;
+        }
+
+        async function submitAllBallots() {
+            const allBallots = processAllBallots();
+            for (const ballot of allBallots) {
+                console.log(JSON.stringify(ballot));
+                try {
+                    // Step 1: Obtain the signature for the ballot
+                    const signatureResponse = await fetch('/submit-ballot-transactions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            ballot: JSON.stringify(ballot)}),
+                    });
+
+                    if (!signatureResponse.ok) {
+                        throw new Error(`Failed to obtain signature: ${signatureResponse.statusText}`);
+                    }
+
+                    const signature = await signatureResponse.text();
+                    console.log(signature);
+
+                    // Step 2: Prepare the payload for the /fabric/submit endpoint
+                    const payload = {
+                        function: 'CreateBallot',
+                        args: [
+                            ballot.ballotId.toString(),
+                            JSON.stringify(ballot.markedBoxes),
+                            ballot.candidateOrder.toString(),
+                            signature,
+                        ],
+                    };
+                    console.log("payload:" + JSON.stringify(payload));
+
+                    // Step 3: Send the signed ballot to the /fabric/submit endpoint
+                    const submitResponse = await fetch('/fabric/submit', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(payload),
+                    });
+                    if (!submitResponse.ok) {
+                        throw new Error(`Failed to submit ballot: ${submitResponse.statusText}`);
+                    }
+                    const result = await submitResponse.json();
+                    console.log(`Ballot ${ballot.ballotId} submitted successfully:`, result);
+                } catch (error) {
+                    console.error(`Error processing ballot ${ballot.ballotId}:`, error);
+                }
+            }
+        }
+
         function finalizeReceipt() {
             // Hide all ballots except the selected one
             const selectedBallotNumber = document.querySelector('.receipt-button[style*="background: rgb(69, 160, 73);"]').id.slice(-1);
@@ -72,7 +160,7 @@
             const helpLink = document.querySelector('.help-link');
             helpLink.style.display = 'none';
 
-            alert("Ballots cast to the blockchain");
+            submitAllBallots();
         }
 
         function selectBallot(ballotNumber) {
@@ -131,7 +219,8 @@
 
 </head>
 <body>
-    <h2>Three Ballot Voting System</h2>
+    <h1 th:text="${electionName}"></h1>
+    <h2>Three Ballot Candidate Selection</h2>
 
     <script th:inline="javascript">
         let attributes = [[${attributes}]];
@@ -206,6 +295,23 @@
     </div>
 
     <a href="#" class="help-link" onclick="window.open('/instructions', '_blank')" style="margin-top: 100px;">Three-Ballot Voting Instructions</a>
-
+    <div th:if="!${validKey}" class="keyModal">
+        <div class="pop-up-container">
+            <h2>Please Enter Your Signing Key</h2>
+            <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
+            <form id="signingKeyForm" th:action="@{/verify-signing-key}" method="post">
+                <div class="form-group">
+                    <textarea class="key-input" required
+                              name="key"
+                              id="signingKeyInput"
+                              placeholder="Enter your signing key here"
+                              maxlength="226"
+                    ></textarea>
+                    <button type="submit" id="submit-key-btn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
+
 </html>

@@ -73,3 +73,7 @@ button:active {
     font-size: 0.9em;
     color: #777;
 }
+.error-message {
+    color: red;
+    margin-top: 10px;
+}

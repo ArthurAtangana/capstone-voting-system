@@ -29,27 +29,27 @@ public class ThreeBallotTest {
         assertEquals(4, b2.getMarkValues().length);
         assertEquals(4, b3.getMarkValues().length);
 
-        // candidate order is 4 digits and contains 1, 2, 3, 4 in any order
-        String candidateOrder1 = String.valueOf(b1.getEncryptedCandidateOrder());
+        // candidate order is 4 digits and contains 0, 1, 2, 3 in any order
+        String candidateOrder1 = b1.getEncryptedCandidateOrder();
         assertEquals(4, candidateOrder1.length());
+        assertTrue(candidateOrder1.contains("0"));
         assertTrue(candidateOrder1.contains("1"));
         assertTrue(candidateOrder1.contains("2"));
         assertTrue(candidateOrder1.contains("3"));
-        assertTrue(candidateOrder1.contains("4"));
 
-        String candidateOrder2 = String.valueOf(b2.getEncryptedCandidateOrder());
+        String candidateOrder2 = b2.getEncryptedCandidateOrder();
         assertEquals(4, candidateOrder2.length());
+        assertTrue(candidateOrder2.contains("0"));
         assertTrue(candidateOrder2.contains("1"));
         assertTrue(candidateOrder2.contains("2"));
         assertTrue(candidateOrder2.contains("3"));
-        assertTrue(candidateOrder2.contains("4"));
 
-        String candidateOrder3 = String.valueOf(b3.getEncryptedCandidateOrder());
+        String candidateOrder3 = b3.getEncryptedCandidateOrder();
         assertEquals(4, candidateOrder3.length());
+        assertTrue(candidateOrder3.contains("0"));
         assertTrue(candidateOrder3.contains("1"));
         assertTrue(candidateOrder3.contains("2"));
         assertTrue(candidateOrder3.contains("3"));
-        assertTrue(candidateOrder3.contains("4"));
 
         assertEquals(1, countRowMarks(0));
         assertEquals(1, countRowMarks(1));

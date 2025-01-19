@@ -3,6 +3,7 @@ package org.sysc4907.votingsystem;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.Paths;
 
 public class FileHelper {
@@ -40,6 +41,22 @@ public class FileHelper {
             }
         } catch (Exception e) {
             System.err.println("Error deleting file " + filePath + ": " + e.getMessage());
+        }
+    }
+
+    public static void createFile(String fileName, String fileContent) {
+        try {
+            Path filePath = Path.of(fileName);
+            // Create and write to the file
+            Files.writeString(
+                    filePath,
+                    fileContent,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING
+            );
+            System.out.println("PEM file created successfully at: " + filePath.toAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

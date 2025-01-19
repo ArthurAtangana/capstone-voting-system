@@ -27,7 +27,7 @@ public class BallotTest {
             KeyPair keyPair = keyGen.generateKeyPair();
             privateKey = keyPair.getPrivate();
             publicKey = keyPair.getPublic();
-            b1 = new Ballot(3, 231, new boolean[]{false, false, true},  Collections.singletonList(keyPair.getPublic()));
+            b1 = new Ballot(3, "201", new boolean[]{false, false, true},  Collections.singletonList(keyPair.getPublic()));
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
@@ -35,7 +35,7 @@ public class BallotTest {
 
     @Test
     public void testBallot() throws Exception {
-        assertEquals("231", Ballot.decrypt(b1.getEncryptedCandidateOrder(), privateKey));
+        assertEquals("201", Ballot.decrypt(b1.getEncryptedCandidateOrder(), privateKey));
         assertEquals(3, b1.getMarkValues().length);
         assertFalse(b1.getMarkValues()[0]);
         assertFalse(b1.getMarkValues()[1]);
