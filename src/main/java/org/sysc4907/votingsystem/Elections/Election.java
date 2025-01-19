@@ -184,7 +184,7 @@ public class Election {
         }
         try {
             // Specify the endpoint URL
-            String endpoint = "https://localhost:8080/fabric/evaluate?evaluate?function=GetAllBallots";
+            String endpoint = "http://localhost:8080/fabric/evaluate?function=GetAllBallots";
 
             // Create a URL object
             URL url = new URL(endpoint);
