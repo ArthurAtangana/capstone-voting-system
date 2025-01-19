@@ -114,10 +114,9 @@ public class ElectionController {
 
         } else {
             model.addAttribute("errorMessage", "No poll has been configured yet!");
-            return "error";
         }
 
-        /* GET the ledger and print the whole thing */
+        /* GET the Ledger and Tabulate */
 
         // String holding all contents of ledger (JSON)
         String ledgerString;
@@ -125,19 +124,16 @@ public class ElectionController {
         String function = "GetAllBallots";
         String[] args = {};
 
-        // Populate the ledger string in entirety
+        // Retrieve ledger string from HyperLedger
         try {
             ledgerString = fabricGatewayService.evaluateTransaction(function, args);
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
-
-        // TODO: delete after you remove big dirty string
         model.addAttribute("ledgerString", ledgerString);
 
-        // Convert the JSON string to a JSONArray (list of lists)
+        // Convert the JSON string to a JSONArray for easier manipulation
         JSONArray ledgerJsonArray = new JSONArray(ledgerString);
-
         // Container to hold LedgerRecord objects for pass to model
         ArrayList<LedgerEntry> ledgerEntries = new ArrayList<>();
 
@@ -155,7 +151,7 @@ public class ElectionController {
             }
         }
 
-        // Now, should have an ArrayList of LedgerRecords we can pass to model
+        // Now, have an ArrayList of LedgerRecords we can pass to model
         model.addAttribute("ledgerEntries", ledgerEntries);
 
         return "ledger-all-votes";
