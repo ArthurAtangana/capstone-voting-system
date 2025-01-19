@@ -54,7 +54,7 @@ public class ElectionController {
 
         model.addAttribute("isLoggedIn", username != null);
         model.addAttribute("username", username);
-        if (session.getAttribute("accountType").equals("voter")) {
+        if (session.getAttribute("accountType") != null && session.getAttribute("accountType").equals("voter")) {
             model.addAttribute("voter", true);
         }
 
