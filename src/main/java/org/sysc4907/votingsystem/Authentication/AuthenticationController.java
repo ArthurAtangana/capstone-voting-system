@@ -92,15 +92,16 @@ public class AuthenticationController {
             case ADMIN_AUTH_SUCCESS -> {
                 session.setAttribute("username", userName);
                 session.setAttribute("accountType", "admin");
-                model.addAttribute("isLoggedIn", true);
                 return "redirect:/home";}
             case VOTER_AUTH_SUCCESS -> {
                 session.setAttribute("username", userName);
                 session.setAttribute("accountType", "voter");
-                model.addAttribute("isLoggedIn", true);
                 return "redirect:/home";
             }
-            default -> { return "unsuccessful-login";}
+            default -> {
+                model.addAttribute("errorMessage", "Incorrect username/password. Try again!");
+                return "home-page";
+            }
         }
     }
 
