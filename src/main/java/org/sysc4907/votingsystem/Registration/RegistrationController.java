@@ -56,12 +56,10 @@ public class RegistrationController {
                 case VOTER_REG_SUCCESS -> {
                     session.setAttribute("username", userName);
                     session.setAttribute("accountType", "voter");
-                    model.addAttribute("isLoggedIn", true);
                     return "redirect:/home";}
                 case ADMIN_REG_SUCCESS -> {
                     session.setAttribute("username", userName);
                     session.setAttribute("accountType", "admin");
-                    model.addAttribute("isLoggedIn", true);
                     return "redirect:/home";}
                 default ->  throw new RuntimeException("Unexpected response from registration service: " + registrationResponse.name());
             }
