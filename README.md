@@ -9,6 +9,11 @@
 - Rebecca Elliott
 - Victoria Malouf
 
+## CI/CD
+
+[![Build Status](https://github.com/ArthurAtangana/capstone-voting-system/actions/workflows/maven.yml/badge.svg)](https://github.com/ArthurAtangana/capstone-voting-system/actions)
+
+
 ## Hyperledger Fabric
 
 Everything needed for the hyperledger fabric network and chaincode can be found in [this repository](https://github.com/ArthurAtangana/hyperledger)
