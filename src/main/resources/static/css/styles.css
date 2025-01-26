@@ -1,3 +1,7 @@
+:root {
+    --main-green-color: #28a745;
+    --main-darker-green-color: #218838;
+}
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f4f8;
@@ -6,6 +10,27 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+}
+
+header {
+    background-color: var(--main-green-color);
+    min-height: 40px;
+    width: 100%;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: var(--main-green-color);
+    padding: 20px 0px;
+    text-align: center
+}
+
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .container {
@@ -45,7 +70,7 @@ input[type="password"] {
 }
 
 button {
-    background-color: #28a745;
+    background-color: var(--main-green-color);
     border: none;
     border-radius: 8px;
     color: white;
@@ -59,7 +84,7 @@ button {
 }
 
 button:hover {
-    background-color: #218838;
+    background-color: var(--main-darker-green-color);
     transform: scale(1.05);
 }
 
@@ -80,7 +105,7 @@ button:active {
 }
 
 .election-button {
-    background-color: #4CAF50;
+    background-color: var(--main-green-color);
     color: white;
     border: none;
     padding: 10px 20px;

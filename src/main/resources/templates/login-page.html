@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    body {
+      display: block;
+      width: 100%;
+    }
+    .container {
+      margin: 30px auto;
+    }
+
+  </style>
+</head>
+<body>
+<header>
+  <a href="/home">
+    <img src="https://fakeimg.pl/150x80">
+  </a>
+</header>
+<main>
+  <div class="container">
+    <h1>Login to Voting System!</h1>
+    <form action="/login" method="post">
+      <div class="form-group">
+        <label for="userName">Username:</label>
+        <input type="text" id="userName" name="userName" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
+      <button type="submit">Login</button>
+    </form>
+    <form action="/register/sign-in-key" method="get">
+      <button type="submit">Register</button>
+    </form>
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2025 Secure and Transparent Voting System</p>
+</footer>
+</body>
+</html>

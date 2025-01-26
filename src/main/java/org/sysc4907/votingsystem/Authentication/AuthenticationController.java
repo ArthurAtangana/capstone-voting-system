@@ -38,7 +38,7 @@ public class AuthenticationController {
         String username = (String) session.getAttribute("username");
         if (username == null) {
             model.addAttribute("isLoggedIn", false);
-            return "home-page";
+            return "login-page";
         }
         model.addAttribute("isLoggedIn", true);
         model.addAttribute("username", username);
@@ -100,7 +100,7 @@ public class AuthenticationController {
             }
             default -> {
                 model.addAttribute("errorMessage", "Incorrect username/password. Try again!");
-                return "home-page";
+                return "login-page";
             }
         }
     }

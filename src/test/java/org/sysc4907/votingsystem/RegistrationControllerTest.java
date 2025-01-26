@@ -43,7 +43,7 @@ public class RegistrationControllerTest {
         // Registration when poll is not yet configured
         mockMvc.perform(get("/register/sign-in-key"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("home-page"));
+                .andExpect(view().name("login-page"));
 
         // Registration when poll has been configured
         when(electionService.electionIsConfigured()).thenReturn(true); // mocking that poll has been configured

@@ -25,7 +25,7 @@ public class RegistrationController {
     public String showRegistrationSignInKeyPage(Model model) {
         if (!electionService.electionIsConfigured()) {
             model.addAttribute("errorMessage", "No poll has been configured yet!");
-            return "home-page";
+            return "login-page";
         }
         return "registration-sign-in-key-page";
     }
