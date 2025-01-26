@@ -94,7 +94,7 @@ public class RegistrationControllerTest {
                         .param("userName", "userName")
                         .param("password", "password"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("successful-voter-login"))
+                .andExpect(view().name("successful-login"))
                 .andExpect(model().attribute("name", "userName"));
     }
 
@@ -106,7 +106,7 @@ public class RegistrationControllerTest {
                         .param("userName", "adminName")
                         .param("password", "adminPass"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("successful-admin-login"))
+                .andExpect(view().name("successful-login"))
                 .andExpect(model().attribute("name", "adminName"));
     }
 }

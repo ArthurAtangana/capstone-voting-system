@@ -64,13 +64,11 @@ public class AuthenticationController {
             model.addAttribute("electionStatus", electionStatus);
             model.addAttribute("dateTimeInfo", dateTimeInfo);
         } else {
-            model.addAttribute("errorMessage", "No poll has been configured yet!");
+            if (session.getAttribute("accountType").equals("voter")) model.addAttribute("errorMessage", "No poll has been configured yet!");
         }
+        model.addAttribute("accountType", session.getAttribute("accountType"));
 
-        if (session.getAttribute("accountType").equals("admin")) {
-            return "successful-admin-login";
-        }
-        return "successful-voter-login";
+        return "successful-login";
     }
 
     /**

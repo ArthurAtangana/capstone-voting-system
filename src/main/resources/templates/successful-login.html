@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Welcome Voter</title>
+    <style>
+        body {
+            display: block;
+            width: 100%;
+        }
+        .user-details {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: fit-content;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            text-align: center;
+            margin: 30px auto;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <a href="/home">
+        <img src="https://fakeimg.pl/150x80">
+    </a>
+    <div class="user-details" th:if="${isLoggedIn}">
+        <img src="/images/user_icon.png" style="width=25px;height=25px">
+        <p th:text="${username}"></p>
+    </div>
+</header>
+<main>
+    <div class="container">
+        <!-- Any elements that should only be seen by a voter should go in here -->
+        <div id="voter-elems" th:if="${accountType} == 'voter'">
+            <h1  th:text="|Welcome VOTER, ${username}!|"></h1>
+        </div>
+
+        <!-- Any elements that should only be seen by an admin go in here -->
+        <div id="admin-elems" th:if="${accountType} == 'admin'">
+            <h1 th:text="|Welcome ADMIN, ${username}!|"></h1>
+            <p th:if="!${electionName}">
+                <a th:href="@{/create-election}">
+                    <button type="button">Configure New Election</button>
+                </a>
+            </p>
+        </div>
+
+        <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+            <form action="/view-election-details" method="get" th:if="${electionName}">
+                <button type="submit" class="election-button" th:text="'Election: ' + ${electionName}"></button>
+                <span th:text="|${electionStatus} ${dateTimeInfo}|"
+                      style="font-size: 14px; color: #555;"></span>
+            </form>
+        </div>
+
+        <hr>
+
+        <a th:href="@{/logout}">
+            <button type="button">Logout</button>
+        </a>
+    </div>
+</main>
+<footer>
+    <p>&copy; 2025 Secure and Transparent Voting System</p>
+</footer>
+</body>
+</html>
