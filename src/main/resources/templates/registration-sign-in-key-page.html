@@ -14,17 +14,29 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-<div class="container">
-    <h1>Register to Voting System</h1>
+<header>
+    <a href="/home">
+        <img src="https://fakeimg.pl/150x80">
+    </a>
+</header>
 
-    <form action="/register/sign-in-key" method="post">
-        <div class="form-group">
-            <label for="signInKey">Sign-In Key:</label>
-            <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
-            <input type="text" id="signInKey" name="signInKey" required>
-            <button type="submit">Submit</button>
-        </div>
-    </form>
-</div>
+<main>
+    <div class="container">
+        <h1>Register to Voting System</h1>
+        <form action="/register/sign-in-key" method="post">
+            <div class="form-group">
+                <label for="signInKey">Sign-In Key:</label>
+                <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
+                <input type="text" id="signInKey" name="signInKey" required>
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+
+<footer>
+    <p>&copy; 2025 Secure and Transparent Voting System</p>
+</footer>
 </body>
 </html>
