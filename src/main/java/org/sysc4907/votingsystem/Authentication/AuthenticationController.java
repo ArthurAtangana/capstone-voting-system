@@ -37,7 +37,6 @@ public class AuthenticationController {
     public String showHomePage(HttpSession session, Model model) {
         String username = (String) session.getAttribute("username");
         if (username == null) {
-            model.addAttribute("isLoggedIn", false);
             return "login-page";
         }
         model.addAttribute("isLoggedIn", true);

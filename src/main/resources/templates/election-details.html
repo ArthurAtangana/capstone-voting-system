@@ -9,18 +9,16 @@
     <style>
         /* General Styling */
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
             background-color: #f0fdf4; /* Soft green background */
             color: #2e7d32;
             display: unset;
         }
-        #title-header {
-            margin-top: 100px ;
+        header, footer {
+            position: unset;
         }
-        footer {
-            position: relative;
+        main {
+            height: unset;
+            margin: 20px;
         }
         button {
             width: fit-content;
@@ -43,7 +41,6 @@
         }
 
         h1 {
-            margin-top: 50px;
             font-size: xxx-large;
         }
 
@@ -122,7 +119,7 @@
 <!--        <button th:if="${isLoggedIn}" class="home-btn" onclick="window.location.href='/home'">Back To Elections</button>-->
 <!--        <button th:if="${!isLoggedIn}" class="home-btn" onclick="window.location.href='/home'">Login/Register</button>-->
     <a href="/home">
-        <img src="https://fakeimg.pl/150x80">
+        <img src="/images/logo.png"  style="width: 200px;padding: 10px;">
     </a>
     <div class="user-details" th:if="${isLoggedIn}">
         <img src="/images/user_icon.png" style="width=25px;height=25px">

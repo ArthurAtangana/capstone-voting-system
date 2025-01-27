@@ -16,18 +16,18 @@
 <body>
 <header>
     <a href="/home">
-        <img src="https://fakeimg.pl/150x80">
+        <img src="/images/logo.png"  style="width: 200px;padding: 10px;">
     </a>
 </header>
 
 <main>
     <div class="container">
         <h1>Register to Voting System</h1>
-        <form action="/register/sign-in-key" method="post">
+        <form action="/registration-key" method="post">
             <div class="form-group">
-                <label for="signInKey">Sign-In Key:</label>
+                <label for="registrationKey">Registration Key:</label>
                 <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
-                <input type="text" id="signInKey" name="signInKey" required>
+                <input type="text" id="registrationKey" name="registrationKey" required>
                 <button type="submit">Submit</button>
             </div>
         </form>

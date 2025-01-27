@@ -33,12 +33,28 @@
             color: #333;
             margin-bottom: 20px;
         }
+        .election-button {
+            background-color: var(--main-green-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            width: unset;
+        }
+
+        .election-button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
 <header>
     <a href="/home">
-        <img src="https://fakeimg.pl/150x80">
+        <img src="/images/logo.png"  style="width: 200px;padding: 10px;">
     </a>
     <div class="user-details" th:if="${isLoggedIn}">
         <img src="/images/user_icon.png" style="width=25px;height=25px">

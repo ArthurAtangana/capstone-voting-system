@@ -8,14 +8,17 @@
     <link rel="stylesheet" href="/css/styles.css">
 
     <style>
+        main {
+            height: unset;
+        }
+        footer {
+            position: relative;
+        }
         .image-container img {
             width: 500px;
             height: auto;
         }
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -57,86 +60,100 @@
     </style>
 </head>
 <body>
-
-<h1>3-Ballot Voting System</h1>
-
-<div class="section">
-    <h2>What?</h2>
-    <p>The 3-Ballot Voting System is designed to provide a secure and transparent voting process.</p>
-    <p>
-        In the ThreeBallot voting system, each voter is given three ballots, each with a unique identifier. To vote for a candidate, the voter must select that candidate on two of the three ballots. This means that seeing just one ballot doesn’t reveal if the voter actually voted for the candidate.
-    </p>
-    <p>
-        Each ballot has a unique identifier, which allows the voter to verify their vote later by searching for their identifier on the blockchain. Since the voter can choose which ballot to keep as a receipt, they can make it appear as if they selected any combination of their choices. This prevents voters from proving to others who they voted for, making it impossible for someone to sell their vote or get coerced into voting a certain way.
-    </p>
-</div>
-
-<div class="section">
-    <h2>Why?</h2>
-    <div class="sub-section">
-        <p><strong>Anonymity:</strong> Each voter's vote is secret, preventing vote-selling and coercion.</p>
-        <p><strong>Integrity:</strong> Each voter can verify that their chosen ballot was not tampered with.</p>
-        <p><strong>Accuracy:</strong> Each voter can verify that the election result was computed correctly.</p>
+<header>
+    <a href="/home">
+        <img src="/images/logo.png"  style="width: 200px;padding: 10px;">
+    </a>
+    <div class="user-details" th:if="${isLoggedIn}">
+        <img src="/images/user_icon.png" style="width=25px;height=25px">
+        <p th:text="${username}"></p>
     </div>
-</div>
+</header>
+<main>
+    <h1>3-Ballot Voting System</h1>
 
-<div class="section">
-    <h2>How?</h2>
-    <p>How to vote for <strong>Matcha</strong> as your favorite drink:</p>
-
-
-    <p><strong>STEP 1:</strong> Select a blank ballot where your preferred candidate is not preselected.</p>
-    <ul>
-        <li>To avoid confusion the voting system automatically preselects each candidate once, that way the voter only selects their preferred candidate.</li>
-        <li>You can choose either <strong>Ballot 1</strong> or <strong>Ballot 2</strong> to select Matcha, as <strong>Ballot 3</strong> has already been selected.</li>
-    </ul>
-
-    <div class="image-container">
-        <img src="/images/step1.png" alt="Example Ballot Selection">
+    <div class="section">
+        <h2>What?</h2>
+        <p>The 3-Ballot Voting System is designed to provide a secure and transparent voting process.</p>
+        <p>
+            In the ThreeBallot voting system, each voter is given three ballots, each with a unique identifier. To vote for a candidate, the voter must select that candidate on two of the three ballots. This means that seeing just one ballot doesn’t reveal if the voter actually voted for the candidate.
+        </p>
+        <p>
+            Each ballot has a unique identifier, which allows the voter to verify their vote later by searching for their identifier on the blockchain. Since the voter can choose which ballot to keep as a receipt, they can make it appear as if they selected any combination of their choices. This prevents voters from proving to others who they voted for, making it impossible for someone to sell their vote or get coerced into voting a certain way.
+        </p>
     </div>
 
-    <p><strong>STEP 2:</strong> Once a candidate has been selected, the "Submit" button will become enabled.</p>
-    <ul>
-        <li>Only one vote can be cast.</li>
-        <li>Once a selection is made, the other boxes will become disabled.</li>
-        <li>To change your selection, you must first deselect your current choice.</li>
-    </ul>
-
-    <div class="image-container">
-        <img src="/images/step2.png" alt="Example Ballot Selection">
+    <div class="section">
+        <h2>Why?</h2>
+        <div class="sub-section">
+            <p><strong>Anonymity:</strong> Each voter's vote is secret, preventing vote-selling and coercion.</p>
+            <p><strong>Integrity:</strong> Each voter can verify that their chosen ballot was not tampered with.</p>
+            <p><strong>Accuracy:</strong> Each voter can verify that the election result was computed correctly.</p>
+        </div>
     </div>
 
-    <p><strong>STEP 3:</strong> Now it is time to select a ballot to keep as a receipt.</p>
-    <ul>
-        <li>Select one of the three ballot buttons to keep as your receipt.</li>
-        <li>This ballot will serve as your reference to verify the integrity of your vote later.</li>
-    </ul>
+    <div class="section">
+        <h2>How?</h2>
+        <p>How to vote for <strong>Matcha</strong> as your favorite drink:</p>
 
-    <div class="image-container">
-        <img src="/images/step3.png" alt="Example Ballot Selection">
+
+        <p><strong>STEP 1:</strong> Select a blank ballot where your preferred candidate is not preselected.</p>
+        <ul>
+            <li>To avoid confusion the voting system automatically preselects each candidate once, that way the voter only selects their preferred candidate.</li>
+            <li>You can choose either <strong>Ballot 1</strong> or <strong>Ballot 2</strong> to select Matcha, as <strong>Ballot 3</strong> has already been selected.</li>
+        </ul>
+
+        <div class="image-container">
+            <img src="/images/step1.png" alt="Example Ballot Selection">
+        </div>
+
+        <p><strong>STEP 2:</strong> Once a candidate has been selected, the "Submit" button will become enabled.</p>
+        <ul>
+            <li>Only one vote can be cast.</li>
+            <li>Once a selection is made, the other boxes will become disabled.</li>
+            <li>To change your selection, you must first deselect your current choice.</li>
+        </ul>
+
+        <div class="image-container">
+            <img src="/images/step2.png" alt="Example Ballot Selection">
+        </div>
+
+        <p><strong>STEP 3:</strong> Now it is time to select a ballot to keep as a receipt.</p>
+        <ul>
+            <li>Select one of the three ballot buttons to keep as your receipt.</li>
+            <li>This ballot will serve as your reference to verify the integrity of your vote later.</li>
+        </ul>
+
+        <div class="image-container">
+            <img src="/images/step3.png" alt="Example Ballot Selection">
+        </div>
+
+        <p><strong>STEP 4:</strong> Once a ballot has been selected, the "Submit" button will become enabled.</p>
+        <ul>
+            <li>Only one ballot can be kept.</li>
+            <li>Once a selection is made, the other buttons will become disabled.</li>
+            <li>To change your selection, you must first deselect your current choice.</li>
+        </ul>
+
+        <div class="image-container">
+            <img src="/images/step4.png" alt="Example Ballot Selection">
+        </div>
+
+        <p><strong>STEP 5:</strong> Save your ballot as a PDF or email a copy to yourself.</p>
+        <ul>
+            <li>The ballot ID and encrypted order will be visible.</li>
+            <li>The ballot ID is required to verify your vote on the blockchain.</li>
+        </ul>
+
+        <div class="image-container">
+            <img src="/images/step5.png" alt="Example Ballot Selection">
+        </div>
     </div>
+</main>
+<footer>
+    <p>&copy; 2025 Secure and Transparent Voting System</p>
+</footer>
 
-    <p><strong>STEP 4:</strong> Once a ballot has been selected, the "Submit" button will become enabled.</p>
-    <ul>
-        <li>Only one ballot can be kept.</li>
-        <li>Once a selection is made, the other buttons will become disabled.</li>
-        <li>To change your selection, you must first deselect your current choice.</li>
-    </ul>
-
-    <div class="image-container">
-        <img src="/images/step4.png" alt="Example Ballot Selection">
-    </div>
-
-    <p><strong>STEP 5:</strong> Save your ballot as a PDF or email a copy to yourself.</p>
-    <ul>
-        <li>The ballot ID and encrypted order will be visible.</li>
-        <li>The ballot ID is required to verify your vote on the blockchain.</li>
-    </ul>
-
-    <div class="image-container">
-        <img src="/images/step5.png" alt="Example Ballot Selection">
-    </div>
-</div>
 
 </body>
 </html>

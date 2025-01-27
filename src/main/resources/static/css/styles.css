@@ -2,6 +2,7 @@
     --main-green-color: #28a745;
     --main-darker-green-color: #218838;
 }
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f4f8;
@@ -19,6 +20,7 @@ header {
     width: 100%;
     position: absolute;
     top: 0;
+    color: white;
 }
 
 footer {
@@ -27,7 +29,8 @@ footer {
     width: 100%;
     background-color: var(--main-green-color);
     padding: 20px 0px;
-    text-align: center
+    text-align: center;
+    color: white;
 }
 
 main {
@@ -98,30 +101,7 @@ button:active {
     transform: scale(1.02);
 }
 
-
-.footer {
-    margin-top: 20px;
-    font-size: 0.9em;
-    color: #777;
-}
 .error-message {
     color: red;
     margin-top: 10px;
-}
-
-.election-button {
-    background-color: var(--main-green-color);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    text-decoration: none;
-    display: inline-block;
-    width: unset;
-}
-
-.election-button:hover {
-    background-color: #45a049;
 }

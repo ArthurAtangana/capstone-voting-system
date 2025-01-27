@@ -18,7 +18,7 @@
 <body>
 <header>
   <a href="/home">
-    <img src="https://fakeimg.pl/150x80">
+    <img src="/images/logo.png" style="width: 200px;padding: 10px;">
   </a>
 </header>
 <main>
@@ -37,7 +37,7 @@
       <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
       <button type="submit">Login</button>
     </form>
-    <form action="/register/sign-in-key" method="get">
+    <form action="/registration-key" method="get">
       <button type="submit">Register</button>
     </form>
   </div>

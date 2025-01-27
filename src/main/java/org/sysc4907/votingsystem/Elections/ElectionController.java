@@ -28,7 +28,11 @@ public class ElectionController {
     }
 
     @GetMapping("/create-election")
-    public String showElectionForm(Model model) {
+    public String showElectionForm(Model model, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username == null || ! session.getAttribute("accountType").equals("admin")) {
+            return "redirect:/home";
+        }
         model.addAttribute("electionForm", new ElectionForm());
         return "poll-configuration";
     }
