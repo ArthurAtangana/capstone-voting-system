@@ -35,15 +35,6 @@ public class ThreeBallot {
         thirdBallot = new Ballot(numCandidates, candidateOrder, premarked[2], orderKeys);
     }
 
-    public Ballot selectReceipt(int ballotNumber) {
-        return switch (ballotNumber) {
-            case 1 -> firstBallot;
-            case 2 -> secondBallot;
-            case 3 -> thirdBallot;
-            default -> null;
-        };
-    }
-
     public Ballot getFirstBallot() {
         return firstBallot;
     }
