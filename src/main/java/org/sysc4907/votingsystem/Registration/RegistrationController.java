@@ -55,15 +55,14 @@ public class RegistrationController {
 
         if (registrationResponse != RegistrationService.Response.REG_FAILED) {
             model.addAttribute("name", userName);
+            session.setAttribute("username", userName);
             session.removeAttribute("validRegKey");
             // redirect to the appropriate page according to the type of account.
             switch (registrationResponse) {
                 case VOTER_REG_SUCCESS -> {
-                    session.setAttribute("username", userName);
                     session.setAttribute("accountType", "voter");
                     return "redirect:/home";}
                 case ADMIN_REG_SUCCESS -> {
-                    session.setAttribute("username", userName);
                     session.setAttribute("accountType", "admin");
                     return "redirect:/home";}
                 default ->  throw new RuntimeException("Unexpected response from registration service: " + registrationResponse.name());
