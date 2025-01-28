@@ -4,19 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poll Configuration</title>
+    <link rel="stylesheet" href="/css/styles.css">
     <style>
-        body, h1, label, input[type="text"], input[type="date"], input[type="time"], textarea, button {
-            font-family: 'Roboto', sans-serif;
+        input[type="text"], input[type="date"], input[type="time"], textarea {
+            font-family: inherit;
         }
 
-        body {
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        header, footer {
+            position: unset;
+        }
+        main {
+            height: unset;
+            margin: 20px;
         }
 
         .container {
@@ -76,29 +75,6 @@
             height: 80px;
         }
 
-        #submitButton {
-            background: linear-gradient(45deg, #4CAF50, #81C784);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            padding: 12px 24px;
-            font-size: 1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.2s ease;
-            width: 100%;
-        }
-
-        #submitButton:hover {
-            background: linear-gradient(45deg, #43A047, #66BB6A);
-            transform: scale(1.05);
-        }
-
-        #submitButton:active {
-            background: #388E3C;
-            transform: scale(1.03);
-        }
-
         /* Styling for file preview */
         #filePreview {
             margin-top: 15px;
@@ -124,61 +100,77 @@
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>Configure New Poll</h1>
+<header>
+    <a href="/home">
+        <img src="/images/logo.png"  style="width: 200px;padding: 10px;">
+    </a>
+    <div class="user-details" th:if="${username}">
+        <img src="/images/user_icon.png" style="width=25px;height=25px">
+        <p th:text="${username}"></p>
+    </div>
+</header>
+<main>
+    <div class="container">
+        <h1>Configure New Poll</h1>
 
-    <form th:action="@{/election}" th:object="${electionForm}" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="name">Name of Election</label>
-            <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></p>
-            <input type="text" id="name" name="name" th:value="*{name}" placeholder="Enter election name" required>
-        </div>
-
-        <div class="form-group">
-            <label for="startDate">Start Date & Time</label>
-            <div class="error">
-                <p th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></p>
-                <p th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></p>
+        <form th:action="@{/election}" th:object="${electionForm}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">Name of Election</label>
+                <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></p>
+                <input type="text" id="name" name="name" th:value="*{name}" placeholder="Enter election name" required>
             </div>
-            <div class="date-time-group">
-                <input type="date" id="startDate" th:value="*{startDate}" name="startDate" required>
-                <input type="time" id="startTime" th:value="*{startTime}" name="startTime" required>
-            </div>
-        </div>
 
-        <div class="form-group">
-            <label for="endDate">End Date & Time</label>
-            <div class="error">
-                <p th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></p>
-                <p th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}"></p>
+            <div class="form-group">
+                <label for="startDate">Start Date & Time</label>
+                <div class="error">
+                    <p th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></p>
+                    <p th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></p>
+                </div>
+                <div class="date-time-group">
+                    <input type="date" id="startDate" th:value="*{startDate}" name="startDate" required>
+                    <input type="time" id="startTime" th:value="*{startTime}" name="startTime" required>
+                </div>
             </div>
-            <div class="date-time-group">
-                <input type="date" id="endDate" th:value="*{endDate}" name="endDate" required>
-                <input type="time" id="endTime" th:value="*{endTime}" name="endTime" required>
+
+            <div class="form-group">
+                <label for="endDate">End Date & Time</label>
+                <div class="error">
+                    <p th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></p>
+                    <p th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}"></p>
+                </div>
+                <div class="date-time-group">
+                    <input type="date" id="endDate" th:value="*{endDate}" name="endDate" required>
+                    <input type="time" id="endTime" th:value="*{endTime}" name="endTime" required>
+                </div>
             </div>
-        </div>
 
 
-        <div class="form-group">
-            <label for="candidates">List of Candidates</label>
-            <p th:if="${#fields.hasErrors('candidates')}" th:errors="*{candidates}" class="error"></p>
-            <textarea id="candidates" name="candidates" th:text="*{candidates}" placeholder="Enter each candidate's name on a new line" required></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="voterKeys">Eligible Voter Registration Keys</label>
-            <div class="custom-file-input">
-                <label class="file-upload-label">
-                    <p th:if="${#fields.hasErrors('voterKeys')}" th:errors="*{voterKeys}" class="error"></p>
-                    <input type="file" id="voterKeys" name="voterKeys" th:name="voterKeys" accept=".txt" onchange="previewFile()" style="display: none;">
-                    <button type="button" onclick="document.getElementById('voterKeys').click()">Choose File (.txt)</button>
-                </label>
-                <div id="filePreview" style="display:none;"></div>
+            <div class="form-group">
+                <label for="candidates">List of Candidates</label>
+                <p th:if="${#fields.hasErrors('candidates')}" th:errors="*{candidates}" class="error"></p>
+                <textarea id="candidates" name="candidates" th:text="*{candidates}" placeholder="Enter each candidate's name on a new line" required></textarea>
             </div>
-        </div>
-        <button type="submit" id="submitButton">Submit</button>
-    </form>
-</div>
+
+            <div class="form-group">
+                <span style="display: flex; align-items: center; gap: 10px;">
+                    <label style= "margin-bottom: unset" for="voterKeys">Eligible Voter Registration Keys</label>
+                    <button type="button" style="font-size: 0.7em;width: fit-content; padding:10px; margin-top: unset" onclick="document.getElementById('voterKeys').click()">Choose File (.txt)</button>
+                </span>
+                <div class="custom-file-input">
+                    <label class="file-upload-label">
+                        <p th:if="${#fields.hasErrors('voterKeys')}" th:errors="*{voterKeys}" class="error"></p>
+                        <input type="file" id="voterKeys" name="voterKeys" th:name="voterKeys" accept=".txt" onchange="previewFile()" style="display: none;">
+                    </label>
+                    <div id="filePreview" style="display:none;"></div>
+                </div>
+            </div>
+            <button type="submit" id="submitButton">Submit</button>
+        </form>
+    </div>
+</main>
+<footer>
+    <p>&copy; 2025 Secure and Transparent Voting System</p>
+</footer>
 
 <script>
     function previewFile() {

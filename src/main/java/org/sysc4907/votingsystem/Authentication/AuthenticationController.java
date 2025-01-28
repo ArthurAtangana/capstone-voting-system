@@ -37,10 +37,8 @@ public class AuthenticationController {
     public String showHomePage(HttpSession session, Model model) {
         String username = (String) session.getAttribute("username");
         if (username == null) {
-            model.addAttribute("isLoggedIn", false);
-            return "home-page";
+            return "login-page";
         }
-        model.addAttribute("isLoggedIn", true);
         model.addAttribute("username", username);
         LocalDateTime now = LocalDateTime.now();
 
@@ -64,13 +62,11 @@ public class AuthenticationController {
             model.addAttribute("electionStatus", electionStatus);
             model.addAttribute("dateTimeInfo", dateTimeInfo);
         } else {
-            model.addAttribute("errorMessage", "No poll has been configured yet!");
+            if (session.getAttribute("accountType").equals("voter")) model.addAttribute("errorMessage", "No poll has been configured yet!");
         }
+        model.addAttribute("accountType", session.getAttribute("accountType"));
 
-        if (session.getAttribute("accountType").equals("admin")) {
-            return "successful-admin-login";
-        }
-        return "successful-voter-login";
+        return "successful-login";
     }
 
     /**
@@ -100,7 +96,7 @@ public class AuthenticationController {
             }
             default -> {
                 model.addAttribute("errorMessage", "Incorrect username/password. Try again!");
-                return "home-page";
+                return "login-page";
             }
         }
     }

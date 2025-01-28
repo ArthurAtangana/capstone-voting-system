@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,29 +30,27 @@ import java.util.List;
  * This Controller is individuated from the ElectionController because of
  * its dependency on the FabricGatewayService bean.
  */
-@ConditionalOnProperty(name = "fabric.enabled", havingValue = "true")
+//@ConditionalOnProperty(name = "fabric.enabled", havingValue = "true")
 @Controller
 public class LedgerController {
 
     private final ElectionService electionService;
+
+    @Value("${fabric.enabled:false}")
+    private boolean fabricEnabled;
 
     @Autowired
     public LedgerController(ElectionService electionService) {
         this.electionService = electionService;
     }
 
-    @Autowired
+    @Autowired(required = false)
     private FabricGatewayService fabricGatewayService;
 
     @GetMapping("/ledger")
     public String showElectionLedger(Model model, HttpSession session) {
-
         /* Preserve election details here */
-
-        String username = (String) session.getAttribute("username");
-
-        model.addAttribute("isLoggedIn", username != null);
-        model.addAttribute("username", username);
+        model.addAttribute("username", session.getAttribute("username"));
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -67,11 +66,14 @@ public class LedgerController {
             model.addAttribute("currentCountdown", election.getElectionCountdown());
             model.addAttribute("postElection", election.END_DATE_TIME.isBefore(now));
 
-            System.out.println(model.getAttribute("isLoggedIn"));
-            System.out.println(election.END_DATE_TIME);
-
         } else {
             model.addAttribute("errorMessage", "No poll has been configured yet!");
+            return "ledger-all-votes";
+        }
+
+        if (!fabricEnabled){
+            model.addAttribute("errorMessage", "Fabric functionality is currently disabled.");
+            return "ledger-all-votes";
         }
 
         /* GET the Ledger and Tabulate */

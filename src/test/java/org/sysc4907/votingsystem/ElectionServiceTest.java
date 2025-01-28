@@ -212,9 +212,9 @@ public class ElectionServiceTest {
     public void testEndTimeBeforeStartTime() {
         // endTime before startTime on the same day
         startDate = currentDate.plusDays(1);
-        startTime = currentTime.plusHours(2);
+        startTime = LocalTime.of(12, 0);
         endDate = currentDate.plusDays(1);
-        endTime = currentTime.plusHours(1);
+        endTime = LocalTime.of(11, 0);
         when(electionForm.getStartDateTime()).thenReturn(LocalDateTime.of(startDate, startTime));
         when(electionForm.getEndDateTime()).thenReturn(LocalDateTime.of(endDate, endTime));
         boolean isValid = electionService.validateDateTime(electionForm, bindingResult);

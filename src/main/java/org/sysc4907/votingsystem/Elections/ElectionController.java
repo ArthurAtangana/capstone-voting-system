@@ -28,7 +28,11 @@ public class ElectionController {
     }
 
     @GetMapping("/create-election")
-    public String showElectionForm(Model model) {
+    public String showElectionForm(Model model, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username == null || ! session.getAttribute("accountType").equals("admin")) {
+            return "redirect:/home";
+        }
         model.addAttribute("electionForm", new ElectionForm());
         return "poll-configuration";
     }
@@ -49,11 +53,7 @@ public class ElectionController {
     }
     @GetMapping("/view-election-details")
     public String showElectionDetailsPage(Model model, HttpSession session) {
-
-        String username = (String) session.getAttribute("username");
-
-        model.addAttribute("isLoggedIn", username != null);
-        model.addAttribute("username", username);
+        model.addAttribute("username", session.getAttribute("username"));
         if (session.getAttribute("accountType") != null && session.getAttribute("accountType").equals("voter")) {
             model.addAttribute("voter", true);
         }
@@ -72,7 +72,6 @@ public class ElectionController {
             model.addAttribute("numVotesCast", electionService.getNumVotesCast());
                 model.addAttribute("tally", electionService.getTally());
 
-            System.out.println(model.getAttribute("isLoggedIn"));
             System.out.println(election.END_DATE_TIME);
 
         } else {

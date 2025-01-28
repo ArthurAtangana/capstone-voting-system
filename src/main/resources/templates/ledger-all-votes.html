@@ -9,28 +9,19 @@
     <style>
         /* General Styling */
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0fdf4; /* Soft green background */
             color: #2e7d32;
             display: unset;
         }
-        header {
-            padding: 15px;
-            text-align: center;
-            background: #a2eca5;
-            color: #336e33;
-            font-size: 30px;
-            min-height: 40px;
+        header, footer {
+            position: unset;
         }
-        .home-btn {
-            position: absolute;
-            top: 0;
-            left: 0;
+        main {
+            height: unset;
+            margin: 20px;
+        }
+        button {
             width: fit-content;
         }
-
         .user-details {
             position: absolute;
             top: 0;
@@ -88,22 +79,22 @@
         }
 
         /* Button Styling */
-        button {
+        /*button {
             display: block;
             margin: 20px 20px;
             padding: 10px 20px;
-            background-color: #66bb6a; /* Green button */
+            background-color: #66bb6a;
             color: white;
             border: none;
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s;
-        }
+        }*/
 
-        button:hover {
-            background-color: #43a047; /* Darker green on hover */
-        }
+        /*button:hover {
+            background-color: #43a047;
+        }*/
         .details-container {
             display: flex;
             flex-direction: column;
@@ -113,42 +104,29 @@
             height: 100%;
             margin: auto;
         }
-
-        .graph-container {
+        #download-container {
             display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            align-content: center;
-            justify-content: center;
             align-items: center;
-
-            background-color: #b5edc2;
-            border-radius: 25px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            flex-direction: row;
+            justify-content: center;
             gap: 20px;
-        }
-        .chartBox {
-            width: 400px;
-            padding: 20px;
-            border-radius: 20px;
-            border: solid 3px rgb(82, 175, 82);
-            background: white;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <header>
-        <button th:if="${isLoggedIn}" class="home-btn" onclick="window.location.href='/home'">Back To Elections</button>
-        <button th:if="${!isLoggedIn}" class="home-btn" onclick="window.location.href='/home'">Login/Register</button>
-        <div class="user-details" th:if="${isLoggedIn}">
-            <img src="/images/user_icon.png" style="width=25px;height=25px">
-            <p th:text="${username}"></p>
-        </div>
-
-        <h1 th:if="${election}" th:text="|Ledger for Election: ${election.NAME}|"></h1>
-        <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
-    </header>
+<header>
+    <a href="/home">
+        <img src="/images/logo.png"  style="width: 200px;padding: 10px;">
+    </a>
+    <div class="user-details" th:if="${username}">
+        <img src="/images/user_icon.png" style="width=25px;height=25px">
+        <p th:text="${username}"></p>
+    </div>
+</header>
+<main>
+    <h1 th:if="${election}" th:text="|Ledger for Election: ${election.NAME}|"></h1>
+    <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
 
     <div th:if="${election}" class="details-container">
         <div th:if="${currentCountdown}">
@@ -186,11 +164,15 @@
         </div>
         -->
         <div class="ledger-container">
-            <h2>Election Ledger</h2>
-            <!-- Click me to download Ledger JSON -->
-            <a href="/download-ledger" id="download-ledger">
-                <button>Download Ledger (JSON)</button>
-            </a>
+            <div id="download-container">
+                <h2>Election Ledger</h2>
+                <!-- Click me to download Ledger JSON -->
+                <a href="/download-ledger" id="download-ledger">
+                    <button>Download Ledger (JSON)</button>
+                </a>
+            </div>
+
+
             <!-- Input field for filtering by Ballot ID -->
             <label for="filter-by-ballot-id">Enter Ballot ID to Filter Results: </label>
             <input type="text" id="filter-by-ballot-id" placeholder="Ballot ID">
@@ -210,6 +192,10 @@
             </table>
         </div>
     </div>
+</main>
+<footer>
+    <p>&copy; 2025 Secure and Transparent Voting System</p>
+</footer>
 
     <script>
     // Register event listener to filter table by Ballot ID string
