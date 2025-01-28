@@ -116,12 +116,12 @@
 </head>
 <body>
 <header>
-<!--        <button th:if="${isLoggedIn}" class="home-btn" onclick="window.location.href='/home'">Back To Elections</button>-->
-<!--        <button th:if="${!isLoggedIn}" class="home-btn" onclick="window.location.href='/home'">Login/Register</button>-->
+<!--        <button th:if="${username}" class="home-btn" onclick="window.location.href='/home'">Back To Elections</button>-->
+<!--        <button th:if="${!username}" class="home-btn" onclick="window.location.href='/home'">Login/Register</button>-->
     <a href="/home">
         <img src="/images/logo.png"  style="width: 200px;padding: 10px;">
     </a>
-    <div class="user-details" th:if="${isLoggedIn}">
+    <div class="user-details" th:if="${username}">
         <img src="/images/user_icon.png" style="width=25px;height=25px">
         <p th:text="${username}"></p>
     </div>
@@ -158,9 +158,9 @@
         </table>
         <div id="btn-container">
             <!-- TODO: make this available only after election is over with this:
-            <button th:if="${isLoggedIn} and ${postElection}" onclick="window.location.href='/ledger'" >View Election Ledger</button>-->
-            <button th:if="${isLoggedIn}" onclick="window.location.href='/ledger'" >View Election Ledger</button>
-            <button th:if="${isLoggedIn} and !${currentCountdown} and !${postElection} and ${voter}" onclick="window.location.href='/threeBallot'" >Cast Your Vote</button>
+            <button th:if="${username} and ${postElection}" onclick="window.location.href='/ledger'" >View Election Ledger</button>-->
+            <button th:if="${username}" onclick="window.location.href='/ledger'" >View Election Ledger</button>
+            <button th:if="${username} and !${currentCountdown} and !${postElection} and ${voter}" onclick="window.location.href='/threeBallot'" >Cast Your Vote</button>
         </div>
 
     </section>

@@ -39,7 +39,6 @@ public class AuthenticationController {
         if (username == null) {
             return "login-page";
         }
-        model.addAttribute("isLoggedIn", true);
         model.addAttribute("username", username);
         LocalDateTime now = LocalDateTime.now();
 
