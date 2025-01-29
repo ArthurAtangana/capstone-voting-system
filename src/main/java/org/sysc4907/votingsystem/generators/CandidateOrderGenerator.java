@@ -30,11 +30,4 @@ public class CandidateOrderGenerator {
 
         return result;
     }
-
-    public int generateEncryptedOrder(int order) {
-        return 0;
-    }
-
-    public int generateDecryptedOrder(int order) {return 0;}
-
 }
