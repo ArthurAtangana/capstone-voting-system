@@ -1,11 +1,44 @@
+:root {
+    --main-green-color: #28a745;
+    --main-darker-green-color: #218838;
+}
+
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f4f8;
+    background-color: #f0fdf4; /* Soft green background */
     margin: 0;
-    display: flex;
+    display: block;
+    width: 100%;
     justify-content: center;
     align-items: center;
     height: 100vh;
+}
+
+header {
+    background-color: var(--main-green-color);
+    min-height: fit-content;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    color: white;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: var(--main-green-color);
+    padding: 20px 0px;
+    text-align: center;
+    color: white;
+}
+
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    flex-direction: column;
 }
 
 .container {
@@ -45,7 +78,7 @@ input[type="password"] {
 }
 
 button {
-    background-color: #28a745;
+    background-color: var(--main-green-color);
     border: none;
     border-radius: 8px;
     color: white;
@@ -59,7 +92,7 @@ button {
 }
 
 button:hover {
-    background-color: #218838;
+    background-color: var(--main-darker-green-color);
     transform: scale(1.05);
 }
 
@@ -68,30 +101,7 @@ button:active {
     transform: scale(1.02);
 }
 
-
-.footer {
-    margin-top: 20px;
-    font-size: 0.9em;
-    color: #777;
-}
 .error-message {
     color: red;
     margin-top: 10px;
-}
-
-.election-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    text-decoration: none;
-    display: inline-block;
-    width: unset;
-}
-
-.election-button:hover {
-    background-color: #45a049;
 }

@@ -21,29 +21,33 @@ public class RegistrationController {
     private RegistrationService registrationService;
     @Autowired
     private ElectionService electionService;
-    @GetMapping("/register/sign-in-key")
+    @GetMapping("/registration-key")
     public String showRegistrationSignInKeyPage(Model model) {
         if (!electionService.electionIsConfigured()) {
             model.addAttribute("errorMessage", "No poll has been configured yet!");
-            return "home-page";
+            return "login-page";
         }
-        return "registration-sign-in-key-page";
+        return "registration-key-page";
     }
 
-    @GetMapping("/register/credentials")
-    public String showRegistrationCredentialsPage() { return "registration-credentials-page";}
+    @GetMapping("/register-credentials")
+    public String showRegistrationCredentialsPage(HttpSession session) {
+        if (session.getAttribute("validRegKey") != null) return "registration-credentials-page";
+        return "redirect:/home";
+    }
 
-    @PostMapping("/register/sign-in-key")
-    public String submitKey(@RequestParam("signInKey") Integer key, Model model) {
+    @PostMapping("/registration-key")
+    public String submitKey(@RequestParam("registrationKey") Integer key, Model model, HttpSession session) {
         if (registrationService.submitSignInKey(key)) {
-            return "redirect:/register/credentials";
+            session.setAttribute("validRegKey", true);
+            return "redirect:/register-credentials";
         } else {
             model.addAttribute("errorMessage", "Invalid sign-in key. Please try again.");
         }
-        return "registration-sign-in-key-page";
+        return "registration-key-page";
     }
 
-    @PostMapping("/register/credentials")
+    @PostMapping("/register-credentials")
     public String createAccount(@RequestParam("userName") String userName,
                                 @RequestParam("password") String password, Model model, HttpSession session) {
 
@@ -51,20 +55,20 @@ public class RegistrationController {
 
         if (registrationResponse != RegistrationService.Response.REG_FAILED) {
             model.addAttribute("name", userName);
+            session.setAttribute("username", userName);
+            session.removeAttribute("validRegKey");
             // redirect to the appropriate page according to the type of account.
             switch (registrationResponse) {
                 case VOTER_REG_SUCCESS -> {
-                    session.setAttribute("username", userName);
                     session.setAttribute("accountType", "voter");
                     return "redirect:/home";}
                 case ADMIN_REG_SUCCESS -> {
-                    session.setAttribute("username", userName);
                     session.setAttribute("accountType", "admin");
                     return "redirect:/home";}
                 default ->  throw new RuntimeException("Unexpected response from registration service: " + registrationResponse.name());
             }
         } else {
-            return "redirect:/register/credentials";
+            return "redirect:/register-credentials";
         }
 
 

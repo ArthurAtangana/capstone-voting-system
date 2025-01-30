@@ -35,15 +35,6 @@ public class Ballot {
     }
 
     /**
-     * cast ballot
-     * @return true if ballot was cast successfully, false otherwise.
-     */
-    public boolean castBallot() {
-        // interact with blockchain
-        return false;
-    }
-
-    /**
      * get a list of where the boxes are marked or not.
      * @return array of whether a mark exists or not.
      */

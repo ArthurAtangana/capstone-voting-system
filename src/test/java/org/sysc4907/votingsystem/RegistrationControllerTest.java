@@ -1,9 +1,11 @@
 package org.sysc4907.votingsystem;
 
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
 import org.sysc4907.votingsystem.Elections.ElectionService;
@@ -36,78 +38,82 @@ public class RegistrationControllerTest {
     private ElectionService electionService;
 
     /**
-     * Verifying GET /register/sign-in-key endpoint has OK status and returns expected template name.
+     * Verifying GET /registration-key endpoint has OK status and returns expected template name.
      */
     @Test
-    public void testShowRegistrationSignInKeyPage() throws Exception {
+    public void testShowRegistrationKeyPage() throws Exception {
         // Registration when poll is not yet configured
-        mockMvc.perform(get("/register/sign-in-key"))
+        mockMvc.perform(get("/registration-key"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("home-page"));
+                .andExpect(view().name("login-page"));
 
         // Registration when poll has been configured
         when(electionService.electionIsConfigured()).thenReturn(true); // mocking that poll has been configured
-        mockMvc.perform(get("/register/sign-in-key"))
+        mockMvc.perform(get("/registration-key"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("registration-sign-in-key-page"));
+                .andExpect(view().name("registration-key-page"));
     }
     /**
      * Verifying GET /register/credentials endpoint has OK status and returns expected template name.
      */
     @Test
     public void testShowRegistrationCredentialsPage() throws Exception {
-        mockMvc.perform(get("/register/credentials"))
+        // Create a MockHttpSession and add attributes if needed
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("validRegKey", true);
+        mockMvc.perform(get("/register-credentials").session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("registration-credentials-page"));
     }
     /**
-     * Verifying POST /register/sign-in-key endpoint has OK status and returns expected template name.
+     * Verifying POST /registration-key endpoint has OK status and returns expected template name.
      */
     @Test
     public void testSubmitKeyValid() throws Exception {
         when(registrationService.submitSignInKey(anyInt())).thenReturn(true); // mocking valid key value
 
-        mockMvc.perform(post("/register/sign-in-key")
-                        .param("signInKey", "123"))
+        mockMvc.perform(post("/registration-key")
+                        .param("registrationKey", "123"))
                 .andExpect(status().is3xxRedirection()) // we expect redirection to credentials page
-                .andExpect(redirectedUrl("/register/credentials"));
+                .andExpect(redirectedUrl("/register-credentials"));
     }
 
     @Test
     public void testSubmitKeyInvalid() throws Exception {
         when(registrationService.submitSignInKey(anyInt())).thenReturn(false); // mocking invald key value
 
-        mockMvc.perform(post("/register/sign-in-key")
-                        .param("signInKey", "123"))
+        mockMvc.perform(post("/registration-key")
+                        .param("registrationKey", "123"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("registration-sign-in-key-page"))
+                .andExpect(view().name("registration-key-page"))
                 .andExpect(model().attributeExists("errorMessage"))
                 .andExpect(model().attribute("errorMessage", "Invalid sign-in key. Please try again."));
     }
 
     @Test
     public void testCreateAccountVoter() throws Exception {
-
         when(registrationService.submitAccountCredentials(anyString(), anyString())).thenReturn(RegistrationService.Response.VOTER_REG_SUCCESS);
 
-        mockMvc.perform(post("/register/credentials")
+        mockMvc.perform(post("/register-credentials")
                         .param("userName", "userName")
                         .param("password", "password"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("successful-voter-login"))
-                .andExpect(model().attribute("name", "userName"));
+                .andExpect(status().is3xxRedirection()) // we expect redirection to home page
+                .andExpect(redirectedUrl("/home"))
+                .andExpect(request().sessionAttribute("username", "userName"))
+                .andExpect(request().sessionAttribute("accountType", "voter"));
     }
 
     @Test
     public void testCreateAccountAdmin() throws Exception {
         when(registrationService.submitAccountCredentials(anyString(), anyString())).thenReturn(RegistrationService.Response.ADMIN_REG_SUCCESS);
 
-        mockMvc.perform(post("/register/credentials")
+        mockMvc.perform(post("/register-credentials")
                         .param("userName", "adminName")
                         .param("password", "adminPass"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("successful-admin-login"))
-                .andExpect(model().attribute("name", "adminName"));
+                .andExpect(status().is3xxRedirection()) // we expect redirection to home page
+                .andExpect(redirectedUrl("/home"))
+                .andExpect(request().sessionAttribute("username", "adminName"))
+                .andExpect(request().sessionAttribute("accountType", "admin"));
     }
 }
 
