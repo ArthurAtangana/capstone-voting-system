@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -109,9 +109,10 @@
         <a th:if="${election}" href="/ledger">Ledger</a>
         <a th:if="${election}" href="/">Election Results (update link!)</a>
     </nav>
-    <div class="user-details" th:if="${username}">
+    <div class="user-details" >
+
         <i class="fa-solid fa-circle-user"></i>
-        <p th:text="${username}"></p>
+        <p sec:authentication="name"></p>
         <p style="margin: 15px">|</p>
         <a id="logout" th:href="@{/logout}" title="Logout">
             <div style="display: flex; align-items: center">
@@ -145,8 +146,8 @@
                 <th># of Eligible Voters</th>
                 <td th:text="${election.getNumberOfVoterKeys()}"></td>
             </tr>
-            <!-- <tr th:if="!${currentCountdown}">  -->
-            <tr>
+
+            <tr th:if="!${currentCountdown}">
                 <th># of Votes</th>
                 <td th:text="${election.numVotesCast()}"></td>
             </tr>
@@ -154,14 +155,15 @@
         <div id="btn-container">
             <!-- TODO: make this available only after election is over with this:
             <button th:if="${username} and ${postElection}" onclick="window.location.href='/ledger'" >View Election Ledger</button>-->
-            <button th:if="${username}" onclick="window.location.href='/ledger'" >View Election Ledger</button>
-            <button th:if="${username} and !${currentCountdown} and !${postElection} and ${voter}" onclick="window.location.href='/threeBallot'" >Cast Your Vote</button>
+            <button onclick="window.location.href='/ledger'" >View Election Ledger</button>
+            <button sec:authorize="hasRole('VOTER')" th:if="!${currentCountdown} and !${postElection}" onclick="window.location.href='/threeBallot'">Cast Your Vote</button>
         </div>
 
     </section>
 
     <section>
-        <!--<div class="poll-results-container" th:if="${postElection}"> -->
+        <!-- TODO: make this available only after election is over with this:
+        <div class="poll-results-container" th:if="${postElection}"> -->
         <div class="poll-results-container">
             <h2 style="color: var(--logo-writing-color)">Poll Results</h2>
             <div class="graph-container">
