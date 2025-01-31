@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -115,9 +115,9 @@
         <a th:if="${election}" class="active" href="/ledger">Ledger</a>
         <a th:if="${election}" href="/">Election Results (update link!)</a>
     </nav>
-    <div class="user-details" th:if="${username}">
+    <div class="user-details" >
         <i class="fa-solid fa-circle-user"></i>
-        <p th:text="${username}"></p>
+        <p sec:authentication="name"></p>
         <p style="margin: 15px">|</p>
         <a id="logout" th:href="@{/logout}" title="Logout">
             <div style="display: flex; align-items: center">
