@@ -28,6 +28,8 @@ public class AuthenticationController {
     @Autowired
     private ElectionService electionService;
 
+    private final RateLimiter rateLimiter = new RateLimiter();
+
     /**
      * Displays the home page of the application.
      *
@@ -82,6 +84,12 @@ public class AuthenticationController {
     public String compare(@RequestParam("userName") String userName,
                           @RequestParam("password") String password, Model model, HttpSession session) {
 
+        long attemptsRemaining = rateLimiter.getAvailableTokens(userName);
+        if (!rateLimiter.tryConsume(userName)) {
+            model.addAttribute("errorMessage", "Too many failed attempts. Please try again in 1 minute.");
+            return "login-page";
+        }
+
         model.addAttribute("username", userName);
         AuthenticationService.Response response = authenticationService.authenticate(userName, password);
         switch (response){
@@ -95,7 +103,7 @@ public class AuthenticationController {
                 return "redirect:/home";
             }
             default -> {
-                model.addAttribute("errorMessage", "Incorrect username/password. Try again!");
+                model.addAttribute("errorMessage", "Invalid credentials: " + attemptsRemaining + " attempts remaining!");
                 return "login-page";
             }
         }
