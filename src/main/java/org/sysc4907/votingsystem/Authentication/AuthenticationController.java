@@ -2,6 +2,7 @@ package org.sysc4907.votingsystem.Authentication;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,16 +16,13 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Controller class responsible for handling authentication-related requests.
- * This class provides endpoints for login, authentication, and showing the home page.
+ * This class provides endpoints for login, and showing the home page.
  *
  * @author Victoria Malouf
  * @author Jasmine Gad El Hak
  */
 @Controller
 public class AuthenticationController {
-    @Autowired
-    private AuthenticationService authenticationService;
-
     @Autowired
     private ElectionService electionService;
 
@@ -39,29 +37,34 @@ public class AuthenticationController {
 
 
     /**
+     * Displays the login page of the application.
+     *
+     * @return name of login page template
+     */
+    @GetMapping("/login")
+    public String showLoginPage(@RequestParam(value = "error", required = false) String error,
+                                Model model, HttpSession session) {
+        if (error != null) {
+            model.addAttribute("errorMessage", session.getAttribute("errorMessage"));
+        }
+        return "login-page";
+    }
+
+
+    /**
      * Displays the home page of the application.
      *
      * @return name of home page template
      */
     @GetMapping("/home")
-    public String showHomePage(HttpSession session, Model model) {
-        String username = (String) session.getAttribute("username");
-
-        if (username == null) {
-            if (!electionService.electionIsConfigured()) return "login-page";
-            // if it is configured, we will continue to allow the electionName model attribute to be added!
-        } else {
-            model.addAttribute("username", username);
-        }
+    public String showHomePage(Model model, Authentication authentication) {
         LocalDateTime now = LocalDateTime.now();
-
         String electionStatus;
         String dateTimeInfo;
+
         if (electionService.electionIsConfigured()) {
             Election election = electionService.getElection();
             model.addAttribute("electionName", election.NAME);
-
-            if (username == null) return "login-page"; // once we've added the election name, we have all we need for login page
 
             if (now.isBefore(election.START_DATE_TIME)) {
                 electionStatus = "Starts on";
@@ -77,9 +80,10 @@ public class AuthenticationController {
             model.addAttribute("electionStatus", electionStatus);
             model.addAttribute("dateTimeInfo", dateTimeInfo);
         } else {
-            if (session.getAttribute("accountType").equals("voter")) model.addAttribute("errorMessage", "No poll has been configured yet!");
+            if (authentication.getAuthorities().toString().contains("VOTER")) {
+                model.addAttribute("errorMessage", "No poll has been configured yet!");
+            }
         }
-        model.addAttribute("accountType", session.getAttribute("accountType"));
 
         return "successful-login";
     }
@@ -93,37 +97,35 @@ public class AuthenticationController {
      * @param model The model object used to pass data to the view.
      * @return name of the template to display based on authentication outcome
      */
-    @PostMapping("/login")
-    public String compare(@RequestParam("userName") String userName,
-                          @RequestParam("password") String password, Model model, HttpSession session) {
+//    @PostMapping("/login")
+//    public String compare(@RequestParam("userName") String userName,
+//                          @RequestParam("password") String password, Model model, HttpSession session) {
+//
+//        model.addAttribute("username", userName);
+//        AuthenticationService.Response response = authenticationService.authenticate(userName, password);
+//        switch (response){
+//            case ADMIN_AUTH_SUCCESS -> {
+//                session.setAttribute("username", userName);
+//                session.setAttribute("accountType", "admin");
+//                return "redirect:/home";}
+//            case VOTER_AUTH_SUCCESS -> {
+//                session.setAttribute("username", userName);
+//                session.setAttribute("accountType", "voter");
+//                return "redirect:/home";}
+//            case RATE_LIMIT_EXCEEDED -> {
+//                model.addAttribute("errorMessage", "Too many failed attempts. Please try again in 1 minute.");
+//                return "login-page";}
+//            default -> {
+//                model.addAttribute("errorMessage", authenticationService.getRateLimitMessage(userName));
+//                return "login-page";}
+//        }
+//    }
 
-        model.addAttribute("username", userName);
-        AuthenticationService.Response response = authenticationService.authenticate(userName, password);
-        switch (response){
-            case ADMIN_AUTH_SUCCESS -> {
-                session.setAttribute("username", userName);
-                session.setAttribute("accountType", "admin");
-                return "redirect:/home";}
-            case VOTER_AUTH_SUCCESS -> {
-                session.setAttribute("username", userName);
-                session.setAttribute("accountType", "voter");
-                return "redirect:/home";}
-            case RATE_LIMIT_EXCEEDED -> {
-                model.addAttribute("errorMessage", "Too many failed attempts. Please try again in 1 minute.");
-                return "login-page";}
-            default -> {
-                model.addAttribute("errorMessage", authenticationService.getRateLimitMessage(userName));
-                return "login-page";}
-        }
-    }
-
-    @GetMapping("/logout")
-    public String logout(Model model, HttpSession session) {
-        session.setAttribute("username", null);
-        session.setAttribute("validKey", null);
-        // Redirect to the home page
-        return "redirect:/home";
-    }
-
-
+//    @GetMapping("/logout")
+//    public String logout(Model model, HttpSession session) {
+//        session.setAttribute("username", null);
+//        session.setAttribute("validKey", null);
+//        // Redirect to the home page
+//        return "redirect:/home";
+//    }
 }
