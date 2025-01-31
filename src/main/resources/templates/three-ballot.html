@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -34,16 +34,6 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-        }
-        .user-details {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: fit-content;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            margin: 20px;
         }
     </style>
     <script>
@@ -266,9 +256,9 @@
     <a href="/home">
         <img src="/images/logo.png"  style="width: 200px;padding: 10px;">
     </a>
-    <div class="user-details" th:if="${username}">
+    <div class="user-details">
         <img src="/images/user_icon.png" style="width=25px;height=25px">
-        <p th:text="${username}"></p>
+        <span sec:authentication="name"></span>
     </div>
 </header>
 <main>

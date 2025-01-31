@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -104,9 +104,9 @@
     <a href="/home">
         <img src="/images/logo.png"  style="width: 200px;padding: 10px;">
     </a>
-    <div class="user-details" th:if="${username}">
+    <div class="user-details">
         <img src="/images/user_icon.png" style="width=25px;height=25px">
-        <p th:text="${username}"></p>
+        <span sec:authentication="name"></span>
     </div>
 </header>
 <main>

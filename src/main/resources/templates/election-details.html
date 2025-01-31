@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,17 +22,6 @@
         }
         button {
             width: fit-content;
-        }
-
-        .user-details {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: fit-content;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            margin: 20px;
         }
 
         h1, h2 {
@@ -116,14 +105,12 @@
 </head>
 <body>
 <header>
-<!--        <button th:if="${username}" class="home-btn" onclick="window.location.href='/home'">Back To Elections</button>-->
-<!--        <button th:if="${!username}" class="home-btn" onclick="window.location.href='/home'">Login/Register</button>-->
     <a href="/home">
         <img src="/images/logo.png"  style="width: 200px;padding: 10px;">
     </a>
-    <div class="user-details" th:if="${username}">
+    <div class="user-details">
         <img src="/images/user_icon.png" style="width=25px;height=25px">
-        <p th:text="${username}"></p>
+        <span sec:authentication="name"></span>
     </div>
     <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
 </header>
@@ -150,8 +137,8 @@
                 <th># of Eligible Voters</th>
                 <td th:text="${election.getNumberOfVoterKeys()}"></td>
             </tr>
-            <!-- <tr th:if="!${currentCountdown}">  -->
-            <tr>
+
+            <tr th:if="!${currentCountdown}">
                 <th># of Votes</th>
                 <td th:text="${election.numVotesCast()}"></td>
             </tr>
@@ -159,14 +146,15 @@
         <div id="btn-container">
             <!-- TODO: make this available only after election is over with this:
             <button th:if="${username} and ${postElection}" onclick="window.location.href='/ledger'" >View Election Ledger</button>-->
-            <button th:if="${username}" onclick="window.location.href='/ledger'" >View Election Ledger</button>
-            <button th:if="${username} and !${currentCountdown} and !${postElection} and ${voter}" onclick="window.location.href='/threeBallot'" >Cast Your Vote</button>
+            <button onclick="window.location.href='/ledger'" >View Election Ledger</button>
+            <button sec:authorize="hasRole('VOTER')" th:if="!${currentCountdown} and !${postElection}" onclick="window.location.href='/threeBallot'">Cast Your Vote</button>
         </div>
 
     </section>
 
     <section>
-        <!--<div class="poll-results-container" th:if="${postElection}"> -->
+        <!-- TODO: make this available only after election is over with this:
+        <div class="poll-results-container" th:if="${postElection}"> -->
         <div class="poll-results-container">
             <h2>Poll Results</h2>
             <div class="graph-container">
