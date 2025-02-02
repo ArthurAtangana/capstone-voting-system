@@ -92,12 +92,13 @@ public class AuthenticationController {
             case VOTER_AUTH_SUCCESS -> {
                 session.setAttribute("username", userName);
                 session.setAttribute("accountType", "voter");
-                return "redirect:/home";
-            }
+                return "redirect:/home";}
+            case RATE_LIMIT_EXCEEDED -> {
+                model.addAttribute("errorMessage", "Too many failed attempts. Please try again in 1 minute.");
+                return "login-page";}
             default -> {
-                model.addAttribute("errorMessage", "Incorrect username/password. Try again!");
-                return "login-page";
-            }
+                model.addAttribute("errorMessage", authenticationService.getRateLimitMessage(userName));
+                return "login-page";}
         }
     }
 
