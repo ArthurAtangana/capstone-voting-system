@@ -26,11 +26,14 @@ public class AuthenticationService {
     public enum Response {
         ADMIN_AUTH_SUCCESS,  // Authentication successful for an admin user
         VOTER_AUTH_SUCCESS,  // Authentication successful for a voter user
-        AUTH_FAILED          // Authentication failed due to incorrect username or password
+        AUTH_FAILED,         // Authentication failed due to incorrect username or password
+        RATE_LIMIT_EXCEEDED  // Authentication failed due to too many failed attempts
     }
 
     @Autowired
     private AccountRepository accountRepository;
+
+    private final RateLimiter rateLimiter = new RateLimiter();
 
     /**
      * Authenticates a user by verifying their username and password.
@@ -46,16 +49,31 @@ public class AuthenticationService {
      */
     public Response authenticate(String userName, String password) {
 
+        if (!rateLimiter.tryConsume(userName)) {
+            return Response.RATE_LIMIT_EXCEEDED;
+        }
+
         Optional<Account> account = accountRepository.findById(userName);
 
         if (account.isPresent()) {
             Account accountFound = account.get();
             if (accountFound.getPassword().equals(password)) {
+                rateLimiter.resetBucket(userName);
                 if (accountFound instanceof AdminAccount) return Response.ADMIN_AUTH_SUCCESS;
                 if (accountFound instanceof VoterAccount) return Response.VOTER_AUTH_SUCCESS;
             }
         }
         return Response.AUTH_FAILED; // username was not present in repository, or password was incorrect
+    }
+
+    public String getRateLimitMessage(String userName) {
+        long attemptsRemaining = rateLimiter.getAvailableTokens(userName);
+        if (attemptsRemaining > 0) {
+            String s = attemptsRemaining == 1 ? "attempt" : "attempts";
+            return "Invalid credentials: " + attemptsRemaining + " " + s + " remaining!";
+        } else {
+            return "Too many failed attempts. Please try again in 1 minute.";
+        }
     }
 }
 

@@ -28,8 +28,6 @@ public class AuthenticationController {
     @Autowired
     private ElectionService electionService;
 
-    private final RateLimiter rateLimiter = new RateLimiter();
-
     /**
      * Displays the home page of the application.
      *
@@ -84,35 +82,23 @@ public class AuthenticationController {
     public String compare(@RequestParam("userName") String userName,
                           @RequestParam("password") String password, Model model, HttpSession session) {
 
-        if (!rateLimiter.tryConsume(userName)) {
-            model.addAttribute("errorMessage", "Too many failed attempts. Please try again in 1 minute.");
-            return "login-page";
-        }
-        long attemptsRemaining = rateLimiter.getAvailableTokens(userName);
-
         model.addAttribute("username", userName);
         AuthenticationService.Response response = authenticationService.authenticate(userName, password);
         switch (response){
             case ADMIN_AUTH_SUCCESS -> {
                 session.setAttribute("username", userName);
                 session.setAttribute("accountType", "admin");
-                rateLimiter.resetBucket(userName);
                 return "redirect:/home";}
             case VOTER_AUTH_SUCCESS -> {
                 session.setAttribute("username", userName);
                 session.setAttribute("accountType", "voter");
-                rateLimiter.resetBucket(userName);
-                return "redirect:/home";
-            }
+                return "redirect:/home";}
+            case RATE_LIMIT_EXCEEDED -> {
+                model.addAttribute("errorMessage", "Too many failed attempts. Please try again in 1 minute.");
+                return "login-page";}
             default -> {
-                if (attemptsRemaining > 0) {
-                    String s = attemptsRemaining == 1 ? "attempt" : "attempts";
-                    model.addAttribute("errorMessage", "Invalid credentials: " + attemptsRemaining + " " + s + " remaining!");
-                } else {
-                    model.addAttribute("errorMessage", "Too many failed attempts. Please try again in 1 minute.");
-                }
-                return "login-page";
-            }
+                model.addAttribute("errorMessage", authenticationService.getRateLimitMessage(userName));
+                return "login-page";}
         }
     }
 
