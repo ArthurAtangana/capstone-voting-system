@@ -25,4 +25,8 @@ public class RateLimiter {
     public long getAvailableTokens(String userId) {
         return buckets.getOrDefault(userId, createNewBucket()).getAvailableTokens();
     }
+
+    public void resetBucket(String userId) {
+        buckets.put(userId, createNewBucket());
+    }
 }
