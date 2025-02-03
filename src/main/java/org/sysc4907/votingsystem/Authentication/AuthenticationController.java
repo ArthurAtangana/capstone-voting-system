@@ -1,5 +1,6 @@
 package org.sysc4907.votingsystem.Authentication;
 
+import com.google.api.Http;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -32,7 +33,13 @@ public class AuthenticationController {
      * @return name of login page template
      */
     @GetMapping("/login")
-    public String showLoginPage() { return "login-page";}
+    public String showLoginPage(@RequestParam(value = "error", required = false) String error,
+                                Model model, HttpSession session) {
+        if (error != null) {
+            model.addAttribute("errorMessage", session.getAttribute("errorMessage"));
+        }
+        return "login-page";
+    }
 
 
     /**
@@ -67,12 +74,7 @@ public class AuthenticationController {
             if (authentication.getAuthorities().toString().contains("VOTER")) {
                 model.addAttribute("errorMessage", "No poll has been configured yet!");
             }
-
-            /*case RATE_LIMIT_EXCEEDED -> {
-                model.addAttribute("errorMessage", "Too many failed attempts. Please try again in 1 minute.");
-                return "login-page";}
-            default -> {
-                model.addAttribute("errorMessage", authenticationService.getRateLimitMessage(userName));*/
+        }
         return "successful-login";
     }
 }
