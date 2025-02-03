@@ -1,5 +1,6 @@
 package org.sysc4907.votingsystem.Authentication;
 
+import com.google.api.Http;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -84,7 +85,6 @@ public class AuthenticationController {
                 model.addAttribute("errorMessage", "No poll has been configured yet!");
             }
         }
-
         return "successful-login";
     }
 
