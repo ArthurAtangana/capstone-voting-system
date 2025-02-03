@@ -67,8 +67,12 @@ public class AuthenticationController {
             if (authentication.getAuthorities().toString().contains("VOTER")) {
                 model.addAttribute("errorMessage", "No poll has been configured yet!");
             }
-        }
 
+            /*case RATE_LIMIT_EXCEEDED -> {
+                model.addAttribute("errorMessage", "Too many failed attempts. Please try again in 1 minute.");
+                return "login-page";}
+            default -> {
+                model.addAttribute("errorMessage", authenticationService.getRateLimitMessage(userName));*/
         return "successful-login";
     }
 }
