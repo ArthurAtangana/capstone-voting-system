@@ -48,7 +48,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         // Paths accessible to everyone
                         .requestMatchers( "/css/**", "/images/**", "/templates/**", "/test-elections",
-                                "/set-test-election", "/registration-key", "/register-credentials").permitAll()
+                                "/set-test-election", "/registration-key", "/register-credentials",
+                                "/ledger", "/download-ledger", "/view-election-details").permitAll()
 
                         // Paths for VOTER only
                         .requestMatchers("/threeBallot", "/verify-signing-key","/submit-ballot-transactions","/fabric/**").hasRole("VOTER")
