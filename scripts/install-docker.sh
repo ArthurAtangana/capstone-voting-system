@@ -45,20 +45,17 @@ ANSI_DEFAULT="\x1b[39m"
 # Docker
 
 # Check Docker version
-DOCKER_VERSION="$(docker -v)"
-
-# Notify that Docker is already installed and print version
-if [ ! -z "$DOCKER_VERSION" ]
-then 
+if [ -f /usr/bin/docker ]
+then
+    DOCKER_VERSION="$(docker -v)"
     echo -e "Docker already installed:\t"
     echo -e "\t${DOCKER_VERSION}"
+    exit 1
 fi
 
 # Reinstall if specified; otherwise, exit.
-if [ ! -z "$DOCKER_VERSION" ] && [ "$1" == "reinstall" ]
+if [ ! -z "$DOCKER_VERSION" ] && [ "$1" != "reinstall" ]
 then
-    echo -e "Reinstalling Docker..."
-else
     echo -e "If you wish to reinstall Docker over your existing version,"
     echo -e "please rerun this script as '$ install-docker.sh reinstall'."
     echo -e "Exiting..."
