@@ -2,19 +2,17 @@
 ###############################################################################
 # install-docker.sh
 # -----------------
-# Install (or reinstall) Docker on Linux.
+# Install Docker on Linux.
 #
 # Usage:
 # ------
-# $ ./install-docker.sh [reinstall]
+# $ ./install-docker.sh 
 #
 # Optional Arguments:
-#   1. reinstall
-#        Force reinstall of Docker if extant version found
+#   NA
 # 
 # Notes:
 # ------
-#
 #
 ###############################################################################
 # Author: M. De Santis
@@ -50,15 +48,6 @@ then
     DOCKER_VERSION="$(docker -v)"
     echo -e "Docker already installed:\t"
     echo -e "\t${DOCKER_VERSION}"
-    exit 1
-fi
-
-# Reinstall if specified; otherwise, exit.
-if [ ! -z "$DOCKER_VERSION" ] && [ "$1" != "reinstall" ]
-then
-    echo -e "If you wish to reinstall Docker over your existing version,"
-    echo -e "please rerun this script as '$ install-docker.sh reinstall'."
-    echo -e "Exiting..."
     exit 1
 fi
 
