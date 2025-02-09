@@ -29,17 +29,13 @@ public class ElectionController {
 
     @GetMapping("/create-election")
     public String showElectionForm(Model model, HttpSession session) {
-        String username = (String) session.getAttribute("username");
-        if (username == null || ! session.getAttribute("accountType").equals("admin")) {
-            return "redirect:/home";
-        }
         model.addAttribute("electionForm", new ElectionForm());
         return "poll-configuration";
     }
 
     @PostMapping("/election")
     public String submitElectionForm(@Valid ElectionForm electionForm, BindingResult bindingResult,
-            @RequestParam("voterKeys") MultipartFile voterKeys, Model model) {
+            @RequestParam("voterKeys") MultipartFile voterKeys) {
 
         boolean validCandidates = electionService.validateCandidates(electionForm.getCandidates(), bindingResult);
         boolean validVoterKeys = electionService.validateVoterKeys(voterKeys, bindingResult);
@@ -52,12 +48,7 @@ public class ElectionController {
         return "redirect:/home";
     }
     @GetMapping("/view-election-details")
-    public String showElectionDetailsPage(Model model, HttpSession session) {
-        model.addAttribute("username", session.getAttribute("username"));
-        if (session.getAttribute("accountType") != null && session.getAttribute("accountType").equals("voter")) {
-            model.addAttribute("voter", true);
-        }
-
+    public String showElectionDetailsPage(Model model) {
         LocalDateTime now = LocalDateTime.now();
 
         if (electionService.electionIsConfigured()) {

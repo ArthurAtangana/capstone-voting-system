@@ -1,11 +1,13 @@
 package org.sysc4907.votingsystem.Authentication;
 
 import io.github.bucket4j.Bucket;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.time.Duration;
 
+@Component
 public class RateLimiter {
     private static final int TOKENS_PER_MINUTE = 3;
     private static final Duration REFILL_DURATION = Duration.ofMinutes(1);
@@ -28,5 +30,14 @@ public class RateLimiter {
 
     public void resetBucket(String userId) {
         buckets.put(userId, createNewBucket());
+    }
+    public String getRateLimitMessage(String userName) {
+        long attemptsRemaining = getAvailableTokens(userName);
+        if (attemptsRemaining > 0) {
+            String s = attemptsRemaining == 1 ? "attempt" : "attempts";
+            return "Invalid credentials: " + attemptsRemaining + " " + s + " remaining!";
+        } else {
+            return "Too many failed attempts. Please try again in 1 minute.";
+        }
     }
 }
