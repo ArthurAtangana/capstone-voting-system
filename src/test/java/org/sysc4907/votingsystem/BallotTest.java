@@ -7,7 +7,10 @@ import org.sysc4907.votingsystem.Ballots.ThreeBallot;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -60,19 +63,10 @@ public class BallotTest {
 
     @Test
     public void testEncryptAndDecrypt() throws Exception {
-        String data = "54321";
+        List<Integer> nums = new ArrayList<>(Arrays.asList(1,2,3,4,5));
+        String data = nums.toString();
         String encrypted = Ballot.encrypt(data, publicKey);
         String decrypted = Ballot.decrypt(encrypted, privateKey);
         assertEquals(data, decrypted);
-    }
-
-    @Test
-    public void testOrderObfuscation() {
-        int order = 132;
-        int moduloNumber = 555;
-        int obfuscated = order + 555 * (int)(Math.random() * 10);
-        int deObfuscated = obfuscated % moduloNumber;
-
-        assertEquals(132, deObfuscated);
     }
 }
