@@ -3,6 +3,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.sysc4907.votingsystem.Ballots.Ballot;
 import org.sysc4907.votingsystem.Ballots.ThreeBallot;
+import org.sysc4907.votingsystem.generators.BallotIdGenerator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +17,7 @@ public class ThreeBallotTest {
 
     @BeforeEach
     public void setUp() {
-        threeBallot = new ThreeBallot(Arrays.asList("foo", "bar", "baz", "qux"), new ArrayList<>());
+        threeBallot = new ThreeBallot(Arrays.asList("foo", "bar", "baz", "qux"), new ArrayList<>(), new BallotIdGenerator(10));
     }
 
     @Test
