@@ -39,6 +39,7 @@
                     <input type="text" id="registrationKey" name="registrationKey" required>
                     <button type="submit" style="width: unset; margin-top: unset">Verify</button>
                 </div>
+                <input th:if="${_csrf}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             </div>
         </form>
         <p>Already have an account? <a href="/home">Log In</a></p>
