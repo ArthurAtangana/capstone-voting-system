@@ -17,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.*;
 
 import org.sysc4907.votingsystem.Elections.ElectionService;
-import org.sysc4907.votingsystem.FileHelper;
 import org.sysc4907.votingsystem.LirisiCommandExecutor;
 import org.sysc4907.votingsystem.generators.BallotIdGenerator;
 

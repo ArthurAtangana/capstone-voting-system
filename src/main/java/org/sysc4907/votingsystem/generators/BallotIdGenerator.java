@@ -3,7 +3,6 @@ package org.sysc4907.votingsystem.generators;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class BallotIdGenerator {
     private final List<Integer> ballotIds = new ArrayList<>();

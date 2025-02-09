@@ -2,7 +2,6 @@ package org.sysc4907.votingsystem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.sysc4907.votingsystem.Ballots.Ballot;
-import org.sysc4907.votingsystem.Ballots.ThreeBallot;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
