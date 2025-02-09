@@ -1,5 +1,6 @@
 package org.sysc4907.votingsystem.Ballots;
 
+import org.sysc4907.votingsystem.generators.BallotIdGenerator;
 import org.sysc4907.votingsystem.generators.CandidateOrderGenerator;
 import org.sysc4907.votingsystem.generators.PremarkGenerator;
 
@@ -14,7 +15,7 @@ public class ThreeBallot {
     private final Ballot thirdBallot;
     private final List<String> candidateList = new ArrayList<>();
 
-    public ThreeBallot(List<String> candidates, List<java.security.PublicKey> orderKeys) {
+    public ThreeBallot(List<String> candidates, List<java.security.PublicKey> orderKeys, BallotIdGenerator ballotIdGenerator) {
         int numCandidates = candidates.size();
 
         // call order generator
@@ -30,9 +31,9 @@ public class ThreeBallot {
         PremarkGenerator pGen = new PremarkGenerator(numCandidates);
         boolean[][] premarked = pGen.generateMarks();
 
-        firstBallot = new Ballot(numCandidates, candidateOrder, premarked[0], orderKeys);
-        secondBallot = new Ballot(numCandidates, candidateOrder, premarked[1], orderKeys);
-        thirdBallot = new Ballot(numCandidates, candidateOrder, premarked[2], orderKeys);
+        firstBallot = new Ballot(ballotIdGenerator.generateBallotId(), numCandidates, candidateOrder, premarked[0], orderKeys);
+        secondBallot = new Ballot(ballotIdGenerator.generateBallotId(), numCandidates, candidateOrder, premarked[1], orderKeys);
+        thirdBallot = new Ballot(ballotIdGenerator.generateBallotId(), numCandidates, candidateOrder, premarked[2], orderKeys);
     }
 
     public Ballot getFirstBallot() {

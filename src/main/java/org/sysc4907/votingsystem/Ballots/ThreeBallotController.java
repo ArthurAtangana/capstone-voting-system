@@ -19,6 +19,7 @@ import java.util.*;
 import org.sysc4907.votingsystem.Elections.ElectionService;
 import org.sysc4907.votingsystem.FileHelper;
 import org.sysc4907.votingsystem.LirisiCommandExecutor;
+import org.sysc4907.votingsystem.generators.BallotIdGenerator;
 
 @Controller
 public class ThreeBallotController {
@@ -34,8 +35,7 @@ public class ThreeBallotController {
             keyGen = KeyPairGenerator.getInstance("RSA");
             keyGen.initialize(2048); // Key size (2048 or higher is recommended)
             KeyPair keyPair = keyGen.generateKeyPair();
-
-            threeBallot = new ThreeBallot(Arrays.asList("foo", "bar", "baz", "quux"), Collections.singletonList(keyPair.getPublic()));
+            threeBallot = new ThreeBallot(Arrays.asList("foo", "bar", "baz", "quux"), Collections.singletonList(keyPair.getPublic()), new BallotIdGenerator(10));
 
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
@@ -62,7 +62,8 @@ public class ThreeBallotController {
         }
 
         List<String> candidates = electionService.getElection().getCandidates();
-        ThreeBallot threeBallot = new ThreeBallot(candidates, electionService.getPublicOrderKeys());
+        BallotIdGenerator ballotGenerator = electionService.getElection().getBallotIdGenerator();
+        ThreeBallot threeBallot = new ThreeBallot(candidates, electionService.getPublicOrderKeys(), ballotGenerator);
         List<Map<String, Object>> attributes = threeBallot.getBallotAttributes();
         model.addAttribute("electionName", electionService.getElection().NAME);
         model.addAttribute("attributes", attributes);

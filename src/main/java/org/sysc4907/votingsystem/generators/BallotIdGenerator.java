@@ -1,15 +1,23 @@
 package org.sysc4907.votingsystem.generators;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class BallotIdGenerator {
-    private List<Integer> ballotIdsAlreadyUsed = new ArrayList<Integer>();
+    private final List<Integer> ballotIds = new ArrayList<>();
+    int index = -1;
 
-    public BallotIdGenerator() {}
+    public BallotIdGenerator(int numEligibleVoters) {
+        for (int i = 0; i < numEligibleVoters * 3; i++) {
+            ballotIds.add(i);
+        }
+        Collections.shuffle(ballotIds);
+    }
 
     public int generateBallotId() {
-        // large random number, check not already in ballotIdsAlreadyUsed
-        return 0;
+        index++;
+        return ballotIds.get(index);
     }
 }

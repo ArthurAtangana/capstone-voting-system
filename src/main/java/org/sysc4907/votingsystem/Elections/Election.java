@@ -26,7 +26,7 @@ public class Election {
     public boolean votingOpen = true;
     private final Tally tallier;
 
-    private final BallotIdGenerator ballotIdGenerator = new BallotIdGenerator();
+    private final BallotIdGenerator ballotIdGenerator;
     private final CandidateOrderGenerator candidateOrderGenerator;
 
     private final Set<Integer> voterKeys;
@@ -41,6 +41,7 @@ public class Election {
         this.candidateOrderGenerator = new CandidateOrderGenerator(candidates.size());
         this.numberOfVotes = 0;
         fabricEnabled = environment.getProperty("fabric.enabled", Boolean.class, true);
+        ballotIdGenerator = new BallotIdGenerator(voterKeys.size());
     }
 
     public Election() {
@@ -51,6 +52,7 @@ public class Election {
         voterKeys = new HashSet<>();
         tallier = new Tally();
         candidateOrderGenerator = new CandidateOrderGenerator(0);
+        ballotIdGenerator = new BallotIdGenerator(0);
     }
 
     //init things if needed
