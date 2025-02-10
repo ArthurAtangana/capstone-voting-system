@@ -25,10 +25,12 @@ import java.util.Set;
  */
 @Service
 public class AccountService {
+    private boolean activeRegistration = false;
+
     private SignInKeyService signInKeyService;
+
     private UserDetailsManager userDetailsManager;
     private PasswordEncoder passwordEncoder;
-
     @Autowired
     public AccountService(UserDetailsManager userDetailsManager, PasswordEncoder passwordEncoder) {
         this.userDetailsManager = userDetailsManager;
@@ -51,7 +53,7 @@ public class AccountService {
      * @return true if the account was successfully configured and saved, otherwise false
      */
     public boolean configureAndSaveNewAccount(String username, String password) {
-        if (username.isEmpty() || password.isEmpty() || userDetailsManager.userExists(username)) {
+        if (username.isEmpty() || password.isEmpty() || userDetailsManager.userExists(username) || !activeRegistration) {
             return false;
         }
         UserDetails user = User.withUsername(username)
@@ -60,6 +62,7 @@ public class AccountService {
                 .build();
 
         userDetailsManager.createUser(user);
+        activeRegistration = false;
         return true;
     }
 
@@ -71,6 +74,7 @@ public class AccountService {
      */
 
     public boolean markKeyAsUsed(Integer key) {
-        return signInKeyService.markKeyAsUsed(key);
+        activeRegistration = signInKeyService.markKeyAsUsed(key); // true if key is valid
+        return activeRegistration;
     }
 }
