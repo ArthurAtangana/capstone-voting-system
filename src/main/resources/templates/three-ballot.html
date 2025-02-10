@@ -200,6 +200,59 @@
             document.getElementById('receipt-button-container').style.display = 'none';
 
             submitAllBallots();
+
+            document.getElementById('downloadReceipt').addEventListener('click', function() {
+                downloadReceipt(ballotId, candidateOrder, booleanArray);
+            });
+        }
+
+        function downloadReceipt(ballotId, candidateOrder, booleanArray) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const currentDate = new Date();
+            const formattedDate = currentDate.toLocaleString();
+            const mainGreenColor = '#28a745';
+            const darkerGreenColor = '#218838';
+            const margin = 10;
+
+            // Header
+            doc.setFillColor(mainGreenColor);
+            doc.rect(0, 0, doc.internal.pageSize.width, 40, 'F');
+            doc.addImage('/images/logo.png', 'PNG', margin, 10, 50, 20);
+
+            // Title
+            doc.setFontSize(18);
+            doc.setTextColor(darkerGreenColor);
+            doc.text('Receipt of Vote Submission - Ballot ID: ' + ballotId, margin, 60);
+
+            // Receipt Instructions
+            doc.setFontSize(12);
+            doc.setFont('Arial', 'bold');
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Date: ${formattedDate}`, margin, 70);
+            doc.setFont('Arial', 'normal');
+            doc.text('Verify your vote by searching for your ballot ID on the ledger:', margin, 80);
+            doc.addImage('/images/ledger.png', 'PNG', margin, 85, 110, 30);
+
+            // Receipt Data
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            const pageWidth = doc.internal.pageSize.width;
+            const candidateData = doc.splitTextToSize(`${candidateOrder}`, pageWidth - 2 * margin);
+            doc.setFont('Arial', 'bold');
+            doc.text('Candidate Order:\n', 10, 125);
+            doc.setFont('Arial', 'normal');
+            doc.text(candidateData, margin, 135);
+            doc.setFont('Arial', 'bold');
+            doc.text('Marked Boxes:\n', margin, 165);
+            doc.setFont('Arial', 'normal');
+            doc.text(`${JSON.stringify(booleanArray)}`, margin, 175);
+
+            // Footer
+            doc.setFillColor(mainGreenColor);
+            doc.rect(0, doc.internal.pageSize.height - 20, doc.internal.pageSize.width, 40, 'F');
+
+            doc.save('receipt_' + ballotId + '.pdf');
         }
 
         function selectBallot(ballotNumber) {
@@ -255,6 +308,7 @@
             finalizeButton.style.cursor = 'not-allowed';
         }
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 </head>
 <body>
