@@ -6,10 +6,11 @@
 #
 # Usage:
 # ------
-# $ ./install-docker.sh 
+# $ ./install-docker.sh [ARGS]
 #
 # Optional Arguments:
-#   NA
+#   1. reinstall
+#       Force reinstall of Docker if already installed.
 # 
 # Notes:
 # ------
@@ -48,7 +49,10 @@ then
     DOCKER_VERSION="$(docker -v)"
     echo -e "Docker already installed:\t"
     echo -e "\t${DOCKER_VERSION}"
-    exit 1
+    if [ ! "${1}" == "reinstall" ]
+    then
+        exit 1
+    fi
 fi
 
 # Proceed
