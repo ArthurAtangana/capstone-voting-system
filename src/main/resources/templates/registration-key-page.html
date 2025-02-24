@@ -28,6 +28,7 @@
                 <label for="registrationKey">Registration Key:</label>
                 <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
                 <input type="text" id="registrationKey" name="registrationKey" required>
+                <input th:if="${_csrf}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <button type="submit">Submit</button>
             </div>
         </form>
