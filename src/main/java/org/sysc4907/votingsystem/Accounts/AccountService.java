@@ -31,9 +31,6 @@ public class AccountService {
     private UserDetailsManager userDetailsManager;
     private PasswordEncoder passwordEncoder;
 
-
-    private UserDetailsManager userDetailsManager;
-    private PasswordEncoder passwordEncoder;
     @Autowired
     public AccountService(UserDetailsManager userDetailsManager, PasswordEncoder passwordEncoder) {
         this.userDetailsManager = userDetailsManager;
