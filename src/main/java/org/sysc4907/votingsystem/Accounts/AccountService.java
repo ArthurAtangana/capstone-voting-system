@@ -28,6 +28,9 @@ public class AccountService {
     private boolean activeRegistration = false;
 
     private SignInKeyService signInKeyService;
+    private UserDetailsManager userDetailsManager;
+    private PasswordEncoder passwordEncoder;
+
 
     private UserDetailsManager userDetailsManager;
     private PasswordEncoder passwordEncoder;
@@ -63,6 +66,7 @@ public class AccountService {
 
         userDetailsManager.createUser(user);
         activeRegistration = false;
+
         return true;
     }
 
