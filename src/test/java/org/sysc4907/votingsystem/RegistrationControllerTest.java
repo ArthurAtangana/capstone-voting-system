@@ -3,6 +3,7 @@ package org.sysc4907.votingsystem;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpSession;
@@ -15,6 +16,7 @@ import org.sysc4907.votingsystem.Registration.RegistrationService;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -26,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Jasmine Gad El Hak
  */
 @WebMvcTest(RegistrationController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class RegistrationControllerTest {
 
     @Autowired
@@ -45,7 +48,8 @@ public class RegistrationControllerTest {
         // Registration when poll is not yet configured
         mockMvc.perform(get("/registration-key"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("login-page"));
+                .andExpect(view().name("login-page"))
+                .andExpect(model().attributeExists("errorMessage"));
 
         // Registration when poll has been configured
         when(electionService.electionIsConfigured()).thenReturn(true); // mocking that poll has been configured
@@ -72,7 +76,7 @@ public class RegistrationControllerTest {
     public void testSubmitKeyValid() throws Exception {
         when(registrationService.submitSignInKey(anyInt())).thenReturn(true); // mocking valid key value
 
-        mockMvc.perform(post("/registration-key")
+        mockMvc.perform(post("/registration-key").with(csrf())
                         .param("registrationKey", "123"))
                 .andExpect(status().is3xxRedirection()) // we expect redirection to credentials page
                 .andExpect(redirectedUrl("/register-credentials"));
@@ -99,8 +103,8 @@ public class RegistrationControllerTest {
                         .param("password", "password"))
                 .andExpect(status().is3xxRedirection()) // we expect redirection to home page
                 .andExpect(redirectedUrl("/home"))
-                .andExpect(request().sessionAttribute("username", "userName"))
-                .andExpect(request().sessionAttribute("accountType", "voter"));
+                .andExpect(request().sessionAttribute("accountType", "voter"))
+                .andExpect(request().sessionAttributeDoesNotExist("validRegKey"));
     }
 
     @Test
@@ -112,8 +116,8 @@ public class RegistrationControllerTest {
                         .param("password", "adminPass"))
                 .andExpect(status().is3xxRedirection()) // we expect redirection to home page
                 .andExpect(redirectedUrl("/home"))
-                .andExpect(request().sessionAttribute("username", "adminName"))
-                .andExpect(request().sessionAttribute("accountType", "admin"));
+                .andExpect(request().sessionAttribute("accountType", "admin"))
+                .andExpect(request().sessionAttributeDoesNotExist("validRegKey"));
     }
 }
 
