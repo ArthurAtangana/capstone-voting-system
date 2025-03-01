@@ -21,6 +21,7 @@ public class RegistrationController {
     private RegistrationService registrationService;
     @Autowired
     private ElectionService electionService;
+
     @GetMapping("/registration-key")
     public String showRegistrationSignInKeyPage(Model model) {
         if (!electionService.electionIsConfigured()) {
@@ -49,15 +50,14 @@ public class RegistrationController {
 
     @PostMapping("/register-credentials")
     public String createAccount(@RequestParam("userName") String userName,
-                                @RequestParam("password") String password, Model model, HttpSession session) {
+                                @RequestParam("password") String password, HttpSession session) {
 
         RegistrationService.Response registrationResponse = registrationService.submitAccountCredentials(userName, password);
 
         if (registrationResponse != RegistrationService.Response.REG_FAILED) {
-            model.addAttribute("name", userName);
-            session.setAttribute("username", userName);
             session.removeAttribute("validRegKey");
-            // redirect to the appropriate page according to the type of account.
+
+            //TODO make it so registered user is already authenticated, so they they're redirected to the home page rather than login.
             switch (registrationResponse) {
                 case VOTER_REG_SUCCESS -> {
                     session.setAttribute("accountType", "voter");
