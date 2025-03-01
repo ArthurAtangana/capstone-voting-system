@@ -204,6 +204,15 @@
             document.getElementById('downloadReceipt').addEventListener('click', function() {
                 downloadReceipt(ballotId, candidateOrder, booleanArray);
             });
+
+            document.getElementById('emailReceipt').addEventListener('click', function() {
+                const userEmail = prompt("Please enter your email address:");
+                if (userEmail) {
+                    sendEmail(userEmail, ballotId, candidateOrder, booleanArray);
+                } else {
+                    alert("Email sending canceled.");
+                }
+            });
         }
 
         function downloadReceipt(ballotId, candidateOrder, booleanArray) {
@@ -253,6 +262,23 @@
             doc.rect(0, doc.internal.pageSize.height - 20, doc.internal.pageSize.width, 40, 'F');
 
             doc.save('receipt_' + ballotId + '.pdf');
+        }
+
+        function sendEmail(userEmail, ballotId, candidateOrder, booleanArray) {
+            emailjs.init("hYIdtW_BYR-yS791s");
+            emailjs.send("service_d5bf54h", "template_rb998yv", {
+                email: userEmail,
+                ballotId: ballotId,
+                date: new Date().toLocaleString(),
+                candidateOrder: candidateOrder,
+                booleanArray: booleanArray
+            })
+                .then(response => {
+                    alert("Email sent successfully!");
+                })
+                .catch(error => {
+                    console.error("Error sending email:", error);
+                });
         }
 
         function selectBallot(ballotNumber) {
@@ -309,6 +335,7 @@
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
 </head>
 <body>
