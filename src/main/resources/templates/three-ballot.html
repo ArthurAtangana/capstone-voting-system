@@ -325,7 +325,7 @@
                 keyInput.value = `[[${autoFillKey}]]`;
                 keyInput.readOnly = true;
             } else {
-                keyInput.value = "";
+                keyInput.value = ""; // toggling back will clear the text, an improvement would be to keep whatever was there before the toggle!
                 keyInput.readOnly = false;
             }
         }
@@ -439,11 +439,17 @@
 
     <div th:if="!${validKey}" class="keyModal">
         <div class="pop-up-container">
-            <h2>Please Enter Your Signing Key</h2>
-            <label class="switch">
-                <input type="checkbox" onchange="autoFillSigningKey(this)">
-                <span class="slider round"></span>
-            </label>
+            <div style="display: flex; gap: 30px;  align-items: center; justify-content: center">
+                <h2>Please enter signing key</h2>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <p>Auto-fill</p>
+                    <label class="switch">
+                        <input type="checkbox" onchange="autoFillSigningKey(this)">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+
             <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
             <form id="signingKeyForm" th:action="@{/verify-signing-key}" method="post">
                 <div class="form-group">
