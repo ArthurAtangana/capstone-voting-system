@@ -206,12 +206,7 @@
             });
 
             document.getElementById('emailReceipt').addEventListener('click', function() {
-                const userEmail = prompt("Please enter your email address:");
-                if (userEmail) {
-                    sendEmail(userEmail, ballotId, candidateOrder, booleanArray);
-                } else {
-                    alert("Email sending canceled.");
-                }
+                sendEmail(ballotId, candidateOrder, booleanArray);
             });
         }
 
@@ -264,21 +259,26 @@
             doc.save('receipt_' + ballotId + '.pdf');
         }
 
-        function sendEmail(userEmail, ballotId, candidateOrder, booleanArray) {
-            emailjs.init("hYIdtW_BYR-yS791s");
-            emailjs.send("service_d5bf54h", "template_rb998yv", {
-                email: userEmail,
-                ballotId: ballotId,
-                date: new Date().toLocaleString(),
-                candidateOrder: candidateOrder,
-                booleanArray: booleanArray
-            })
-                .then(response => {
-                    alert("Email sent successfully!");
+        function sendEmail(ballotId, candidateOrder, booleanArray) {
+            const userEmail = document.getElementById("userEmail").value;
+            if (userEmail) {
+                emailjs.init("hYIdtW_BYR-yS791s");
+                emailjs.send("service_d5bf54h", "template_rb998yv", {
+                    email: userEmail,
+                    ballotId: ballotId,
+                    date: new Date().toLocaleString(),
+                    candidateOrder: candidateOrder,
+                    booleanArray: booleanArray
                 })
-                .catch(error => {
-                    console.error("Error sending email:", error);
-                });
+                    .then(response => {
+                        alert("Email sent successfully!");
+                    })
+                    .catch(error => {
+                        console.error("Error sending email:", error);
+                    });
+            } else {
+                alert("Please enter a valid email.");
+            }
         }
 
         function selectBallot(ballotNumber) {
@@ -435,8 +435,12 @@
             <p><strong>Candidate Order:</strong> <span id="candidate-order-value"></span></p>
         </div>
         <p><strong>Marked Boxes:</strong> <span id="marked-boxes"></span></p>
-        <button id="downloadReceipt" class="button">Download Receipt</button>
-        <button id="emailReceipt" class="button">Email Receipt</button>
+        <div class="pop-up-container">
+            <button id="downloadReceipt" class="button">Download Receipt</button>
+            <br><br>
+            <input type="email" class="form-control" id="userEmail" placeholder="Enter your email" required>
+            <button id="emailReceipt" class="button">Email Receipt</button>
+        </div>
         <hr>
         <div style="width: 100%; max-width: 500px; word-wrap: break-word; text-align: center;">
             <p><strong>Congratulations</strong> your vote has been cast!</p>
