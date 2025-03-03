@@ -56,8 +56,8 @@ public class AccountGenerator {
      * Admin Account - username: "admin", password: "admin"
      */
     public void generateDefaultAccounts() {
-        VoterAccount voterAccount = new VoterAccount("voter", "voter");
-        AdminAccount adminAccount = new AdminAccount("admin", "admin");
+        VoterAccount voterAccount = new VoterAccount("voter", "%voter%st");
+        AdminAccount adminAccount = new AdminAccount("admin", "%admin%st");
         accountRepository.save(voterAccount);
         accountRepository.save(adminAccount);
     }
