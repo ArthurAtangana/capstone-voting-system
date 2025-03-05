@@ -58,6 +58,9 @@ public class ThreeBallotController {
 
         if (session.getAttribute("validKey") != null) { // if key has already been verified we don't need to display the pop-up again
             model.addAttribute("validKey", true); // adding this attribute will ensure it's not visible
+        } else {
+            // passing in one of the generated keys for auto-fill purposes (demo-only)
+            model.addAttribute("autoFillKey", FileHelper.getFileContents("./lirisi-generated-files/priv/1.pem"));
         }
 
         List<String> candidates = electionService.getElection().getCandidates();
