@@ -1,6 +1,8 @@
 package org.sysc4907.votingsystem.Ballots;
 
 import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.List;
 import javax.crypto.Cipher;
 import java.security.PrivateKey;
@@ -10,7 +12,7 @@ public class Ballot {
     private final int id; // may want a helper class to generate these. Must be random and unique.
     private final Marks[] markableBoxes; // true if voting for candidate in that row, false otherwise.
     private final String encryptedCandidateOrder;
-    private final static long moduloNumber = 9999999999999999L; // must be at least the length of the number of candidates
+    private final static int saltLength = 16;
 
     public Ballot( int numberOfCandidates, String candidateOrder, boolean[] premarkedBoxes, List<PublicKey> orderKeys) {
         // this isn't big enough for real use but a sufficiently large random number would ensure uniqueness and non-sequential ids
@@ -91,7 +93,10 @@ public class Ballot {
     }
 
     public static String encrypt(String data, PublicKey publicKey) throws Exception {
-        data = obfuscateOrder(data);
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] salt = new byte[saltLength];
+        secureRandom.nextBytes(salt);
+        data += ":" + Arrays.toString(salt);
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         byte[] encryptedBytes = cipher.doFinal(data.getBytes());
@@ -102,19 +107,8 @@ public class Ballot {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
-        return deObfuscateOrder(new String(decryptedBytes));
-    }
-
-    public static String obfuscateOrder(String order) {
-        long temp = Long.parseLong(order);
-        temp = temp + moduloNumber * (int)(Math.random() * 10);
-        return Long.toString(temp);
-    }
-
-    public static String deObfuscateOrder(String order) {
-        long temp = Long.parseLong(order);
-        temp = temp % moduloNumber;
-        return Long.toString(temp);
+        String[] parts = new String(decryptedBytes).split(":");
+        return parts[0];
     }
 }
 
