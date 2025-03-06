@@ -1,6 +1,8 @@
 package org.sysc4907.votingsystem.Accounts;
 
 import jakarta.persistence.*;
+import com.nulabinc.zxcvbn.Zxcvbn;
+import com.nulabinc.zxcvbn.Strength;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -13,6 +15,7 @@ public abstract class Account {
 
     public Account(String userName, String password) {
         this.userName = userName;
+        isVeryStrongPassword(password);
         this.password = password;
     }
 
@@ -33,7 +36,22 @@ public abstract class Account {
     }
 
     public void setPassword(String password) {
+        isVeryStrongPassword(password);
         this.password = password;
+    }
+
+    public static boolean isVeryStrongPassword(String password) {
+        Zxcvbn passwordStrengthEstimator = new Zxcvbn();
+        Strength strength = passwordStrengthEstimator.measure(password);
+        if (strength.getScore() == 4 || strength.getScore() == 3) return true; // 4 is a very strong password, 3 is strong
+        System.out.println(strength.getPassword());
+        throw new WeakPasswordException(strength.getFeedback().getWarning() + ", " + strength.getFeedback().getSuggestions());
+    }
+
+    public static class WeakPasswordException extends RuntimeException {
+        public WeakPasswordException(String message) {
+            super(message);
+        }
     }
 
 }
