@@ -2,7 +2,6 @@ package org.sysc4907.votingsystem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.sysc4907.votingsystem.Ballots.Ballot;
-import org.sysc4907.votingsystem.Ballots.ThreeBallot;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -27,7 +26,7 @@ public class BallotTest {
             KeyPair keyPair = keyGen.generateKeyPair();
             privateKey = keyPair.getPrivate();
             publicKey = keyPair.getPublic();
-            b1 = new Ballot(3, "201", new boolean[]{false, false, true},  Collections.singletonList(keyPair.getPublic()));
+            b1 = new Ballot(0,3, "201", new boolean[]{false, false, true},  Collections.singletonList(keyPair.getPublic()));
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
