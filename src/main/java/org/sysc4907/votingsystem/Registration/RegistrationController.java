@@ -1,5 +1,7 @@
 package org.sysc4907.votingsystem.Registration;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -57,7 +59,7 @@ public class RegistrationController {
 
     @PostMapping("/register-credentials")
     public String createAccount(@RequestParam("userName") String userName,
-                                @RequestParam("password") String password, HttpSession session) {
+                                @RequestParam("password") String password, HttpSession session, HttpServletRequest request) {
 
         RegistrationService.Response registrationResponse;
         try {
@@ -72,16 +74,26 @@ public class RegistrationController {
         if (registrationResponse != RegistrationService.Response.REG_FAILED) {
             session.removeAttribute("validRegKey");
 
-            //TODO make it so registered user is already authenticated, so they they're redirected to the home page rather than login.
-            switch (registrationResponse) {
-                case VOTER_REG_SUCCESS -> {
-                    session.setAttribute("accountType", "voter");
-                    return "redirect:/home";}
-                case ADMIN_REG_SUCCESS -> {
-                    session.setAttribute("accountType", "admin");
-                    return "redirect:/home";}
-                default ->  throw new RuntimeException("Unexpected response from registration service: " + registrationResponse.name());
+            // Registered user is already authenticated, so they're redirected to the home page rather than login.
+            try {
+                request.login(userName, password);
+            } catch(ServletException ex) {
+                // fail to authenticate
+                System.out.println("Authentication of newly registered user failed");
             }
+
+            switch (registrationResponse) {
+                case VOTER_REG_SUCCESS:
+                    session.setAttribute("accountType", "voter");
+                    break;
+                case ADMIN_REG_SUCCESS:
+                    session.setAttribute("accountType", "admin");
+                    break;
+                default:
+                    throw new RuntimeException("Unexpected response from registration service: " + registrationResponse.name());
+            }
+            return "redirect:/home";
+
         } else {
             return "redirect:/register-credentials";
         }
