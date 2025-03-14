@@ -18,12 +18,12 @@
 <body>
 <header>
   <a href="/home">
-    <img src="/images/logo.png" style="width: 200px;padding: 10px;">
+    <img src="/images/confido-logo.png" style="width: 200px;padding: 10px;">
   </a>
 </header>
 <main>
   <div class="container">
-    <h1>Login to Voting System!</h1>
+    <h1>Login to Confido</h1>
     <form action="/login" method="post">
       <div class="form-group">
         <label for="userName">Username:</label>
@@ -37,9 +37,7 @@
       <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
       <button type="submit">Login</button>
     </form>
-    <form action="/registration-key" method="get">
-      <button type="submit">Register</button>
-    </form>
+    <p>Don't have an account? <a href="/registration-key">Register</a></p>
   </div>
 </main>
 
