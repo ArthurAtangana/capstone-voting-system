@@ -19,20 +19,20 @@ public class ThreeBallot {
 
         // call order generator
         CandidateOrderGenerator cGen = new CandidateOrderGenerator(numCandidates);
-        String candidateOrder = cGen.generateRandomCandidateOrder(); // returned by generator
+        List<Integer> candidateOrder = cGen.generateRandomCandidateOrder(); // returned by generator
 
         //store candidate in the random order
         for (int i = 0; i < numCandidates; i++) {
-            this.candidateList.add(candidates.get(Character.getNumericValue(candidateOrder.charAt(i))));
+            this.candidateList.add(candidates.get(candidateOrder.get(i)));
         }
 
         // call generator to randomly mark each candidate once
         PremarkGenerator pGen = new PremarkGenerator(numCandidates);
         boolean[][] premarked = pGen.generateMarks();
 
-        firstBallot = new Ballot(numCandidates, candidateOrder, premarked[0], orderKeys);
-        secondBallot = new Ballot(numCandidates, candidateOrder, premarked[1], orderKeys);
-        thirdBallot = new Ballot(numCandidates, candidateOrder, premarked[2], orderKeys);
+        firstBallot = new Ballot(numCandidates, candidateOrder.toString(), premarked[0], orderKeys);
+        secondBallot = new Ballot(numCandidates, candidateOrder.toString(), premarked[1], orderKeys);
+        thirdBallot = new Ballot(numCandidates, candidateOrder.toString(), premarked[2], orderKeys);
     }
 
     public Ballot getFirstBallot() {

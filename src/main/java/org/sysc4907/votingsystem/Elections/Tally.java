@@ -9,7 +9,9 @@ import org.json.JSONObject;
 
 import java.security.PrivateKey;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Tally {
     private final List<Integer> tallyOfVotes = new ArrayList<>();
@@ -85,11 +87,11 @@ public class Tally {
                 }
             }
         } // if fabric is not enabled we are using mocked data
-        List<Integer> order = new ArrayList<>();
-        for (char digitChar : decryptedOrder.toCharArray()) {
-            order.add(Character.getNumericValue(digitChar));
-        }
-        return order;
+
+        String[] parts = decryptedOrder.split(":");
+        String orderString = parts[0];
+        return Arrays.stream(orderString.replaceAll("[\\[\\]]", "").split(", "))
+                .map(Integer::parseInt).collect(Collectors.toList());
     }
 
     public List<Integer> getTallyOfVotes() {return tallyOfVotes;}

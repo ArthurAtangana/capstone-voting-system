@@ -16,22 +16,29 @@
 <body>
 <header>
     <a href="/home">
-        <img src="/images/logo.png"  style="width: 200px;padding: 10px;">
+        <img src="/images/confido-logo.png"  style="width: 200px;padding: 10px;">
     </a>
 </header>
 
 <main>
     <div class="container">
-        <h1>Register to Voting System</h1>
-        <form action="/registration-key" method="post">
+        <h1>Confido Registration</h1>
+        <hr>
+        <h2 style="margin-bottom: unset; color: #555555;">Check Eligibility</h2>
+        <span style="color: #777777;">Step 1 of 2</span>
+        <form action="/registration-key" method="post" style="margin-top: 20px">
             <div class="form-group">
                 <label for="registrationKey">Registration Key:</label>
                 <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
-                <input type="text" id="registrationKey" name="registrationKey" required>
-                <button type="submit">Submit</button>
+                <div style="display: flex; align-items: center; gap: 10px">
+                    <input type="text" id="registrationKey" name="registrationKey" required>
+                    <button type="submit" style="width: unset; margin-top: unset">Verify</button>
+                </div>
             </div>
         </form>
+        <p>Already have an account? <a href="/home">Log In</a></p>
     </div>
+
 </main>
 
 

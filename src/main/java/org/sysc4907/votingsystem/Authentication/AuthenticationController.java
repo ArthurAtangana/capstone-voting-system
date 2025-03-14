@@ -28,6 +28,12 @@ public class AuthenticationController {
     @Autowired
     private ElectionService electionService;
 
+    @GetMapping("/")
+    public String redirectToHome(){
+        return "redirect:/home";
+    }
+
+
     /**
      * Displays the home page of the application.
      *
