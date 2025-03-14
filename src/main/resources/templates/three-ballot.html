@@ -167,6 +167,7 @@
         async function submitAllBallots() {
             const allBallots = processAllBallots();
             for (const ballot of allBallots) {
+                await new Promise(resolve => setTimeout(resolve, 100)); // 100ms delay
                 console.log(JSON.stringify(ballot));
                 try {
                     // Step 1: Obtain the signature for the ballot
