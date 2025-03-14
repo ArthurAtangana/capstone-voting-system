@@ -172,12 +172,12 @@ public class Election {
         String responseData = "";
         if (!fabricEnabled) {
             String jsonString = "[" +
-                    "{\"ballotId\":\"1\",\"ballotMarks\":\"[true,false,true]\",\"candidateOrder\":\"102\",\"ring\":\"31\"}," +
-                    "{\"ballotId\":\"2\",\"ballotMarks\":\"[true,true,false]\",\"candidateOrder\":\"102\",\"ring\":\"31\"}," +
-                    "{\"ballotId\":\"3\",\"ballotMarks\":\"[false,false,false]\",\"candidateOrder\":\"102\",\"ring\":\"31\"}," +
-                    "{\"ballotId\":\"4\",\"ballotMarks\":\"[true,true,true]\",\"candidateOrder\":\"102\",\"ring\":\"31\"}," +
-                    "{\"ballotId\":\"5\",\"ballotMarks\":\"[false,true,false]\",\"candidateOrder\":\"102\",\"ring\":\"31\"}," +
-                    "{\"ballotId\":\"6\",\"ballotMarks\":\"[false,false,false]\",\"candidateOrder\":\"102\",\"ring\":\"31\"}]";
+                    "{\"ballotId\":\"1\",\"ballotMarks\":\"[true,false,true]\",\"candidateOrder\":\"[1, 0, 2]\",\"ring\":\"31\"}," +
+                    "{\"ballotId\":\"2\",\"ballotMarks\":\"[true,true,false]\",\"candidateOrder\":\"[1, 0, 2]\",\"ring\":\"31\"}," +
+                    "{\"ballotId\":\"3\",\"ballotMarks\":\"[false,false,false]\",\"candidateOrder\":\"[1, 0, 2]\",\"ring\":\"31\"}," +
+                    "{\"ballotId\":\"4\",\"ballotMarks\":\"[true,true,true]\",\"candidateOrder\":\"[1, 0, 2]\",\"ring\":\"31\"}," +
+                    "{\"ballotId\":\"5\",\"ballotMarks\":\"[false,true,false]\",\"candidateOrder\":\"[1, 0, 2]\",\"ring\":\"31\"}," +
+                    "{\"ballotId\":\"6\",\"ballotMarks\":\"[false,false,false]\",\"candidateOrder\":\"[1, 0, 2]\",\"ring\":\"31\"}]";
             System.out.println("WARNING: using mocked blockchain response!");
             return new JSONArray(jsonString);
         }

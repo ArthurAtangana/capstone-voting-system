@@ -27,6 +27,12 @@ public class AuthenticationController {
     @Autowired
     private ElectionService electionService;
 
+    @GetMapping("/")
+    public String redirectToHome(){
+        return "redirect:/home";
+    }
+
+
     /**
      * Displays the login page of the application.
      *
