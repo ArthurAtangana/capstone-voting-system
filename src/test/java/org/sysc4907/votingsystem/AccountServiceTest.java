@@ -1,61 +1,84 @@
-package org.sysc4907.votingsystem;
+package org.sysc4907.votingsystem.Accounts;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.sysc4907.votingsystem.Accounts.AccountRepository;
-import org.sysc4907.votingsystem.Accounts.AccountService;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.UserDetailsManager;
+import org.sysc4907.votingsystem.Registration.SignInKeyService;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-
+import static org.mockito.Mockito.*;
 
 class AccountServiceTest {
-    private Set<Integer> validKeys;
 
+    @Mock
+    private UserDetailsManager userDetailsManager;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @InjectMocks
     private AccountService accountService;
-
 
     @BeforeEach
     void setUp() {
-        validKeys = new HashSet<>(Arrays.asList(new Integer[] {123, 456, 789, 101}));
-        accountService = new AccountService();
-        accountService.initAccountService(validKeys);
-    }
-
-
-    @Test
-    void testAssignBlankAccount() {
-        Integer validKey = 123;
-        assertTrue(accountService.assignBlankAccount(validKey).isPresent());
-
-        Integer invalidKey = 0;
-        assertFalse(accountService.assignBlankAccount(invalidKey).isPresent());
-
+        MockitoAnnotations.openMocks(this);
+        accountService.initAccountService(new HashSet<>(Arrays.asList(new Integer[] {123, 456}))); // Simulate election setup with keys
     }
 
     @Test
-    void testConfigureAndSaveNewAccount() { // TODO need to figure out how to mock account repository encapsulated within the class
-        /*
-        // Configure credentials for a blank account
-        Integer validKey = 123;
-        Account newAccount = accountService.assignBlankAccount(validKey).get();
+    void configureAndSaveNewAccount() {
+        String username = "testUser";
+        String password = "password";
 
-        when(accountRepository.save(any(Account.class))).thenReturn(newAccount);  // Mock save operation
-        assertTrue(accountService.configureAndSaveNewAccount(newAccount, "user", "pass"));
+        when(userDetailsManager.userExists(username)).thenReturn(false);
+        when(passwordEncoder.encode(password)).thenReturn("encodedPassword");
 
-        //verify(accountRepository).save(newAccount); // verify that save was called
+        // Simulate registration being active
+        accountService.markKeyAsUsed(123);
 
-        // Configure credentials for an account that is not one of the pre-generated blank accounts
-        Integer invalidKey = 0;
-        assertFalse(accountService.configureAndSaveNewAccount(new VoterAccount(), "user", "pass"));
+        assertTrue(accountService.configureAndSaveNewAccount(username, password));
+        verify(userDetailsManager).createUser(any(UserDetails.class));
+    }
 
-         */
+    @Test
+    void configureAndSaveNewAccountExistingUsername() {
+        String username = "existingUser";
+        String password = "password";
+
+        when(userDetailsManager.userExists(username)).thenReturn(true);
+
+        assertFalse(accountService.configureAndSaveNewAccount(username, password));
+        verify(userDetailsManager, never()).createUser(any(UserDetails.class));
+    }
+
+    @Test
+    void configureAndSaveNewAccountWhenKeyNotValidated() {
+        String username = "newUser";
+        String password = "password";
+
+        when(userDetailsManager.userExists(username)).thenReturn(false);
+
+        // Registration is inactive (activeRegistration remains false)
+        assertFalse(accountService.configureAndSaveNewAccount(username, password));
+        verify(userDetailsManager, never()).createUser(any(UserDetails.class));
+    }
+
+    @Test
+    void markKeyAsUsed() {
+        assertTrue(accountService.markKeyAsUsed(123));
+    }
+
+    @Test
+    void markKeyAsUsedWhenKeyInvalid() {
+        assertFalse(accountService.markKeyAsUsed(999));
     }
 }

@@ -24,21 +24,13 @@ public class RegistrationService {
 
     @Autowired
     private ElectionService electionService;
-
-    private Optional<Account> accountForRegistration = Optional.empty();
-
-
     public boolean submitSignInKey(Integer key) {
         if (! electionService.electionIsConfigured()) {
             System.out.println("Poll is not configured!");
             return false;
         }
         AccountService accountService = electionService.getAccountService();
-        Optional<Account> account =  accountService.assignBlankAccount(key);
-        accountForRegistration = account;
-        accountService.markKeyAsUsed(key);
-
-        return account.isPresent();
+        return accountService.markKeyAsUsed(key);
     }
 
     public Response submitAccountCredentials(String username, String password) {
@@ -46,13 +38,11 @@ public class RegistrationService {
             System.out.println("Poll is not configured!");
             return Response.REG_FAILED;
         }
-        if (accountForRegistration.isPresent()) {
-            AccountService accountService = electionService.getAccountService();
-            if (accountService.configureAndSaveNewAccount(accountForRegistration.get(), username, password)) {
-                accountForRegistration = Optional.empty(); // reset
-                return Response.VOTER_REG_SUCCESS; // TODO admin accounts
-            }
+        AccountService accountService = electionService.getAccountService();
+        if (accountService.configureAndSaveNewAccount(username, password)) {
+            return Response.VOTER_REG_SUCCESS; // TODO admin accounts
         }
+
         return Response.REG_FAILED;
     }
 }
