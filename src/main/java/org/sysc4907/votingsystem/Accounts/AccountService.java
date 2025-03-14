@@ -66,10 +66,10 @@ public class AccountService {
         if (username.isEmpty() || password.isEmpty() || registeredAccounts.contains(account) || ! blankVoterAccounts.contains(account)){
             return false;
         }
-        blankVoterAccounts.remove(account);
-
-        account.setUserName(username);
         account.setPassword(password);
+        account.setUserName(username);
+
+        blankVoterAccounts.remove(account);
 
         registeredAccounts.add(account);
         accountRepository.save(account);
