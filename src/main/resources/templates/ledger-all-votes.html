@@ -22,16 +22,6 @@
         button {
             width: fit-content;
         }
-        .user-details {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: fit-content;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            margin: 20px;
-        }
 
         h1, h2 {
             text-align: center;
@@ -120,8 +110,11 @@
         <img src="/images/confido-logo.png"  style="width: 200px;padding: 10px;">
     </a>
     <div class="user-details" th:if="${username}">
-        <img src="/images/user_icon.png" style="width=25px;height=25px">
-        <p th:text="${username}"></p>
+        <i class="fa-solid fa-circle-user" th:text="${username}"></i>
+        <p style="margin: 15px">|</p>
+        <a id="logout" th:href="@{/logout}" title="Logout">
+            <i class="fa fa-sign-out">Logout</i>
+        </a>
     </div>
 </header>
 <main>

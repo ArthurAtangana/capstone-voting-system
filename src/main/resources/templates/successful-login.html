@@ -4,21 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/styles.css">
+
     <title>Welcome Voter</title>
     <style>
         body {
             display: block;
             width: 100%;
-        }
-        .user-details {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: fit-content;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            margin: 20px;
         }
         .container {
             background: white;
@@ -59,8 +50,11 @@
         <img src="/images/confido-logo.png"  style="width: 200px;padding: 10px;">
     </a>
     <div class="user-details" th:if="${username}">
-        <img src="/images/user_icon.png" style="width=25px;height=25px">
-        <p th:text="${username}"></p>
+        <i class="fa-solid fa-circle-user" th:text="${username}"></i>
+        <p style="margin: 15px">|</p>
+        <a id="logout" th:href="@{/logout}" title="Logout">
+            <i class="fa fa-sign-out">Logout</i>
+        </a>
     </div>
 </header>
 <main>
@@ -88,12 +82,6 @@
                       style="font-size: 14px; color: #555;"></span>
             </form>
         </div>
-
-        <hr>
-
-        <a th:href="@{/logout}">
-            <button type="button">Logout</button>
-        </a>
     </div>
 </main>
 <footer>
