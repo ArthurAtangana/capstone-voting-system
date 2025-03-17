@@ -107,9 +107,14 @@
 <header>
 <!--        <button th:if="${username}" class="home-btn" onclick="window.location.href='/home'">Back To Elections</button>-->
 <!--        <button th:if="${!username}" class="home-btn" onclick="window.location.href='/home'">Login/Register</button>-->
-    <a href="/home">
-        <img src="/images/confido-logo.png"  style="width: 200px;padding: 10px;">
-    </a>
+    <nav>
+        <a href="/home">
+            <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
+        </a>
+        <a th:if="${election}" class="active" href="/view-election-details">Election Details</a>
+        <a th:if="${election}" href="/ledger">Ledger</a>
+        <a th:if="${election}" href="/">Election Results (update link!)</a>
+    </nav>
     <div class="user-details" th:if="${username}">
         <i class="fa-solid fa-circle-user" th:text="${username}"></i>
         <p style="margin: 15px">|</p>
