@@ -414,10 +414,14 @@
         <a th:if="${electionName}" href="/">Election Results (update link!)</a>
     </nav>
     <div class="user-details" th:if="${username}">
-        <i class="fa-solid fa-circle-user" th:text="${username}"></i>
+        <i class="fa-solid fa-circle-user"></i>
+        <p th:text="${username}"></p>
         <p style="margin: 15px">|</p>
         <a id="logout" th:href="@{/logout}" title="Logout">
-            <i class="fa fa-sign-out">Logout</i>
+            <div style="display: flex; align-items: center">
+                <i class="fa fa-sign-out"></i>
+                <p>Logout</p>
+            </div>
         </a>
     </div>
 </header>
