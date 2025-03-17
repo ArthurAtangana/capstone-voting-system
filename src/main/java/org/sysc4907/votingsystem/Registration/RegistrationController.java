@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.sysc4907.votingsystem.Accounts.Account;
 import org.sysc4907.votingsystem.Elections.ElectionService;
 
 /**
@@ -51,7 +52,15 @@ public class RegistrationController {
     public String createAccount(@RequestParam("userName") String userName,
                                 @RequestParam("password") String password, Model model, HttpSession session) {
 
-        RegistrationService.Response registrationResponse = registrationService.submitAccountCredentials(userName, password);
+        RegistrationService.Response registrationResponse;
+        try {
+            registrationResponse = registrationService.submitAccountCredentials(userName, password);
+        } catch (Account.WeakPasswordException w) {
+            model.addAttribute("WeakPasswordErrorMessage", w.getMessage());
+            model.addAttribute("repeatUserName", userName);
+            return "registration-credentials-page";
+        }
+
 
         if (registrationResponse != RegistrationService.Response.REG_FAILED) {
             model.addAttribute("name", userName);
