@@ -28,11 +28,17 @@ public class RegistrationController {
             model.addAttribute("errorMessage", "No poll has been configured yet!");
             return "login-page";
         }
+        model.addAttribute("election", electionService.getElection());
         return "registration-key-page";
     }
 
     @GetMapping("/register-credentials")
-    public String showRegistrationCredentialsPage(HttpSession session) {
+    public String showRegistrationCredentialsPage(HttpSession session, Model model) {
+        if (!electionService.electionIsConfigured()) {
+            model.addAttribute("errorMessage", "No poll has been configured yet!");
+            return "login-page";
+        }
+        model.addAttribute("election", electionService.getElection());
         if (session.getAttribute("validRegKey") != null) return "registration-credentials-page";
         return "redirect:/home";
     }
