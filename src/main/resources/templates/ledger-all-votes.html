@@ -110,6 +110,7 @@
         <a href="/home">
             <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
         </a>
+        <a th:if="${election}" href="/">About Us</a>
         <a th:if="${election}" href="/view-election-details">Election Details</a>
         <a th:if="${election}" class="active" href="/ledger">Ledger</a>
         <a th:if="${election}" href="/">Election Results (update link!)</a>
