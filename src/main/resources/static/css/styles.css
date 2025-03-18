@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 :root {
-    --main-green-color: #7851A9;
+    --main-green-color: #28a745;
     --main-darker-green-color: #218838;
 }
 
@@ -206,7 +206,7 @@ button:active {
 
 .btn-secondary {
     padding: 10px 20px;
-    background-color: #663399;
+    background-color: var(--main-darker-green-color);
     color: white;
     text-decoration: none;
     border-radius: 5px;
