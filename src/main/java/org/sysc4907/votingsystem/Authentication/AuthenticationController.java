@@ -42,10 +42,13 @@ public class AuthenticationController {
     @GetMapping("/home")
     public String showHomePage(HttpSession session, Model model) {
         String username = (String) session.getAttribute("username");
+
         if (username == null) {
-            return "login-page";
+            if (!electionService.electionIsConfigured()) return "login-page";
+            // if it is configured, we will continue to allow the electionName model attribute to be added!
+        } else {
+            model.addAttribute("username", username);
         }
-        model.addAttribute("username", username);
         LocalDateTime now = LocalDateTime.now();
 
         String electionStatus;
@@ -53,6 +56,8 @@ public class AuthenticationController {
         if (electionService.electionIsConfigured()) {
             Election election = electionService.getElection();
             model.addAttribute("electionName", election.NAME);
+
+            if (username == null) return "login-page"; // once we've added the election name, we have all we need for login page
 
             if (now.isBefore(election.START_DATE_TIME)) {
                 electionStatus = "Starts on";

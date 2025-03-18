@@ -35,16 +35,6 @@
             align-items: center;
             flex-direction: column;
         }
-        .user-details {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: fit-content;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            margin: 20px;
-        }
         #signingKeyInput:read-only {
             color: #777777;
         }
@@ -415,12 +405,24 @@
 </head>
 <body>
 <header>
-    <a href="/home">
-        <img src="/images/confido-logo.png"  style="width: 200px;padding: 10px;">
-    </a>
+    <nav>
+        <a href="/home">
+            <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
+        </a>
+        <a th:if="${electionName}" href="/view-election-details">Election Details</a>
+        <a th:if="${electionName}" href="/ledger">Ledger</a>
+        <a th:if="${electionName}" href="/">Election Results (update link!)</a>
+    </nav>
     <div class="user-details" th:if="${username}">
-        <img src="/images/user_icon.png" style="width=25px;height=25px">
+        <i class="fa-solid fa-circle-user"></i>
         <p th:text="${username}"></p>
+        <p style="margin: 15px">|</p>
+        <a id="logout" th:href="@{/logout}" title="Logout">
+            <div style="display: flex; align-items: center">
+                <i class="fa fa-sign-out"></i>
+                <p>Logout</p>
+            </div>
+        </a>
     </div>
 </header>
 <main>
