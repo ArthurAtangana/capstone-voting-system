@@ -29,8 +29,8 @@ public class AuthenticationController {
     private ElectionService electionService;
 
     @GetMapping("/")
-    public String redirectToHome(){
-        return "redirect:/home";
+    public String home() {
+        return "home-page";
     }
 
 
