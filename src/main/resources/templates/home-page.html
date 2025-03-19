@@ -73,15 +73,6 @@
   <p style="font-size: 20px; max-width: 800px; margin: 0 auto; margin-top: 20px; font-weight: bold;">
     Our purpose is to solve the issues & uncertainty of traditional <br/> voting systems by removing these obstacles.
   </p>
-  <div style="text-align: center; margin-top: 20px;">
-    <a href="#about" style="text-decoration: none; color: black; font-size: 16px;">
-      Back to Top
-      <img src="https://cdn-icons-png.flaticon.com/512/130/130906.png"
-           alt="Back to Top"
-           title="Back to Top"
-           style="width: 25px; height: 25px; vertical-align: middle;">
-    </a>
-  </div>
 </section>
 
 <section id="goals" class="section" style="text-align: center;">
@@ -107,15 +98,6 @@
         <p>We've allowed any member of the public to verify that each vote was validly cast and to tally the votes to confirm the election results, all without revealing the identity of the voter behind any specific ballot.</p>
       </div>
     </div>
-  </div>
-  <div style="text-align: center; margin-top: 20px;">
-    <a href="#about" style="text-decoration: none; color: black; font-size: 16px;">
-      Back to Top
-      <img src="https://cdn-icons-png.flaticon.com/512/130/130906.png"
-           alt="Back to Top"
-           title="Back to Top"
-           style="width: 25px; height: 25px; vertical-align: middle;">
-    </a>
   </div>
 </section>
 
@@ -153,15 +135,6 @@
       </p>
     </div>
   </div>
-  <div style="text-align: center; margin-top: 20px;">
-    <a href="#about" style="text-decoration: none; color: black; font-size: 16px;">
-      Back to Top
-      <img src="https://cdn-icons-png.flaticon.com/512/130/130906.png"
-           alt="Back to Top"
-           title="Back to Top"
-           style="width: 25px; height: 25px; vertical-align: middle;">
-    </a>
-  </div>
 </section>
 
 <section id="started" class="section" style="text-align: center; margin-top: 50px;">
@@ -192,17 +165,32 @@
       <p>Using the ballot ID on your receipt query the ledger to ensure integrity.</p>
     </div>
   </div>
-
-  <div style="text-align: center; margin-top: 20px;">
-    <a href="#about" style="text-decoration: none; color: black; font-size: 16px;">
-      Back to Top
-      <img src="https://cdn-icons-png.flaticon.com/512/130/130906.png"
-           alt="Back to Top"
-           title="Back to Top"
-           style="width: 25px; height: 25px; vertical-align: middle;">
-    </a>
-  </div>
 </section>
+
+<div id="myBtn" style="display: none; position: fixed; bottom: 20px; right: 30px; z-index: 99; cursor: pointer; align-items: center; gap: 8px; background-color: rgba(0, 0, 0, 0.6); color: white; padding: 8px 12px; border-radius: 20px; font-size: 14px; transition: background-color 0.3s;">
+  <img src="https://cdn-icons-png.flaticon.com/512/130/130906.png"
+       alt="Back to Top"
+       title="Back to Top"
+       style="width: 20px; height: 20px; vertical-align: middle;">
+  <span>Back to Top</span>
+</div>
+
+<script>
+  const mybutton = document.getElementById("myBtn");
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 20) {
+      mybutton.style.display = "flex";
+    } else {
+      mybutton.style.display = "none";
+    }
+  });
+
+  mybutton.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
 
 <footer>
   <p>&copy; 2025 Secure and Transparent Voting System</p>
