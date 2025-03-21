@@ -50,7 +50,10 @@ public class WebSecurityConfig {
         //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
         http
                 .csrf(csrf -> csrf
-                .ignoringRequestMatchers(new AntPathRequestMatcher("/submit-ballot-transactions")))
+                        .ignoringRequestMatchers(
+                                new AntPathRequestMatcher("/submit-ballot-transactions"),
+                                new AntPathRequestMatcher("/fabric/submit")
+                        ))
                 // CSRF protection is disabled for this endpoint because the request originates from JavaScript,
                 // and despite multiple attempts to pass the CSRF token correctly, Spring Security rejects it as invalid.
                 // This is not ideal from a security standpoint, as it leaves the endpoint vulnerable to CSRF attacks.
