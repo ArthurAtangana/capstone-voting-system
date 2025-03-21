@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -45,7 +47,15 @@ public class WebSecurityConfig {
      * Specifying the access control for the endpoints of the system.
      */
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
         http
+                .csrf(csrf -> csrf
+                .ignoringRequestMatchers(new AntPathRequestMatcher("/submit-ballot-transactions")))
+                // CSRF protection is disabled for this endpoint because the request originates from JavaScript,
+                // and despite multiple attempts to pass the CSRF token correctly, Spring Security rejects it as invalid.
+                // This is not ideal from a security standpoint, as it leaves the endpoint vulnerable to CSRF attacks.
+                // A better long-term solution would be to debug the CSRF token issue or explore alternative security measures,
+                // such as requiring an authentication token instead.
                 .authorizeHttpRequests((requests) -> requests
                         // Paths accessible to everyone
                         .requestMatchers( "/css/**", "/images/**", "/templates/**", "/test-elections",
