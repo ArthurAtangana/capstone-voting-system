@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Homepage</title>
   <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .white-section {
+      background: #FFFFFF;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #started p {
+      padding-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
 
@@ -19,25 +31,26 @@
     </nav>
 </header>
 
-<section id="about" class="section" style="display: flex; justify-content: center; align-items: center; text-align: left; margin-top: 110px; padding: 40px; background: #FFFFFF; border-radius: 10px; max-width: 1200px; margin-left: auto; margin-right: auto; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-  <div style="flex: 1; padding: 20px;">
-    <p style="font-size: 40px; font-weight: bold; margin-bottom: 20px;">Vote confidently</p>
-    <p style="font-size: 60px; font-weight: bold; margin-bottom: 20px; margin-top: 20px;"> ANYWHERE<br/>ANYPLACE<br/>ANYTIME</p>
-    <p style="font-size: 20px; line-height: 1.6; margin-bottom: 20px;">
-      A redefined online voting platform<br/>
-      that guarantees voter anonymity <br/>
-      while maintaining a publicly accessible,<br/>
-      immutable voting ledger.
-    </p>
-    <div class="legend-buttons" style="margin-top: 20px;">
-      <a href="#purpose" class="btn-secondary">Purpose</a>
-      <a href="#goals" class="btn-secondary">Goals</a>
-      <a href="#solutions" class="btn-secondary">Solutions</a>
-      <a href="#started" class="btn-secondary">Getting Started</a>
+<section id="about" class="section white-section" style="margin-top: 110px; padding: 40px; max-width: 1200px;">
+  <div style="display: flex; justify-content: center; align-items: center; text-align: left;">
+    <div style="flex: 1; padding: 20px;">
+      <p style="font-size: 40px; font-weight: bold; margin-bottom: 20px;">Vote confidently</p>
+      <p style="font-size: 60px; font-weight: bold; margin-bottom: 20px; margin-top: 20px;"> ANYWHERE<br/>ANYPLACE<br/>ANYTIME</p>
+      <p style="font-size: 20px; line-height: 1.6; margin-bottom: 20px;">
+        A redefined online voting platform that guarantees voter anonymity
+        while maintaining a publicly accessible, immutable voting ledger.
+      </p>
+    </div>
+    <div style="flex: 2; text-align: center;">
+      <img src="/images/map.png" style="max-width: 100%; height: auto; border-radius: 10px;">
     </div>
   </div>
-  <div style="flex: 1; text-align: center;">
-    <img src="/images/map.png" style="max-width: 100%; height: auto; border-radius: 10px;">
+
+  <div class="legend-buttons" style="margin-top: 20px;">
+    <a href="#purpose" class="btn-secondary">Purpose</a>
+    <a href="#goals" class="btn-secondary">Goals</a>
+    <a href="#solutions" class="btn-secondary">Solutions</a>
+    <a href="#started" class="btn-secondary">Getting Started</a>
   </div>
 </section>
 
@@ -137,7 +150,7 @@
   </div>
 </section>
 
-<section id="started" class="section" style="text-align: center; margin-top: 50px;">
+<section id="started" class="section white-section" style="text-align: center; margin-top: 50px; max-width: fit-content">
   <h2>Getting Started</h2>
   <div>
     <div>
