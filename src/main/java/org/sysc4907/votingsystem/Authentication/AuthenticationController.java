@@ -29,8 +29,12 @@ public class AuthenticationController {
     private ElectionService electionService;
 
     @GetMapping("/")
-    public String redirectToHome(){
-        return "redirect:/home";
+    public String home(Model model) {
+        if (electionService.electionIsConfigured()) {
+            Election election = electionService.getElection();
+            model.addAttribute("electionName", election.NAME);
+        }
+        return "home-page";
     }
 
 
