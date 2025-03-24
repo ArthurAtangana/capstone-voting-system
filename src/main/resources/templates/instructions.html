@@ -64,20 +64,24 @@
         <a href="/home">
             <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
         </a>
+        <a href="/">About Us</a>
         <a th:if="${election}" href="/view-election-details">Election Details</a>
         <a th:if="${election}" href="/ledger">Ledger</a>
         <a th:if="${election}" href="/">Election Results (update link!)</a>
     </nav>
-    <div class="user-details" >
+    <div class="user-details" sec:authorize="isAuthenticated()">
         <i class="fa-solid fa-circle-user"></i>
         <p sec:authentication="name"></p>
         <p style="margin: 15px">|</p>
-        <a id="logout" th:href="@{/logout}" title="Logout">
-            <div style="display: flex; align-items: center">
-                <i class="fa fa-sign-out"></i>
-                <p>Logout</p>
-            </div>
-        </a>
+        <form th:action="@{/logout}" method="post">
+            <input th:if="${_csrf}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button id="logout-btn" type="submit">
+                <div style="display: flex; align-items: center; ">
+                    <i class="fa fa-sign-out"></i>
+                    <p>Logout</p>
+                </div>
+            </button>
+        </form >
     </div>
 </header>
 <main>

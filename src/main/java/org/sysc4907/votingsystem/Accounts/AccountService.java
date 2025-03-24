@@ -87,8 +87,11 @@ public class AccountService {
         Strength strength = passwordStrengthEstimator.measure(password);
         if (strength.getScore() == 4 || strength.getScore() == 3) return true; // 4 is a very strong password, 3 is strong
         System.out.println(strength.getPassword());
-        throw new WeakPasswordException(strength.getFeedback().getWarning() + ", " + strength.getFeedback().getSuggestions());
+        String warning = strength.getFeedback().getWarning();
+        String feedback = strength.getFeedback().getSuggestions().toString();
+        throw new WeakPasswordException(warning.isEmpty() ? feedback : warning + ", " + feedback);
     }
+
     public static class WeakPasswordException extends RuntimeException {
         public WeakPasswordException(String message) {
             super(message);
