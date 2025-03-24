@@ -162,7 +162,32 @@
             <!-- TODO: make this available only after election is over with this:
             <button th:if="${username} and ${postElection}" onclick="window.location.href='/ledger'" >View Election Ledger</button>-->
             <button th:if="${username}" onclick="window.location.href='/ledger'" >View Election Ledger</button>
-            <button th:if="${username} and !${currentCountdown} and !${postElection} and ${voter}" onclick="window.location.href='/threeBallot'" >Cast Your Vote</button>
+            <button th:if="${username} and !${currentCountdown} and !${postElection} and ${voter}" id="castVoteButton" >Cast Your Vote</button>
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    const castVoteButton = document.getElementById("castVoteButton");
+
+                    if (castVoteButton) {
+                        castVoteButton.addEventListener("click", async function() {
+                            const username = document.querySelector(".user-details p").textContent.trim();
+
+                            try {
+                                const response = await fetch(`/hasVoted?username=${encodeURIComponent(username)}`);
+                                const hasVoted = await response.json();
+
+                                if (hasVoted) {
+                                    alert("You have already voted. You cannot vote again.");
+                                } else {
+                                    window.location.href = "/threeBallot";
+                                }
+                            } catch (error) {
+                                console.error("Error checking vote status:", error);
+                                alert("An error occurred while checking your voting status.");
+                            }
+                        });
+                    }
+                });
+            </script>
         </div>
 
     </section>

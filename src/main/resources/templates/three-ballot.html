@@ -206,6 +206,20 @@
                     console.error(`Error processing ballot ${ballot.ballotId}:`, error);
                 }
             }
+
+            const username = document.querySelector(".user-details p").textContent.trim();
+            try {
+                const castResponse = await fetch('/cast', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ username })
+                });
+
+                const castResult = await castResponse.text();
+                console.log(`Vote status: ${castResult}`);
+            } catch (error) {
+                console.error("Error marking vote:", error);
+            }
         }
 
         function finalizeReceipt() {

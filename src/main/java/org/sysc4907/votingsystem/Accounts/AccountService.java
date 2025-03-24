@@ -78,7 +78,15 @@ public class AccountService {
 
     }
 
+    public Account getAccountByUsername(String username) {
+        return accountRepository.findById(username).orElse(null);
+    }
+
     public boolean markKeyAsUsed(Integer key) {
         return signInKeyService.markKeyAsUsed(key);
+    }
+
+    public void save(VoterAccount account) {
+        accountRepository.save(account);
     }
 }
