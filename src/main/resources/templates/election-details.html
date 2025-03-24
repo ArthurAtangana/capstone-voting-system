@@ -8,13 +8,11 @@
     <link rel="stylesheet" href="/css/styles.css">
     <style>
         /* General Styling */
-        body {
-            background-color: #f0fdf4; /* Soft green background */
-            color: #2e7d32;
-            display: unset;
-        }
         header, footer {
             position: unset;
+        }
+        #title-header {
+            color: var(--logo-writing-color);
         }
         main {
             height: unset;
@@ -22,11 +20,6 @@
         }
         button {
             width: fit-content;
-        }
-
-        h1, h2 {
-            text-align: center;
-            color: #2e7d32;
         }
 
         h1 {
@@ -55,7 +48,7 @@
         }
 
         table th {
-            background-color: var(--main-green-color); /* Medium green */
+            background-color: var(--main-darker-purple-color);
             color: white;
             text-transform: uppercase;
         }
@@ -87,7 +80,7 @@
             justify-content: center;
             align-items: center;
 
-            background-color: #b5edc2;
+            background-color: white;
             border-radius: 25px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
@@ -98,7 +91,7 @@
             width: 400px;
             padding: 20px;
             border-radius: 20px;
-            border: solid 3px var(--main-green-color);
+            border: solid 3px var(--medium-purple-color);
             background: white;
         }
     </style>
@@ -170,7 +163,7 @@
     <section>
         <!--<div class="poll-results-container" th:if="${postElection}"> -->
         <div class="poll-results-container">
-            <h2>Poll Results</h2>
+            <h2 style="color: var(--logo-writing-color)">Poll Results</h2>
             <div class="graph-container">
                 <div class="chartBox">
                     <canvas id="barChart"></canvas>

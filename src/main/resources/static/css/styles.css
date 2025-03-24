@@ -2,13 +2,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 :root {
-    --main-green-color: #28a745;
-    --main-darker-green-color: #218838;
+    --main-purple-color: #9966CC;
+    --logo-color: #764DDA;
+    --logo-writing-color: #283555;
+    --main-darker-purple-color: #7851A9;
+    --light-purple-color: #E6E6FA;
+    --medium-purple-color: #BEB4D6;
 }
 
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #f0fdf4; /* Soft green background */
+    background-color: #F5F3FF;
+    color: var(--logo-writing-color);
     margin: 0;
     display: block;
     width: 100%;
@@ -24,11 +29,11 @@ body {
     align-items: center;
     margin: 20px;
     gap: 10px;
-    color: black;
+    color: var(--main-purple-color);
 }
 
 header {
-    background-color: var(--main-green-color);
+    background-color: var(--medium-purple-color); /* Light Purple for Navigation Bar */
     min-height: fit-content;
     width: 100%;
     position: absolute;
@@ -38,8 +43,8 @@ header {
 }
 
 header a, header a:visited {
-    color: black;
-    text-decoration: none; /* removes underline for links */
+    color: var(--logo-writing-color);
+    text-decoration: none;
 }
 
 header a:hover {
@@ -63,7 +68,7 @@ footer {
     position: relative;
     bottom: 0;
     width: 100%;
-    background-color: var(--main-green-color);
+    background-color: var(--medium-purple-color);
     padding: 20px 0px;
     text-align: center;
     color: white;
@@ -88,7 +93,7 @@ main {
 }
 
 h1 {
-    color: #555555;
+    color: var(--main-darker-purple-color);
     margin-bottom: 20px;
 }
 
@@ -99,7 +104,7 @@ h1 {
 
 label {
     font-weight: bold;
-    color: #555;
+    color: var(--main-purple-color);
     margin-bottom: 5px;
     display: block;
 }
@@ -114,7 +119,7 @@ input[type="password"] {
 }
 
 button {
-    background-color: var(--main-green-color);
+    background-color: var(--logo-color);
     border: none;
     border-radius: 8px;
     color: white;
@@ -129,12 +134,12 @@ button {
 }
 
 button:hover {
-    background-color: var(--main-darker-green-color);
+    background-color: var(--logo-color);
     transform: scale(1.05);
 }
 
 button:active {
-    background-color: #1e7e34;
+    background-color: var(--main-purple-color);
     transform: scale(1.02);
 }
 
@@ -152,7 +157,7 @@ button:active {
 }
 
 .solution-item {
-    background: #f8f9fa;
+    background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -172,7 +177,7 @@ button:active {
 }
 
 .solution-item.active .solution-content {
-    max-height: 200px; /* Adjust as needed */
+    max-height: 200px;
     padding-top: 10px;
 }
 
@@ -193,11 +198,13 @@ button:active {
     width: 120px;
     margin: 10px 0;
 }
+
 .section {
     padding: 40px 10vw;
     box-sizing: border-box;
     margin-bottom: 40px;
 }
+
 .legend-buttons {
     display: flex;
     justify-content: center;
@@ -207,13 +214,14 @@ button:active {
 
 .btn-secondary {
     padding: 10px 20px;
-    background-color: var(--main-darker-green-color);
+    background-color: var(--logo-color);
     color: white;
     text-decoration: none;
     border-radius: 5px;
     font-size: 16px;
     transition: background-color 0.3s;
 }
+
 html {
     scroll-behavior: smooth;
 }
