@@ -210,7 +210,7 @@
 
         function finalizeReceipt() {
             // Hide all ballots except the selected one
-            const selectedBallotNumber = document.querySelector('.receipt-button[style*="background: rgb(69, 160, 73);"]').id.slice(-1);
+            const selectedBallotNumber = document.querySelector('.receipt-button[style*="background: var(--logo-color);"]').id.slice(-1);
             const booleanArray = [];
             const ballotCheckboxes = document.querySelectorAll(`td:nth-child(${parseInt(selectedBallotNumber) + 1}) .ballot-box`);
 
@@ -269,14 +269,14 @@
             const doc = new jsPDF();
             const currentDate = new Date();
             const formattedDate = currentDate.toLocaleString();
-            const mainGreenColor = '#28a745';
-            const darkerGreenColor = '#218838';
+            const mainPurpleColour = '#BEB4D6';
+            const darkerGreenColor = '#764DDA';
             const margin = 10;
 
             // Header
-            doc.setFillColor(mainGreenColor);
+            doc.setFillColor(mainPurpleColour);
             doc.rect(0, 0, doc.internal.pageSize.width, 40, 'F');
-            doc.addImage('/images/logo.png', 'PNG', margin, 10, 50, 20);
+            doc.addImage('/images/confido-logo.png', 'PNG', margin, 10, 50, 20);
 
             // Title
             doc.setFontSize(18);
@@ -307,7 +307,7 @@
             doc.text(`${JSON.stringify(booleanArray)}`, margin, 175);
 
             // Footer
-            doc.setFillColor(mainGreenColor);
+            doc.setFillColor(mainPurpleColour);
             doc.rect(0, doc.internal.pageSize.height - 20, doc.internal.pageSize.width, 40, 'F');
 
             doc.save('receipt_' + ballotId + '.pdf');
@@ -341,7 +341,7 @@
                 if (button.id !== ("rButton" + ballotNumber)) {
                     button.style.background = 'gray';
                 } else {
-                    button.style.background = '#45a049' //green
+                    button.style.background = 'var(--logo-color)' //green
                 }
             });
 

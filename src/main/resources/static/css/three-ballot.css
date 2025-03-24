@@ -5,14 +5,6 @@ table {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Table headers styling */
-th {
-    background-color: #4CAF50;
-    color: white;
-    padding: 12px 20px;
-    text-align: left;
-}
-
 /* Table data styling */
 td {
     padding: 10px 20px;
@@ -29,18 +21,9 @@ tr:hover {
     background-color: #f1f1f1;
 }
 
-/* Style checkboxes */
-input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    margin: 0;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
 input[type="checkbox"]:checked {
-    background-color: #4CAF50;
-    border: 1px solid #4CAF50;
+    background-color: var(--light-purple-color);
+    border: 1px solid #663399;
 }
 
 /* Add spacing for buttons or additional content below the table */
@@ -60,10 +43,6 @@ input[type="checkbox"]:checked {
     margin: 10px;
 }
 
-.finalize-button:hover {
-    background-color: #0056b3;
-}
-
 .button-container {
     display: flex;
     justify-content: center;
@@ -76,7 +55,7 @@ input[type="checkbox"]:checked {
     font-size: 20px;
     padding: 15px 30px;
     margin: 10px;
-    background-color: #28A745;
+    background-color: var(--logo-color);
     color: white;
     border: none;
     border-radius: 8px;
@@ -84,23 +63,14 @@ input[type="checkbox"]:checked {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-#ballot-buttons button:hover, #submit-key-btn:hover {
-    background-color: #1e7e34;
-    transform: scale(1.05);
-}
-
 #ballot-buttons button:active {
-    background-color: #155724;
+    background-color: var(--medium-purple-color);
     transform: scale(0.95);
 }
 
 /* Center the buttons */
 #ballot-buttons {
     text-align: center;
-}
-
-.tooltip {
-    position: relative;
 }
 
 .tooltip[disabled]::after {
@@ -133,12 +103,6 @@ input[type="checkbox"]:checked {
     width: 100%; height: 100%;
     background-color: rgba(0, 0, 0, 0.5);"
 }
-.pop-up-container {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-}
 .form-group{
     display: flex;
     flex-direction: column;
@@ -151,6 +115,43 @@ input[type="checkbox"]:checked {
     font-family: monospace;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+
+/* Table headers styling */
+th {
+    background-color: var(--logo-color); /* Deep Purple */
+    color: white;
+    padding: 12px 20px;
+    text-align: left;
+}
+
+/* Style checkboxes */
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.finalize-button:hover {
+    background-color: var(--medium-purple-color); /* Dark Purple */
+}
+
+#ballot-buttons button:hover, #submit-key-btn:hover {
+    background-color: var(--logo-writing-color); /* Medium Slate Blue */
+    transform: scale(1.05);
+}
+
+.tooltip {
+    position: relative;
+}
+
+.pop-up-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
 }
 .error-message {
     color: red;
