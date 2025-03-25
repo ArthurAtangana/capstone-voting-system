@@ -116,7 +116,7 @@
         <a th:if="${election}" href="/">About Us</a>
         <a th:if="${election}" href="/view-election-details">Election Details</a>
         <a th:if="${election}" class="active" href="/ledger">Ledger</a>
-        <a th:if="${election}" href="/">Election Results (update link!)</a>
+        <a th:if="${election}" href="/view-election-results">Election Results</a>
     </nav>
     <div class="user-details" th:if="${username}">
         <i class="fa-solid fa-circle-user"></i>
