@@ -54,21 +54,28 @@ public class ElectionController {
         if (electionService.electionIsConfigured()) {
             Election election = electionService.getElection();
             model.addAttribute("election", election);
-
             model.addAttribute("formattedStart", election.START_DATE_TIME.format(DateTimeFormatter.ofPattern("MMMM d, yyyy @ h:mm a")));
             model.addAttribute("formattedEnd", election.END_DATE_TIME.format(DateTimeFormatter.ofPattern("MMMM d, yyyy @ h:mm a")));
             model.addAttribute("currentCountdown", election.getElectionCountdown());
             model.addAttribute("postElection", election.END_DATE_TIME.isBefore(now));
-
-            model.addAttribute("numVotesCast", electionService.getNumVotesCast());
-                model.addAttribute("tally", electionService.getTally());
-
-            System.out.println(election.END_DATE_TIME);
-
         } else {
             model.addAttribute("errorMessage", "No poll has been configured yet!");
         }
         return "election-details";
+    }
+    @GetMapping("/view-election-results")
+    public String showElectionResultPage(Model model, HttpSession session) {
+        model.addAttribute("username", session.getAttribute("username"));
+        if (electionService.electionIsConfigured()) {
+            Election election = electionService.getElection();
+            model.addAttribute("electionName", election.NAME);
+            model.addAttribute("candidates", election.getCandidates());
+            model.addAttribute("numVotesCast", electionService.getNumVotesCast());
+            model.addAttribute("tally", electionService.getTally());
+        } else {
+            model.addAttribute("errorMessage", "No poll has been configured yet!");
+        }
+        return "election-results";
     }
 
 }

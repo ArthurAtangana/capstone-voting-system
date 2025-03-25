@@ -67,7 +67,7 @@
         <a href="/">About Us</a>
         <a th:if="${election}" href="/view-election-details">Election Details</a>
         <a th:if="${election}" href="/ledger">Ledger</a>
-        <a th:if="${election}" href="/">Election Results (update link!)</a>
+        <a th:if="${election}" href="/">Election Results</a>
     </nav>
     <div class="user-details" sec:authorize="isAuthenticated()">
         <i class="fa-solid fa-circle-user"></i>
