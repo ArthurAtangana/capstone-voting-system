@@ -68,6 +68,7 @@ public class RegistrationController {
         } catch (AccountService.WeakPasswordException w) {
             model.addAttribute("WeakPasswordErrorMessage", w.getMessage());
             model.addAttribute("repeatUserName", userName);
+            model.addAttribute("election", electionService.getElection());
             return "registration-credentials-page";
         }
 
