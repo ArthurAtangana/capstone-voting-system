@@ -28,7 +28,9 @@ public class AuthenticationController {
     private ElectionService electionService;
 
     @GetMapping("/")
-    public String home(Model model) {
+    public String home(Model model, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        model.addAttribute("username", username);
         if (electionService.electionIsConfigured()) {
             Election election = electionService.getElection();
             model.addAttribute("electionName", election.NAME);
