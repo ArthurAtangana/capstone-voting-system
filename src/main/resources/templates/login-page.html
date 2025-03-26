@@ -29,6 +29,7 @@
   <div class="container">
     <h1>Login to Confido</h1>
     <div class="error-message" th:if="${param.error}">Invalid username and password.</div>
+    <div class="error-message" th:if="${errorMessage}" th:text="${errorMessage}"></div>
     <form th:action="@{/login}" method="post">
       <div class="form-group">
         <label for="username">Username:</label>
