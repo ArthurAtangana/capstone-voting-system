@@ -48,15 +48,10 @@ public class LedgerController {
     private FabricGatewayService fabricGatewayService;
 
     @GetMapping("/ledger")
-    public String showElectionLedger(Model model, HttpSession session) {
-        /* Preserve election details here */
-        model.addAttribute("username", session.getAttribute("username"));
-
+    public String showElectionLedger(Model model) {
         LocalDateTime now = LocalDateTime.now();
 
-        // Pull this out for scope
         Election election;
-
         if (electionService.electionIsConfigured()) {
             election = electionService.getElection();
             model.addAttribute("election", election);

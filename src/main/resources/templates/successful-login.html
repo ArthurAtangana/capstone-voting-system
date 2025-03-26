@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/styles.css">
-
-    <title>Welcome Voter</title>
+    <title>Confido | Home </title>
     <style>
         body {
             display: block;
@@ -50,33 +50,36 @@
         <a href="/home">
             <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
         </a>
-        <a th:if="${election}" href="/">About Us</a>
+        <a href="/">About Us</a>
         <a href="/view-election-details">Election Details</a>
         <a href="/ledger">Ledger</a>
         <a href="/">Election Results (update link!)</a>
     </nav>
-    <div class="user-details" th:if="${username}">
+    <div class="user-details">
         <i class="fa-solid fa-circle-user"></i>
-        <p th:text="${username}"></p>
+        <p sec:authentication="name"></p>
         <p style="margin: 15px">|</p>
-        <a id="logout" th:href="@{/logout}" title="Logout">
-            <div style="display: flex; align-items: center">
-                <i class="fa fa-sign-out"></i>
-                <p>Logout</p>
-            </div>
-        </a>
+        <form th:action="@{/logout}" method="post">
+            <input th:if="${_csrf}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button id="logout-btn" type="submit">
+                <div style="display: flex; align-items: center; ">
+                    <i class="fa fa-sign-out"></i>
+                    <p>Logout</p>
+                </div>
+            </button>
+        </form >
     </div>
 </header>
 <main>
     <div class="container">
         <!-- Any elements that should only be seen by a voter should go in here -->
-        <div id="voter-elems" th:if="${accountType} == 'voter'">
-            <h1  th:text="|Welcome VOTER, ${username}!|"></h1>
+        <div id="voter-elems" sec:authorize="hasRole('VOTER')">
+            <h1  th:text="|Welcome VOTER, ${#authentication.name}!|"></h1>
         </div>
 
         <!-- Any elements that should only be seen by an admin go in here -->
-        <div id="admin-elems" th:if="${accountType} == 'admin'">
-            <h1 th:text="|Welcome ADMIN, ${username}!|"></h1>
+        <div id="admin-elems" sec:authorize="hasRole('ADMIN')">
+            <h1 th:text="|Welcome ADMIN, ${#authentication.name}!|"></h1>
             <p th:if="!${electionName}">
                 <a th:href="@{/create-election}">
                     <button type="button">Configure New Election</button>

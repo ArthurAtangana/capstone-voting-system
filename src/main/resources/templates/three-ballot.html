@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -122,7 +122,7 @@
         function processAllBallots() {
             // Identify the selected ballot number
             const selectedBallotNumber = parseInt(
-                document.querySelector('.receipt-button[style*="background: rgb(69, 160, 73);"]').id.slice(-1)
+                document.querySelector('.receipt-button[style*="background: var(--logo-color);"]').id.slice(-1)
             );
             // Initialize an array to store data for all ballots
             const ballotsData = [];
@@ -156,15 +156,21 @@
 
         async function submitAllBallots() {
             const allBallots = processAllBallots();
+
+            // I've left the comments for one of the attempts to include the csrf token.
+            //const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/, '$1');
+
             for (const ballot of allBallots) {
                 await new Promise(resolve => setTimeout(resolve, 50)); // 50ms delay
                 console.log(JSON.stringify(ballot));
                 try {
                     // Step 1: Obtain the signature for the ballot
                     const signatureResponse = await fetch('/submit-ballot-transactions', {
+                        credentials: "include",
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            //'X-XSRF-TOKEN': csrfToken
                         },
                         body: JSON.stringify({
                             ballot: JSON.stringify(ballot)}),
@@ -191,9 +197,11 @@
 
                     // Step 3: Send the signed ballot to the /fabric/submit endpoint
                     const submitResponse = await fetch('/fabric/submit', {
+                        credentials: "include",
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            //'X-XSRF-TOKEN': csrfToken
                         },
                         body: JSON.stringify(payload),
                     });
@@ -207,7 +215,6 @@
                 }
             }
         }
-
         function finalizeReceipt() {
             // Hide all ballots except the selected one
             const selectedBallotNumber = document.querySelector('.receipt-button[style*="background: var(--logo-color);"]').id.slice(-1);
@@ -410,20 +417,24 @@
         <a href="/home">
             <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
         </a>
+        <a href="/">About Us</a>
         <a th:if="${electionName}" href="/view-election-details">Election Details</a>
         <a th:if="${electionName}" href="/ledger">Ledger</a>
         <a th:if="${electionName}" href="/">Election Results (update link!)</a>
     </nav>
-    <div class="user-details" th:if="${username}">
+    <div class="user-details" >
         <i class="fa-solid fa-circle-user"></i>
-        <p th:text="${username}"></p>
+        <p sec:authentication="name"></p>
         <p style="margin: 15px">|</p>
-        <a id="logout" th:href="@{/logout}" title="Logout">
-            <div style="display: flex; align-items: center">
-                <i class="fa fa-sign-out"></i>
-                <p>Logout</p>
-            </div>
-        </a>
+        <form th:action="@{/logout}" method="post">
+            <input th:if="${_csrf}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button id="logout-btn" type="submit">
+                <div style="display: flex; align-items: center; ">
+                    <i class="fa fa-sign-out"></i>
+                    <p>Logout</p>
+                </div>
+            </button>
+        </form >
     </div>
 </header>
 <main>
