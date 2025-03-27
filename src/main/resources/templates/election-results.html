@@ -12,17 +12,25 @@
   <style>
     /* General Styling */
     header, footer {
-      position: sticky;
+      /*position: sticky;*/
+      position: unset;
+      flex-shrink: 0;
     }
-    header {
+    /*header {
       top: 0;
     }
     footer {
       bottom: 0;
+    }*/
+    .page-wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
     main {
-      height: unset;
+      /*height: unset;*/
+      flex: 1;
       margin: 20px;
     }
 
@@ -60,51 +68,54 @@
   </style>
 </head>
 <body>
-<header>
-  <nav>
-    <a href="/home">
-      <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
-    </a>
-    <a href="/">About Us</a>
-    <a th:if="${electionName}" href="/view-election-details">Election Details</a>
-    <a th:if="${electionName}" href="/ledger">Ledger</a>
-    <a th:if="${electionName}" class="active" href="/view-election-results">Election Results</a>
-  </nav>
-  <div class="user-details" sec:authorize="isAuthenticated()">
-    <i class="fa-solid fa-circle-user"></i>
-    <p sec:authentication="name"></p>
-    <p style="margin: 15px">|</p>
-    <form th:action="@{/logout}" method="post">
-      <input th:if="${_csrf}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-      <button id="logout-btn" type="submit">
-        <div style="display: flex; align-items: center; ">
-          <i class="fa fa-sign-out"></i>
-          <p>Logout</p>
-        </div>
-      </button>
-    </form >
-  </div>
-</header>
-<main>
-  <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
-  <div th:if="${electionName}">
-    <h1 th:text="|Election Results: ${electionName}|"></h1>
-    <h2 th:text="|Total Number of Votes: ${numVotesCast}|"> </h2>
-    <div class="poll-results-container">
-      <div class="graph-container">
-        <div class="chartBox">
-          <canvas id="barChart"></canvas>
-        </div>
-        <div class="chartBox">
-          <canvas id="pieChart"></canvas>
+<div class="page-wrapper">
+  <header>
+    <nav>
+      <a href="/home">
+        <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
+      </a>
+      <a href="/">About Us</a>
+      <a th:if="${electionName}" href="/view-election-details">Election Details</a>
+      <a th:if="${electionName}" href="/ledger">Ledger</a>
+      <a th:if="${electionName}" class="active" href="/view-election-results">Election Results</a>
+    </nav>
+    <div class="user-details" sec:authorize="isAuthenticated()">
+      <i class="fa-solid fa-circle-user"></i>
+      <p sec:authentication="name"></p>
+      <p style="margin: 15px">|</p>
+      <form th:action="@{/logout}" method="post">
+        <input th:if="${_csrf}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <button id="logout-btn" type="submit">
+          <div style="display: flex; align-items: center; ">
+            <i class="fa fa-sign-out"></i>
+            <p>Logout</p>
+          </div>
+        </button>
+      </form >
+    </div>
+  </header>
+  <main>
+    <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
+    <div th:if="${electionName}">
+      <h1 th:text="|Election Results: ${electionName}|"></h1>
+      <h2 th:text="|Total Number of Votes: ${numVotesCast}|"> </h2>
+      <div class="poll-results-container">
+        <div class="graph-container">
+          <div class="chartBox">
+            <canvas id="barChart"></canvas>
+          </div>
+          <div class="chartBox">
+            <canvas id="pieChart"></canvas>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</main>
-<footer>
-  <p>&copy; 2025 Secure and Transparent Voting System</p>
-</footer>
+  </main>
+  <footer>
+    <p>&copy; 2025 Secure and Transparent Voting System</p>
+  </footer>
+</div>
+
 </body>
 
 <script th:inline="javascript">

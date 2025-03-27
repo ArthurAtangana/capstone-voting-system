@@ -16,7 +16,7 @@ body {
     color: var(--logo-writing-color);
     margin: 0;
     display: block;
-    width: 100%;
+    width: 100vw;
     justify-content: center;
     align-items: center;
     height: 100vh;
