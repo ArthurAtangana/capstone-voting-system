@@ -107,9 +107,9 @@ body {
 }
 /* ^^^ dynamic nav bar styling ^^^ */
 
-header a:hover {
-    transform: scale(1.05);
-}
+/*header a:hover {*/
+/*    transform: scale(1.05);*/
+/*}*/
 
 nav {
     display: flex;
@@ -290,6 +290,7 @@ button:active {
     justify-content: center;
     gap: 15px;
     margin-top: 20px;
+    text-align: center;
 }
 
 .btn-secondary {
