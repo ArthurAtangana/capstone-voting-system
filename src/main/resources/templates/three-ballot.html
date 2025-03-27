@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -122,7 +122,7 @@
         function processAllBallots() {
             // Identify the selected ballot number
             const selectedBallotNumber = parseInt(
-                document.querySelector('.receipt-button[style*="background: rgb(69, 160, 73);"]').id.slice(-1)
+                document.querySelector('.receipt-button[style*="background: var(--logo-color);"]').id.slice(-1)
             );
             // Initialize an array to store data for all ballots
             const ballotsData = [];
@@ -156,15 +156,21 @@
 
         async function submitAllBallots() {
             const allBallots = processAllBallots();
+
+            // I've left the comments for one of the attempts to include the csrf token.
+            //const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/, '$1');
+
             for (const ballot of allBallots) {
                 await new Promise(resolve => setTimeout(resolve, 50)); // 50ms delay
                 console.log(JSON.stringify(ballot));
                 try {
                     // Step 1: Obtain the signature for the ballot
                     const signatureResponse = await fetch('/submit-ballot-transactions', {
+                        credentials: "include",
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            //'X-XSRF-TOKEN': csrfToken
                         },
                         body: JSON.stringify({
                             ballot: JSON.stringify(ballot)}),
@@ -191,9 +197,11 @@
 
                     // Step 3: Send the signed ballot to the /fabric/submit endpoint
                     const submitResponse = await fetch('/fabric/submit', {
+                        credentials: "include",
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            //'X-XSRF-TOKEN': csrfToken
                         },
                         body: JSON.stringify(payload),
                     });
@@ -221,10 +229,9 @@
                 console.error("Error marking vote:", error);
             }
         }
-
         function finalizeReceipt() {
             // Hide all ballots except the selected one
-            const selectedBallotNumber = document.querySelector('.receipt-button[style*="background: rgb(69, 160, 73);"]').id.slice(-1);
+            const selectedBallotNumber = document.querySelector('.receipt-button[style*="background: var(--logo-color);"]').id.slice(-1);
             const booleanArray = [];
             const ballotCheckboxes = document.querySelectorAll(`td:nth-child(${parseInt(selectedBallotNumber) + 1}) .ballot-box`);
 
@@ -283,14 +290,14 @@
             const doc = new jsPDF();
             const currentDate = new Date();
             const formattedDate = currentDate.toLocaleString();
-            const mainGreenColor = '#28a745';
-            const darkerGreenColor = '#218838';
+            const mainPurpleColour = '#BEB4D6';
+            const darkerGreenColor = '#764DDA';
             const margin = 10;
 
             // Header
-            doc.setFillColor(mainGreenColor);
+            doc.setFillColor(mainPurpleColour);
             doc.rect(0, 0, doc.internal.pageSize.width, 40, 'F');
-            doc.addImage('/images/logo.png', 'PNG', margin, 10, 50, 20);
+            doc.addImage('/images/confido-logo.png', 'PNG', margin, 10, 50, 20);
 
             // Title
             doc.setFontSize(18);
@@ -321,7 +328,7 @@
             doc.text(`${JSON.stringify(booleanArray)}`, margin, 175);
 
             // Footer
-            doc.setFillColor(mainGreenColor);
+            doc.setFillColor(mainPurpleColour);
             doc.rect(0, doc.internal.pageSize.height - 20, doc.internal.pageSize.width, 40, 'F');
 
             doc.save('receipt_' + ballotId + '.pdf');
@@ -355,7 +362,7 @@
                 if (button.id !== ("rButton" + ballotNumber)) {
                     button.style.background = 'gray';
                 } else {
-                    button.style.background = '#45a049' //green
+                    button.style.background = 'var(--logo-color)' //green
                 }
             });
 
@@ -424,20 +431,24 @@
         <a href="/home">
             <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
         </a>
+        <a href="/">About Us</a>
         <a th:if="${electionName}" href="/view-election-details">Election Details</a>
         <a th:if="${electionName}" href="/ledger">Ledger</a>
         <a th:if="${electionName}" href="/">Election Results (update link!)</a>
     </nav>
-    <div class="user-details" th:if="${username}">
+    <div class="user-details" >
         <i class="fa-solid fa-circle-user"></i>
-        <p th:text="${username}"></p>
+        <p sec:authentication="name"></p>
         <p style="margin: 15px">|</p>
-        <a id="logout" th:href="@{/logout}" title="Logout">
-            <div style="display: flex; align-items: center">
-                <i class="fa fa-sign-out"></i>
-                <p>Logout</p>
-            </div>
-        </a>
+        <form th:action="@{/logout}" method="post">
+            <input th:if="${_csrf}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button id="logout-btn" type="submit">
+                <div style="display: flex; align-items: center; ">
+                    <i class="fa fa-sign-out"></i>
+                    <p>Logout</p>
+                </div>
+            </button>
+        </form >
     </div>
 </header>
 <main>

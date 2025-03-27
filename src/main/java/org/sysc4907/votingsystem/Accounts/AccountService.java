@@ -1,6 +1,12 @@
 package org.sysc4907.votingsystem.Accounts;
 
+import com.nulabinc.zxcvbn.Strength;
+import com.nulabinc.zxcvbn.Zxcvbn;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.sysc4907.votingsystem.Registration.SignInKeyService;
 
@@ -21,69 +27,79 @@ import java.util.Set;
  */
 @Service
 public class AccountService {
+    private boolean activeRegistration = false;
+
     private SignInKeyService signInKeyService;
-    private List<VoterAccount> blankVoterAccounts;
-    // private List<AdminAccount> blankAdminAccounts; // TODO
-    private List<Account> registeredAccounts;
+    private UserDetailsManager userDetailsManager;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private  AccountRepository accountRepository;
+    public AccountService(UserDetailsManager userDetailsManager, PasswordEncoder passwordEncoder) {
+        this.userDetailsManager = userDetailsManager;
+        this.passwordEncoder = passwordEncoder;
+    }
 
+    /**
+     * Configures the sign-in key service to use the provided voter keys.
+     * @param voterKeySet the set of registration keys for an election
+     */
     public void initAccountService(Set<Integer> voterKeySet){
         signInKeyService = new SignInKeyService(voterKeySet);
-
-        int numberOfAccounts = voterKeySet.size();
-        blankVoterAccounts = new ArrayList<>(numberOfAccounts);
-        for (int i = 0; i < numberOfAccounts; i++) {
-            blankVoterAccounts.add(new VoterAccount());
-        }
-        registeredAccounts = new ArrayList<>();
-    }
-    /**
-     * Assigns a random blank account to a user if a valid sign-in key is provided.
-     *
-     * @param key the sign-in key provided by the user
-     * @return optional selected account value if the key is valid, otherwise returns empty optional value
-     */
-    public Optional<Account> assignBlankAccount(Integer key) {
-        if (signInKeyService.keyIsValid(key)) {
-            SecureRandom secureRandom = new SecureRandom(); // SecureRandom is recommended as it generates non-deterministic random values based on cryptographic algorithms
-            int randomIndex = secureRandom.nextInt(blankVoterAccounts.size());
-            return Optional.of(this.blankVoterAccounts.get(randomIndex));
-        }
-        return Optional.empty();
     }
 
     /**
-     * Configures and saves a new account with a username and password.
+     * Saves a new account with provided username and password.
      *
-     * @param account the account to be configured and saved (should be a blank account assigned by the account service)
      * @param username the username to set for the account
      * @param password the password to set for the account
      * @return true if the account was successfully configured and saved, otherwise false
      */
-    public boolean configureAndSaveNewAccount(Account account, String username, String password) {
-        if (username.isEmpty() || password.isEmpty() || registeredAccounts.contains(account) || ! blankVoterAccounts.contains(account)){
+    public boolean configureAndSaveNewAccount(String username, String password) {
+        if (username.isEmpty() || password.isEmpty() || userDetailsManager.userExists(username) || !activeRegistration) {
             return false;
         }
-        account.setPassword(password);
-        account.setUserName(username);
+        isVeryStrongPassword(password); // throws an exception if password is not strong! (caught in controller)
+        UserDetails user = User.withUsername(username)
+                .password(passwordEncoder.encode(password))
+                .roles("VOTER")
+                .build();
 
-        blankVoterAccounts.remove(account);
+        userDetailsManager.createUser(user);
+        activeRegistration = false;
 
-        registeredAccounts.add(account);
-        accountRepository.save(account);
         return true;
+    }
 
+    /**
+     * Marks a given registration key as 'used' so it cannot be re-used for another account.
+     *
+     * @param key is the registration key
+     * @return true if key is a valid unused registration key, otherwise false
+     */
 
+    public boolean markKeyAsUsed(Integer key) {
+        activeRegistration = signInKeyService.markKeyAsUsed(key); // true if key is valid
+        return activeRegistration;
+    }
+
+    public static boolean isVeryStrongPassword(String password) {
+        Zxcvbn passwordStrengthEstimator = new Zxcvbn();
+        Strength strength = passwordStrengthEstimator.measure(password);
+        if (strength.getScore() == 4 || strength.getScore() == 3) return true; // 4 is a very strong password, 3 is strong
+        System.out.println(strength.getPassword());
+        String warning = strength.getFeedback().getWarning();
+        String feedback = strength.getFeedback().getSuggestions().toString();
+        throw new WeakPasswordException(warning.isEmpty() ? feedback : warning + ", " + feedback);
     }
 
     public Account getAccountByUsername(String username) {
         return accountRepository.findById(username).orElse(null);
     }
-
-    public boolean markKeyAsUsed(Integer key) {
-        return signInKeyService.markKeyAsUsed(key);
+  
+    public static class WeakPasswordException extends RuntimeException {
+        public WeakPasswordException(String message) {
+            super(message);
+        }
     }
 
     public void save(VoterAccount account) {

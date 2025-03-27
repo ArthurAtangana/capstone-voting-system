@@ -19,7 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Testing the behaviour of the registration service which is responsible for validating sign-in keys, and creating new accounts.
+ * Testing the behaviour of the registration service, which is responsible for validating
+ * sign-in keys and managing the account registration process.
  *
  * @author Jasmine Gad El Hak
  * @version 1.0
@@ -52,35 +53,27 @@ class RegistrationServiceTest {
         verifyNoInteractions(accountService); // verify that we never invoke any methods on the account service
     }
     /**
-     * Tests that submitting a sign-in key succeeds when the election is configured
-     * and the account service assigns a blank account. Verifies interactions with
-     * the account service for assigning the blank account and marking the key as used.
-     */
+     * Tests that submitting a registration key succeeds when the election is configured and the key is valid. */
     @Test
-    void submitSignInKeyWhenKeyAssigned() {
+    void submitValidRegistrationKey() {
         when(electionService.electionIsConfigured()).thenReturn(true); // mocking election being configured
         when(electionService.getAccountService()).thenReturn(accountService);
-        when(accountService.assignBlankAccount(123)).thenReturn(Optional.of(new VoterAccount())); // mocking available blank account
+        when(accountService.markKeyAsUsed(123)).thenReturn(true); // mocking available blank account
 
         assertTrue(registrationService.submitSignInKey(123));
-        verify(accountService).assignBlankAccount(123);
         verify(accountService).markKeyAsUsed(123);
     }
     /**
-     * Tests that submitting a sign-in key fails when the election is configured
-     * but the account service does not assign a blank account. Verifies that the
-     * key is still marked as used in this scenario.
+     * Tests that submitting a registration key fails when the election is configured
+     * but the key is not one of the configured keys for the election.
      */
     @Test
-    void submitSignInKeyWhenKeyNotAssigned() {
+    void submitInvalidRegistrationKey() {
         when(electionService.electionIsConfigured()).thenReturn(true); // mocking election being configured
         when(electionService.getAccountService()).thenReturn(accountService);
-        when(accountService.assignBlankAccount(123)).thenReturn(Optional.empty()); // mocking unavailable blank account
+        when(accountService.markKeyAsUsed(123)).thenReturn(false); // mocking invalid key
 
         assertFalse(registrationService.submitSignInKey(123));
-
-        // verify that we invoked these methods
-        verify(accountService).assignBlankAccount(123);
         verify(accountService).markKeyAsUsed(123);
     }
     /**
@@ -98,56 +91,49 @@ class RegistrationServiceTest {
     }
     /**
      * Tests that submitting account credentials succeeds when the election is configured,
-     * a blank account is assigned, and the account is successfully configured and saved.
-     * Verifies interactions with the account service for configuring and saving the account.
+     * the registration key has been validated, and the account is successfully created and saved.
      */
     @Test
     void submitAccountCredentialsWhenAccountConfigured() {
-        Account mockAccount = new VoterAccount();
         when(electionService.electionIsConfigured()).thenReturn(true); // mocking election being configured
         when(electionService.getAccountService()).thenReturn(accountService);
-        when(accountService.assignBlankAccount(123)).thenReturn(Optional.of(mockAccount)); // mocking available blank account
-        when(accountService.configureAndSaveNewAccount(mockAccount, "user", "password"))
+        when(accountService.markKeyAsUsed(123)).thenReturn(true); // mocking valid key
+        when(accountService.configureAndSaveNewAccount("user", "password"))
                 .thenReturn(true);
 
         registrationService.submitSignInKey(123); // Simulate account registration flow
 
         assertEquals(Response.VOTER_REG_SUCCESS, registrationService.submitAccountCredentials("user", "password"));
-        verify(accountService).configureAndSaveNewAccount(mockAccount, "user", "password");
+        verify(accountService).configureAndSaveNewAccount("user", "password");
     }
     /**
      * Tests that resubmitting account credentials after successfully registering an account
-     * fails because the stored account for registration is reset. Verifies that no additional
-     * account configuration occurs after the first submission.
+     * fails. Verifies that no additional account configuration occurs after the first submission.
      */
     @Test
     void resubmitAccountCredentialsForSameKey() {
-        Account mockAccount = new VoterAccount();
-
         when(electionService.electionIsConfigured()).thenReturn(true); // mocking election being configured
         when(electionService.getAccountService()).thenReturn(accountService);
-        when(accountService.assignBlankAccount(123)).thenReturn(Optional.of(mockAccount)); // mocking available blank account
-        when(accountService.configureAndSaveNewAccount(mockAccount, "user", "password"))
-                .thenReturn(true);
+        when(accountService.markKeyAsUsed(123)).thenReturn(true); // mocking valid key
 
         registrationService.submitSignInKey(123); // Simulate account registration flow
 
         registrationService.submitAccountCredentials("user", "password"); // simulate first submit
 
-        // Resubmission should fail, account stored should have been reset
+        // Resubmission should fail, flag for 'registrationInProgress' should have been reset
         assertEquals(Response.REG_FAILED, registrationService.submitAccountCredentials("user", "password")); // verify resubmitting will not create another account
 
     }
     /**
-     * Tests that submitting account credentials fails when no account is assigned for registration,
+     * Tests that submitting account credentials fails when key is never validated,
      * even though the election is configured. Verifies that the account service is not invoked.
      */
     @Test
     void submitAccountCredentialsWhenAccountNotConfigured() {
         when(electionService.electionIsConfigured()).thenReturn(true);
+        when(electionService.getAccountService()).thenReturn(accountService);
 
         assertEquals(Response.REG_FAILED, registrationService.submitAccountCredentials("user", "password"));
-        verify(electionService, never()).getAccountService(); // verify that method was never invoked
     }
 
 }
