@@ -28,9 +28,7 @@ public class AuthenticationController {
     private ElectionService electionService;
 
     @GetMapping("/")
-    public String home(Model model, HttpSession session) {
-        String username = (String) session.getAttribute("username");
-        model.addAttribute("username", username);
+    public String home(Model model) {
         if (electionService.electionIsConfigured()) {
             Election election = electionService.getElection();
             model.addAttribute("electionName", election.NAME);
@@ -49,6 +47,10 @@ public class AuthenticationController {
                                 Model model, HttpSession session) {
         if (error != null) {
             model.addAttribute("errorMessage", session.getAttribute("errorMessage"));
+        }
+        if (electionService.electionIsConfigured()) {
+            Election election = electionService.getElection();
+            model.addAttribute("electionName", election.NAME);
         }
         return "login-page";
     }
