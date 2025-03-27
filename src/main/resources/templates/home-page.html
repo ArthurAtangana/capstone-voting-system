@@ -18,6 +18,27 @@
     #started p {
       padding-bottom: 20px;
     }
+    header a.icon {
+      display: none;
+    }
+
+    @media screen and (max-width: 500px) {
+      header.responsive, header.responsive nav {
+        flex-direction: column;
+      }
+      nav > *:not(:first-child), .user-details, .login-register {display: none;}
+      header.responsive nav > *:not(:first-child) {display: block;}
+      header.responsive .user-details, header.responsive .login-register {display: flex;}
+      header a.icon {
+        margin: 16px;
+        display: block;
+
+      }
+      /*header {*/
+      /*  flex-direction: column;*/
+      /*}*/
+    }
+
   </style>
 </head>
 <body>
@@ -52,7 +73,22 @@
       <button onclick="window.location.href='/home'">Login</button>
       <button onclick="window.location.href='/registration-key'">Register</button>
     </div>
+
+    <a href="javascript:void(0);" class="icon" onclick="toggleResponsiveHeader()">
+      <i class="fa fa-bars"></i>
+    </a>
 </header>
+<script>
+  function toggleResponsiveHeader() {
+    let x = document.querySelector("header");
+    if (x.className === "responsive") {
+      x.classList.remove("responsive");
+    } else {
+      x.classList.add("responsive");
+    }
+  }
+
+</script>
 
 <section id="about" class="section white-section" style="margin-top: 110px; padding: 40px; max-width: 1200px;">
   <div style="display: flex; justify-content: center; align-items: center; text-align: left;">

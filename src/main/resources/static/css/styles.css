@@ -22,16 +22,7 @@ body {
     height: 100vh;
 }
 
-.user-details {
-    width: fit-content;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin: 20px;
-    gap: 10px;
-}
-
-.login-register {
+.user-details, .login-register {
     width: fit-content;
     display: flex;
     flex-direction: row;
@@ -48,6 +39,7 @@ header {
     top: 0;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 header a, header a:visited {
@@ -72,16 +64,16 @@ nav a.active {
     color: white;
 }
 
-.user-details {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: fit-content;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin: 20px;
-}
+/*.user-details {*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    right: 0;*/
+/*    width: fit-content;*/
+/*    display: flex;*/
+/*    flex-direction: row;*/
+/*    align-items: center;*/
+/*    margin: 20px;*/
+/*}*/
 
 #logout-btn {
     background: none;
