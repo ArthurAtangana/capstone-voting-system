@@ -10,9 +10,25 @@
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
 
   <style>
+    /* General Styling */
+    header, footer {
+      position: sticky;
+    }
+    header {
+      top: 0;
+    }
+    footer {
+      bottom: 0;
+    }
+
+    main {
+      height: unset;
+      margin: 20px;
+    }
+
     h1, h2 {
       text-align: center;
-      color: #2e7d32;
+      color: var(--logo-writing-color);
     }
     h1 {
       font-size: xxx-large;
@@ -72,8 +88,8 @@
 <main>
   <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
   <div th:if="${electionName}">
-    <h1 th:text="|Election Results: ${electionName}|" style="color: var(--logo-writing-color);"></h1>
-    <h2 th:text="|Total Number of Votes: ${numVotesCast}|" style="color: var(--logo-writing-color);"> </h2>
+    <h1 th:text="|Election Results: ${electionName}|"></h1>
+    <h2 th:text="|Total Number of Votes: ${numVotesCast}|"> </h2>
     <div class="poll-results-container">
       <div class="graph-container">
         <div class="chartBox">
