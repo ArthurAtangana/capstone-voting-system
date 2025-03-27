@@ -116,6 +116,10 @@
             </button>
         </form >
     </div>
+    <div class="login-register" sec:authorize="isAnonymous()">
+        <button onclick="window.location.href='/home'">Login</button>
+        <button onclick="window.location.href='/registration-key'">Register</button>
+    </div>
 </header>
 <main>
     <h1 th:if="${election}" th:text="|Ledger for Election: ${election.NAME}|" style="color: var(--logo-writing-color);"></h1>
