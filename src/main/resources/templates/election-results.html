@@ -10,30 +10,6 @@
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
 
   <style>
-    /* General Styling */
-    header, footer {
-      /*position: sticky;*/
-      position: unset;
-      flex-shrink: 0;
-    }
-    /*header {
-      top: 0;
-    }
-    footer {
-      bottom: 0;
-    }*/
-    .page-wrapper {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    main {
-      /*height: unset;*/
-      flex: 1;
-      margin: 20px;
-    }
-
     h1, h2 {
       text-align: center;
       color: var(--logo-writing-color);
@@ -46,7 +22,7 @@
     .graph-container {
       display: flex;
       flex-direction: row;
-      flex-wrap: nowrap;
+      /*flex-wrap: nowrap;*/
       align-content: center;
       justify-content: center;
       align-items: center;
@@ -56,15 +32,21 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       padding: 20px;
       gap: 20px;
-      min-width: fit-content;
     }
     .chartBox {
-      width: 400px;
       padding: 20px;
       border-radius: 20px;
       border: solid 3px var(--medium-purple-color);
       background: white;
     }
+
+    @media screen and (max-width: 800px) {
+      .graph-container {
+        flex-direction: column;
+      }
+    }
+
+
   </style>
 </head>
 <body>
@@ -112,17 +94,15 @@
   </script>
   <main>
     <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
-    <div th:if="${electionName}">
+    <div th:if="${electionName}" style="width: 100%;">
       <h1 th:text="|Election Results: ${electionName}|"></h1>
       <h2 th:text="|Total Number of Votes: ${numVotesCast}|"> </h2>
-      <div class="poll-results-container">
-        <div class="graph-container">
-          <div class="chartBox">
-            <canvas id="barChart"></canvas>
-          </div>
-          <div class="chartBox">
-            <canvas id="pieChart"></canvas>
-          </div>
+      <div class="graph-container">
+        <div class="chartBox">
+          <canvas id="barChart"></canvas>
+        </div>
+        <div class="chartBox">
+          <canvas id="pieChart"></canvas>
         </div>
       </div>
     </div>
@@ -190,7 +170,8 @@
         y: {
           beginAtZero: true
         }
-      }
+      },
+      responsive: true
     }
   });
 
@@ -220,7 +201,10 @@
           'rgba(255, 159, 64, 1)'
         ],
         borderWidth: 1
-      }]
+      }],
+      options: {
+        responsive: true
+      }
     }
   });
 </script>

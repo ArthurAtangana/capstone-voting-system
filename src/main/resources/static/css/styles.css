@@ -69,7 +69,7 @@ body {
     padding: 14px 16px;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 950px) {
     .topnav a:not(:first-child), .topnav .user-details {display: none;}
     .topnav a.icon {
         float: right;
@@ -83,7 +83,7 @@ body {
     }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 950px) {
     .topnav a:hover {
         background-color: unset;
     }
@@ -304,4 +304,22 @@ button:active {
 
 html {
     scroll-behavior: smooth;
+}
+
+/**
+Testing this out on all pages
+ */
+header, footer {
+    position: unset;
+    flex-shrink: 0;
+}
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    margin: 20px;
 }
