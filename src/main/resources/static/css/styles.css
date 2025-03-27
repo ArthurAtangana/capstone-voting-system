@@ -31,21 +31,21 @@ body {
     gap: 10px;
 }
 
-header {
-    background-color: var(--medium-purple-color); /* Light Purple for Navigation Bar */
-    min-height: fit-content;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+/*header {*/
+/*    background-color: var(--medium-purple-color); !* Light Purple for Navigation Bar *!*/
+/*    min-height: fit-content;*/
+/*    width: 100%;*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*    align-items: center;*/
+/*}*/
 
-header a, header a:visited {
-    color: var(--logo-writing-color);
-    text-decoration: none;
-}
+/*header a, header a:visited {*/
+/*    color: var(--logo-writing-color);*/
+/*    text-decoration: none;*/
+/*}*/
 
 header a:hover {
     transform: scale(1.05);

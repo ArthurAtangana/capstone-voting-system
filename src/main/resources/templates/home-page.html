@@ -18,25 +18,80 @@
     #started p {
       padding-bottom: 20px;
     }
-    header a.icon {
-      display: none;
+
+    .topnav {
+      overflow: hidden;
+      background-color: var(--medium-purple-color);
     }
 
-    @media screen and (max-width: 500px) {
-      header.responsive, header.responsive nav {
-        flex-direction: column;
-      }
-      nav > *:not(:first-child), .user-details, .login-register {display: none;}
-      header.responsive nav > *:not(:first-child) {display: block;}
-      header.responsive .user-details, header.responsive .login-register {display: flex;}
-      header a.icon {
-        margin: 16px;
-        display: block;
+    .topnav a {
+      float: left;
+      display: block;
+      /*color: #f2f2f2;*/
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+      height: 100%;
+      line-height: 200%;
+    }
 
+    .topnav a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    .topnav a.active {
+      background-color: var(--logo-color);
+      color: white;
+    }
+
+    .topnav .icon {
+      display: none;
+    }
+    .user-details {
+      position: absolute;
+      top: 0;
+      right:0;
+      margin: unset;
+      padding: 14px 16px;
+    }
+
+    @media screen and (max-width: 600px) {
+      .topnav a:not(:first-child), .topnav .user-details {display: none;}
+      .topnav a.icon {
+        float: right;
+        display: block;
       }
-      /*header {*/
-      /*  flex-direction: column;*/
-      /*}*/
+      .show-username {
+        display: none;
+      }
+      .user-details {
+        position: unset;
+      }
+    }
+
+    @media screen and (max-width: 600px) {
+      .topnav a:hover {
+        background-color: unset;
+      }
+
+      .topnav.responsive {
+        position: relative;
+      }
+
+      .topnav.responsive .icon {
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+
+      .topnav.responsive a , .topnav.responsive .user-details{
+        float: none;
+        display: block;
+        text-align: left;
+      }
+      .topnav.responsive .user-details {display: flex;}
     }
 
   </style>
@@ -44,20 +99,20 @@
 <body>
 
 <header>
-    <nav>
-      <a href="/home">
-        <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
-      </a>
-      <a href="/" class="active">About Us</a>
-
-      <a th:if="${electionName}" href="/view-election-details">Election Details</a>
-      <a th:if="${electionName}" href="/ledger">Ledger</a>
-      <a th:if="${electionName}" href="/view-election-results">Election Results</a>
-    </nav>
+  <div class="topnav" id="myTopnav">
+    <a href="/home" style="padding: unset">
+      <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
+    </a>
+    <a href="/" class="active">About Us</a>
+    <a th:if="${electionName}" href="/view-election-details">Election Details</a>
+    <a th:if="${electionName}" href="/ledger">Ledger</a>
+    <a th:if="${electionName}" href="/view-election-results">Election Results</a>
+    <a sec:authorize="isAnonymous()" href="/home">Login</a>
+    <a sec:authorize="isAnonymous()" href="/registration-key">Register</a>
     <div class="user-details" sec:authorize="isAuthenticated()">
-      <i class="fa-solid fa-circle-user"></i>
-      <p sec:authentication="name"></p>
-      <p style="margin: 15px">|</p>
+      <i class="show-username fa-solid fa-circle-user"></i>
+      <p class="show-username" sec:authentication="name"></p>
+      <p class="show-username" style="margin: 15px">|</p>
       <form th:action="@{/logout}" method="post">
         <input th:if="${_csrf}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <button id="logout-btn" type="submit">
@@ -68,15 +123,55 @@
         </button>
       </form >
     </div>
-
-    <div class="login-register" sec:authorize="isAnonymous()">
-      <button onclick="window.location.href='/home'">Login</button>
-      <button onclick="window.location.href='/registration-key'">Register</button>
-    </div>
-
-    <a href="javascript:void(0);" class="icon" onclick="toggleResponsiveHeader()">
+    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
       <i class="fa fa-bars"></i>
     </a>
+  </div>
+
+  <script>
+    function myFunction() {
+      var x = document.getElementById("myTopnav");
+      if (x.className === "topnav") {
+        x.className += " responsive";
+      } else {
+        x.className = "topnav";
+      }
+    }
+  </script>
+
+  <!--    <nav>-->
+<!--      <a href="/home">-->
+<!--        <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">-->
+<!--      </a>-->
+<!--      <a href="/" class="active">About Us</a>-->
+
+<!--      <a th:if="${electionName}" href="/view-election-details">Election Details</a>-->
+<!--      <a th:if="${electionName}" href="/ledger">Ledger</a>-->
+<!--      <a th:if="${electionName}" href="/view-election-results">Election Results</a>-->
+<!--    </nav>-->
+<!--    <div class="user-details" sec:authorize="isAuthenticated()">-->
+<!--      <i class="fa-solid fa-circle-user"></i>-->
+<!--      <p sec:authentication="name"></p>-->
+<!--      <p style="margin: 15px">|</p>-->
+<!--      <form th:action="@{/logout}" method="post">-->
+<!--        <input th:if="${_csrf}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
+<!--        <button id="logout-btn" type="submit">-->
+<!--          <div style="display: flex; align-items: center; ">-->
+<!--            <i class="fa fa-sign-out"></i>-->
+<!--            <p>Logout</p>-->
+<!--          </div>-->
+<!--        </button>-->
+<!--      </form >-->
+<!--    </div>-->
+
+<!--    <div class="login-register" sec:authorize="isAnonymous()">-->
+<!--      <button onclick="window.location.href='/home'">Login</button>-->
+<!--      <button onclick="window.location.href='/registration-key'">Register</button>-->
+<!--    </div>-->
+
+<!--    <a href="javascript:void(0);" class="icon" onclick="toggleResponsiveHeader()">-->
+<!--      <i class="fa fa-bars"></i>-->
+<!--    </a>-->
 </header>
 <script>
   function toggleResponsiveHeader() {
