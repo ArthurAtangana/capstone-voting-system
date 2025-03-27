@@ -88,10 +88,24 @@
         <button onclick="window.location.href='/registration-key'">Register</button>
     </div>
 </header>
-<main>
-    <h1>3-Ballot Voting System</h1>
 
-    <div class="section">
+<section id="about" class="section white-section" style="margin-top: 110px; padding: 40px; max-width: 1200px;">
+    <h1 style="font-size: 64px; font-weight: bold; text-align: center;">3-Ballot Voting System</h1>
+    <br>
+    <div style="text-align: center;">
+        <img src="/images/step1.png" style="max-width: 100%; height: auto; border-radius: 10px;">
+    </div>
+    <br>
+    <div class="legend-buttons" style="margin-top: 20px;">
+        <a href="#what" class="btn-secondary">What?</a>
+        <a href="#why" class="btn-secondary">Why?</a>
+        <a href="#how" class="btn-secondary">How?</a>
+    </div>
+</section>
+
+<main>
+
+    <div id="what" class="section" style="text-align: center;">
         <h2>What?</h2>
         <p>The 3-Ballot Voting System is designed to provide a secure and transparent voting process.</p>
         <p>
@@ -102,31 +116,37 @@
         </p>
     </div>
 
-    <div class="section">
-        <h2>Why?</h2>
-        <div class="sub-section">
-            <p><strong>Anonymity:</strong> Each voter's vote is secret, preventing vote-selling and coercion.</p>
-            <p><strong>Integrity:</strong> Each voter can verify that their chosen ballot was not tampered with.</p>
-            <p><strong>Accuracy:</strong> Each voter can verify that the election result was computed correctly.</p>
+    <div id="why" class="section">
+        <h2 style="text-align: center;">Why?</h2>
+        <div class="solutions-container">
+            <div class="solution-item">
+                <p><strong>Anonymity</strong><br><br>Each voter's vote is secret, preventing vote-selling and coercion.</p>
+            </div>
+            <div class="solution-item">
+                <p><strong>Integrity</strong><br><br>Each voter can verify that their chosen ballot was not tampered with.</p>
+            </div>
+            <div class="solution-item">
+                <p><strong>Accuracy</strong><br><br>Each voter can verify that the election result was computed correctly.</p>
+            </div>
         </div>
     </div>
 
-    <div class="section">
-        <h2>How?</h2>
-        <p>How to vote for <strong>Matcha</strong> as your favorite drink:</p>
+    <div id="how" class="section">
+        <h2 style="text-align: center;">How?</h2>
+        <p>How to vote for <strong>candidateY</strong> in this election:</p>
 
 
         <p><strong>STEP 1:</strong> Select a blank ballot where your preferred candidate is not preselected.</p>
         <ul>
             <li>To avoid confusion the voting system automatically preselects each candidate once, that way the voter only selects their preferred candidate.</li>
-            <li>You can choose either <strong>Ballot 1</strong> or <strong>Ballot 2</strong> to select Matcha, as <strong>Ballot 3</strong> has already been selected.</li>
+            <li>You can choose either <strong>Ballot 2</strong> or <strong>Ballot 3</strong> to select candidateY, as <strong>Ballot 1</strong> has already been selected.</li>
         </ul>
 
         <div class="image-container">
             <img src="/images/step1.png" alt="Example Ballot Selection">
         </div>
 
-        <p><strong>STEP 2:</strong> Once a candidate has been selected, the "Submit" button will become enabled.</p>
+        <p><strong>STEP 2:</strong> Once a candidate has been selected, the <strong>Submit Candidate</strong> button will become enabled.</p>
         <ul>
             <li>Only one vote can be cast.</li>
             <li>Once a selection is made, the other boxes will become disabled.</li>
@@ -172,6 +192,30 @@
 <footer>
     <p>&copy; 2025 Secure and Transparent Voting System</p>
 </footer>
+
+<div id="myBtn" style="display: none; position: fixed; bottom: 20px; right: 30px; z-index: 99; cursor: pointer; align-items: center; gap: 8px; background-color: rgba(0, 0, 0, 0.6); color: white; padding: 8px 12px; border-radius: 20px; font-size: 14px; transition: background-color 0.3s;">
+    <img src="https://cdn-icons-png.flaticon.com/512/130/130906.png"
+         alt="Back to Top"
+         title="Back to Top"
+         style="width: 20px; height: 20px; vertical-align: middle;">
+    <span>Back to Top</span>
+</div>
+
+<script>
+    const mybutton = document.getElementById("myBtn");
+
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 20) {
+            mybutton.style.display = "flex";
+        } else {
+            mybutton.style.display = "none";
+        }
+    });
+
+    mybutton.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
 
 
 </body>
