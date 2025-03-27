@@ -70,30 +70,46 @@
 <body>
 <div class="page-wrapper">
   <header>
-    <nav>
-      <a href="/home">
+    <div class="topnav" id="myTopnav">
+      <a href="/home" style="padding: unset">
         <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
       </a>
       <a href="/">About Us</a>
       <a th:if="${electionName}" href="/view-election-details">Election Details</a>
       <a th:if="${electionName}" href="/ledger">Ledger</a>
-      <a th:if="${electionName}" class="active" href="/view-election-results">Election Results</a>
-    </nav>
-    <div class="user-details" sec:authorize="isAuthenticated()">
-      <i class="fa-solid fa-circle-user"></i>
-      <p sec:authentication="name"></p>
-      <p style="margin: 15px">|</p>
-      <form th:action="@{/logout}" method="post">
-        <input th:if="${_csrf}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-        <button id="logout-btn" type="submit">
-          <div style="display: flex; align-items: center; ">
-            <i class="fa fa-sign-out"></i>
-            <p>Logout</p>
-          </div>
-        </button>
-      </form >
+      <a class="active" th:if="${electionName}" href="/view-election-results">Election Results</a>
+      <a sec:authorize="isAnonymous()" href="/home">Login</a>
+      <a sec:authorize="isAnonymous()" href="/registration-key">Register</a>
+      <div class="user-details" sec:authorize="isAuthenticated()">
+        <i class="show-username fa-solid fa-circle-user"></i>
+        <p class="show-username" sec:authentication="name"></p>
+        <p class="show-username" style="margin: 15px">|</p>
+        <form th:action="@{/logout}" method="post">
+          <input th:if="${_csrf}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <button id="logout-btn" type="submit">
+            <div style="display: flex; align-items: center; ">
+              <i class="fa fa-sign-out"></i>
+              <p>Logout</p>
+            </div>
+          </button>
+        </form >
+      </div>
+      <a href="javascript:void(0);" class="icon" onclick="toggleResponsiveHeader()">
+        <i class="fa fa-bars"></i>
+      </a>
     </div>
   </header>
+
+  <script>
+    function toggleResponsiveHeader() {
+      var x = document.getElementById("myTopnav");
+      if (x.className === "topnav") {
+        x.className += " responsive";
+      } else {
+        x.className = "topnav";
+      }
+    }
+  </script>
   <main>
     <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
     <div th:if="${electionName}">
