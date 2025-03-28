@@ -229,34 +229,41 @@ button:active {
 }
 
 .solutions-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    display: flex;
+    /*grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));*/
     gap: 20px;
     text-align: center;
+    align-items: center;
+    justify-content: center;
     margin-top: 20px;
 }
 
 .solution-item {
+    flex: 1 1 200px; /* Flexible width but at least 200px */
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease-in-out, max-height 0.3s ease;
-    cursor: pointer;
-    position: relative;
+    /*cursor: pointer;*/
+    /*position: relative;*/
 }
+#purpose .solution-item {
+    height: 350px;
+}
+#goals .solution-item, #solutions .solution-item  {
+    height: 425px;
+}
+
+
 
 .solution-item:hover {
     transform: translateY(-5px);
 }
 
-.solution-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out;
-}
 
-.solution-item.active .solution-content {
+
+.solution-item.active {
     max-height: 200px;
     padding-top: 10px;
 }
@@ -270,17 +277,13 @@ button:active {
     transition: transform 0.3s;
 }
 
-.solution-item.active .arrow {
-    transform: rotate(180deg);
-}
-
 .solution-item img {
     width: 120px;
     margin: 10px 0;
 }
 
 .section {
-    padding: 40px 10vw;
+    padding: 40px 40px;
     box-sizing: border-box;
     margin-bottom: 40px;
 }
