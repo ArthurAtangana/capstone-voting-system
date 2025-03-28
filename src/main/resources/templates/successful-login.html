@@ -57,8 +57,6 @@
             <a th:if="${electionName}" href="/view-election-details">Election Details</a>
             <a th:if="${electionName}" href="/ledger">Ledger</a>
             <a th:if="${electionName}" href="/view-election-results">Election Results</a>
-            <a sec:authorize="isAnonymous()" href="/home">Login</a>
-            <a sec:authorize="isAnonymous()" href="/registration-key">Register</a>
             <div class="user-details" sec:authorize="isAuthenticated()">
                 <i class="show-username fa-solid fa-circle-user"></i>
                 <p class="show-username" sec:authentication="name"></p>
