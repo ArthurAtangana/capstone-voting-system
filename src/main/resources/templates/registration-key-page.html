@@ -14,19 +14,45 @@
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="icon" type="image/png" href="images/favicon.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
+    <style>
+        .container {
+            margin: 30px auto;
+        }
+        @media screen and (max-width: 500px) {
+            .container {
+                margin: unset;
+                width: unset;
+            }
+
+        }
+    </style>
 </head>
 <body>
+<div class="page-wrapper">
 <header>
-    <nav>
-        <a href="/home">
+    <div class="topnav" id="myTopnav">
+        <a href="/home" style="padding: unset">
             <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
         </a>
         <a href="/">About Us</a>
         <a th:if="${election}" href="/view-election-details">Election Details</a>
         <a th:if="${election}" href="/ledger">Ledger</a>
         <a th:if="${election}" href="/view-election-results">Election Results</a>
-    </nav>
+        <a href="javascript:void(0);" class="icon" onclick="toggleResponsiveHeader()">
+            <i class="fa fa-bars"></i>
+        </a>
+    </div>
 </header>
+<script>
+    function toggleResponsiveHeader() {
+        var x = document.getElementById("myTopnav");
+        if (x.className === "topnav") {
+            x.className += " responsive";
+        } else {
+            x.className = "topnav";
+        }
+    }
+</script>
 
 <main>
     <div class="container">
@@ -54,5 +80,6 @@
 <footer>
     <p>&copy; 2025 Secure and Transparent Voting System</p>
 </footer>
+</div>
 </body>
 </html>
