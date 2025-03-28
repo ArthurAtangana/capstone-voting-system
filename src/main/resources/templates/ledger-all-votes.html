@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,18 +10,22 @@
     <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
 
     <style>
-        /* General Styling */
-        body {
-            /*color: #2e7d32;*/
-            display: unset;
-        }
-        header, footer {
-            position: unset;
-        }
+        /*body {*/
+        /*    display: flex;*/
+        /*    flex-direction: column;*/
+        /*    min-height: 100vh;*/
+        /*    margin: 0;*/
+        /*}*/
+
         main {
-            height: unset;
+            flex: 1;
             margin: 20px;
         }
+
+        /*header, footer {*/
+        /*    position: unset;*/
+        /*}*/
+
         button {
             width: fit-content;
         }
@@ -108,28 +112,47 @@
     </style>
 </head>
 <body>
+<div class="page-wrapper">
 <header>
-    <nav>
-        <a href="/home">
+    <div class="topnav" id="myTopnav">
+        <a href="/home" style="padding: unset">
             <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
         </a>
         <a th:if="${election}" href="/">About Us</a>
         <a th:if="${election}" href="/view-election-details">Election Details</a>
         <a th:if="${election}" class="active" href="/ledger">Ledger</a>
-        <a th:if="${election}" href="/">Election Results (update link!)</a>
-    </nav>
-    <div class="user-details" th:if="${username}">
-        <i class="fa-solid fa-circle-user"></i>
-        <p th:text="${username}"></p>
-        <p style="margin: 15px">|</p>
-        <a id="logout" th:href="@{/logout}" title="Logout">
-            <div style="display: flex; align-items: center">
-                <i class="fa fa-sign-out"></i>
-                <p>Logout</p>
-            </div>
+        <a th:if="${election}" href="/view-election-results">Election Results</a>
+        <a sec:authorize="isAnonymous()" href="/home">Login</a>
+        <a sec:authorize="isAnonymous()" href="/registration-key">Register</a>
+        <div class="user-details" sec:authorize="isAuthenticated()">
+            <i class="show-username fa-solid fa-circle-user"></i>
+            <p class="show-username" sec:authentication="name"></p>
+            <p class="show-username" style="margin: 15px">|</p>
+            <form th:action="@{/logout}" method="post">
+                <input th:if="${_csrf}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button id="logout-btn" type="submit">
+                    <div style="display: flex; align-items: center; ">
+                        <i class="fa fa-sign-out"></i>
+                        <p>Logout</p>
+                    </div>
+                </button>
+            </form >
+        </div>
+        <a href="javascript:void(0);" class="icon" onclick="toggleResponsiveHeader()">
+            <i class="fa fa-bars"></i>
         </a>
     </div>
 </header>
+<script>
+    function toggleResponsiveHeader() {
+        var x = document.getElementById("myTopnav");
+        if (x.className === "topnav") {
+            x.className += " responsive";
+        } else {
+            x.className = "topnav";
+        }
+    }
+</script>
 <main>
     <h1 th:if="${election}" style="color: var(--logo-writing-color);" th:text="|Ledger for Election: ${election.NAME}|"></h1>
     <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
@@ -179,7 +202,7 @@
 <footer>
     <p>&copy; 2025 Secure and Transparent Voting System</p>
 </footer>
-
+</div>
 <script>
     // Register event listener to filter table by Ballot ID string
     document.getElementById("filter-by-ballot-id").addEventListener("input", function() {

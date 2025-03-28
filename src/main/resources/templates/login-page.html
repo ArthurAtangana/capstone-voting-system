@@ -1,56 +1,77 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,">
   <title>Login</title>
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="icon" type="image/png" href="images/favicon.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
   <style>
-    body {
-
-    }
     .container {
       margin: 30px auto;
     }
+    @media screen and (max-width: 500px) {
+      .container {
+        margin: unset;
+        width: unset;
+      }
 
+    }
   </style>
 </head>
 <body>
-<header>
-  <nav>
-    <a href="/home">
-      <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
-    </a>
-    <a href="/">About Us</a>
-    <a th:if="${electionName}" href="/view-election-details">Election Details</a>
-    <a th:if="${electionName}" href="/ledger">Ledger</a>
-    <a th:if="${electionName}" href="/view-election-results">Election Results</a>
-  </nav>
-</header>
-<main>
-  <div class="container">
-    <h1>Login to Confido</h1>
-    <div class="error-message" th:if="${param.error}">Invalid username and password.</div>
-    <div class="error-message" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+<div class="page-wrapper">
+  <header>
+    <div class="topnav" id="myTopnav">
+      <a href="/home" style="padding: unset">
+        <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
+      </a>
+      <a href="/">About Us</a>
+      <a th:if="${electionName}" href="/view-election-details">Election Details</a>
+      <a th:if="${electionName}" href="/ledger">Ledger</a>
+      <a th:if="${electionName}" href="/view-election-results">Election Results</a>
+      <a href="javascript:void(0);" class="icon" onclick="toggleResponsiveHeader()">
+        <i class="fa fa-bars"></i>
+      </a>
+    </div>
+  </header>
 
-    <form th:action="@{/login}" method="post">
-      <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-      </div>
+  <script>
+    function toggleResponsiveHeader() {
+      var x = document.getElementById("myTopnav");
+      if (x.className === "topnav") {
+        x.className += " responsive";
+      } else {
+        x.className = "topnav";
+      }
+    }
+  </script>
+  <main>
+    <div class="container">
+      <h1>Login to Confido</h1>
+      <div class="error-message" th:if="${param.error}">Invalid username and password.</div>
+      <div class="error-message" th:if="${errorMessage}" th:text="${errorMessage}"></div>
 
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-      </div>
-      <div th:if="${param.logout}">You have been logged out.</div>
-      <button type="submit">Login</button>
-    </form>
-    <p>Don't have an account? <a href="/registration-key">Register</a></p>
-  </div>
-</main>
-<footer>
-  <p>&copy; 2025 Secure and Transparent Voting System</p>
-</footer>
+      <form th:action="@{/login}" method="post">
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <div th:if="${param.logout}">You have been logged out.</div>
+        <button type="submit">Login</button>
+      </form>
+      <p>Don't have an account? <a href="/registration-key">Register</a></p>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2025 Secure and Transparent Voting System</p>
+  </footer>
+</div>
+
 </body>
 </html>

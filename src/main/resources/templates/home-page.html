@@ -18,123 +18,153 @@
     #started p {
       padding-bottom: 20px;
     }
+
+    .hook-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: left;"
+    }
+
+    @media screen and (max-width: 615px) {
+      .legend-buttons, .hook-container{
+        flex-direction: column;
+      }
+    }
+    @media screen and (max-width: 615px) {
+      .solutions-container {
+        flex-wrap: wrap;
+      }
+    }
+
+
   </style>
 </head>
 <body>
-
-<header>
-    <nav>
-      <a href="/home">
+<div class="page-wrapper">
+  <header>
+    <div class="topnav" id="myTopnav">
+      <a href="/home" style="padding: unset">
         <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
       </a>
       <a href="/" class="active">About Us</a>
-
       <a th:if="${electionName}" href="/view-election-details">Election Details</a>
       <a th:if="${electionName}" href="/ledger">Ledger</a>
       <a th:if="${electionName}" href="/view-election-results">Election Results</a>
-    </nav>
-    <div class="user-details" sec:authorize="isAuthenticated()">
-      <i class="fa-solid fa-circle-user"></i>
-      <p sec:authentication="name"></p>
-      <p style="margin: 15px">|</p>
-      <form th:action="@{/logout}" method="post">
-        <input th:if="${_csrf}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-        <button id="logout-btn" type="submit">
-          <div style="display: flex; align-items: center; ">
-            <i class="fa fa-sign-out"></i>
-            <p>Logout</p>
-          </div>
-        </button>
-      </form >
+      <a sec:authorize="isAnonymous()" href="/home">Login</a>
+      <a sec:authorize="isAnonymous()" href="/registration-key">Register</a>
+      <div class="user-details" sec:authorize="isAuthenticated()">
+        <i class="show-username fa-solid fa-circle-user"></i>
+        <p class="show-username" sec:authentication="name"></p>
+        <p class="show-username" style="margin: 15px">|</p>
+        <form th:action="@{/logout}" method="post">
+          <input th:if="${_csrf}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <button id="logout-btn" type="submit">
+            <div style="display: flex; align-items: center; ">
+              <i class="fa fa-sign-out"></i>
+              <p>Logout</p>
+            </div>
+          </button>
+        </form >
+      </div>
+      <a href="javascript:void(0);" class="icon" onclick="toggleResponsiveHeader()">
+        <i class="fa fa-bars"></i>
+      </a>
     </div>
+  </header>
 
-    <div class="login-register" sec:authorize="isAnonymous()">
-      <button onclick="window.location.href='/home'">Login</button>
-      <button onclick="window.location.href='/registration-key'">Register</button>
-    </div>
-</header>
+  <script>
+    function toggleResponsiveHeader() {
+      var x = document.getElementById("myTopnav");
+      if (x.className === "topnav") {
+        x.className += " responsive";
+      } else {
+        x.className = "topnav";
+      }
+    }
+  </script>
 
-<section id="about" class="section white-section" style="margin-top: 110px; padding: 40px; max-width: 1200px;">
-  <div style="display: flex; justify-content: center; align-items: center; text-align: left;">
-    <div style="flex: 1; padding: 20px;">
-      <p style="font-size: 40px; font-weight: bold; margin-bottom: 20px;">Vote confidently</p>
-      <p style="font-size: 60px; font-weight: bold; margin-bottom: 20px; margin-top: 20px;"> ANYWHERE<br/>ANYPLACE<br/>ANYTIME</p>
-      <p style="font-size: 20px; line-height: 1.6; margin-bottom: 20px;">
-        A redefined online voting platform that guarantees voter anonymity
-        while maintaining a publicly accessible, immutable voting ledger.
+  <main>
+    <section id="about" class="section white-section" style="padding: 40px; max-width: 100%;">
+      <div class="hook-container">
+        <div style="flex: 1; padding: 20px;">
+          <p style="font-size: 40px; font-weight: bold; margin-bottom: 20px;">Vote confidently</p>
+          <p style="font-size: 60px; font-weight: bold; margin-bottom: 20px; margin-top: 20px;"> ANYWHERE<br/>ANYPLACE<br/>ANYTIME</p>
+          <p style="font-size: 20px; line-height: 1.6; margin-bottom: 20px;">
+            A redefined online voting platform that guarantees voter anonymity
+            while maintaining a publicly accessible, immutable voting ledger.
+          </p>
+        </div>
+        <div style="flex: 2; text-align: center;">
+          <img src="/images/map.png" style="max-width: 100%; height: auto; border-radius: 10px;">
+        </div>
+      </div>
+
+      <div class="legend-buttons">
+        <a href="#purpose" class="btn-secondary">Purpose</a>
+        <a href="#goals" class="btn-secondary">Goals</a>
+        <a href="#solutions" class="btn-secondary">Solutions</a>
+        <a href="#started" class="btn-secondary">Getting Started</a>
+      </div>
+    </section>
+
+
+    <section id="purpose" class="section" style="text-align: center;">
+      <h2>Our Purpose</h2>
+      <p style="font-size: 20px; max-width: 800px; margin: 0 auto; margin-bottom: 20px;">
+        Your vote matters! Traditional voting systems often come with barriers that <br/>
+        can discourage participation, making it harder for people to have their voices heard.
       </p>
-    </div>
-    <div style="flex: 2; text-align: center;">
-      <img src="/images/map.png" style="max-width: 100%; height: auto; border-radius: 10px;">
-    </div>
-  </div>
+      <div class="solutions-container">
+        <div class="solution-item">
+          <h3>Polling stations</h3>
+          <p>Voters must travel to designated polling locations, which can be inconvenient and discourage participation</p>
+          <img src="https://img.icons8.com/?size=100&id=3723&format=png">
+        </div>
+        <div class="solution-item">
+          <h3>Lack of transparency</h3>
+          <p>Voters never receive confirmation that their ballot was counted, raising concerns about trust in the system</p>
+          <img src="https://cdn-icons-png.flaticon.com/512/482/482631.png">
+        </div>
+        <div class="solution-item">
+          <h3>Lost or tampered ballots</h3>
+          <p>Reports of missing or altered ballots make many voters question the fairness and security of elections</p>
+          <img src="https://cdn-icons-png.flaticon.com/512/646/646094.png">
+        </div>
+        <div class="solution-item">
+          <h3>Counting errors</h3>
+          <p>Vote counting is done by election officials, and human error can lead to miscounts that impact election results</p>
+          <img src="https://img.icons8.com/?size=100&id=6644&format=png">
+        </div>
+      </div>
+      <p style="font-size: 20px; max-width: 800px; margin: 0 auto; margin-top: 20px; font-weight: bold;">
+        Our purpose is to solve the issues & uncertainty of traditional <br/> voting systems by removing these obstacles.
+      </p>
+    </section>
 
-  <div class="legend-buttons" style="margin-top: 20px;">
-    <a href="#purpose" class="btn-secondary">Purpose</a>
-    <a href="#goals" class="btn-secondary">Goals</a>
-    <a href="#solutions" class="btn-secondary">Solutions</a>
-    <a href="#started" class="btn-secondary">Getting Started</a>
-  </div>
-</section>
-
-
-<section id="purpose" class="section" style="text-align: center;">
-  <h2>Our Purpose</h2>
-  <p style="font-size: 20px; max-width: 800px; margin: 0 auto; margin-bottom: 20px;">
-    Your vote matters! Traditional voting systems often come with barriers that <br/>
-    can discourage participation, making it harder for people to have their voices heard.
-  </p>
-  <div class="solutions-container">
-      <div class="solution-item">
-        <h3>Polling stations</h3>
-        <p>Voters must travel to designated polling locations, which can be inconvenient and discourage participation</p>
-        <img src="https://img.icons8.com/?size=100&id=3723&format=png"  style="padding: 50px;">
+    <section id="goals" class="section" style="text-align: center;">
+      <h2>Our Goals</h2>
+      <div class="solutions-container">
+        <div class="solution-item">
+          <h3>Secure</h3>
+          <p>Designed with multi-layered security to prevent unauthorized access.</p>
+          <img src="https://img.icons8.com/?size=100&id=2985&format=png">
+          <p>We've implemented countless security measures to protect sensitive data while defending against potential attackers.</p>
+        </div>
+        <div class="solution-item">
+          <h3>Trustable</h3>
+          <p>Building confidence through transparency and verifiability.</p>
+          <img src="https://cdn-icons-png.flaticon.com/128/4371/4371345.png">
+          <p>We've eliminated the need for a central authority. Rather than solely relying on us, our clients can trust the formally proven methods in place that ensure the integrity of the process while also protecting their anonymity.
+          </p>
+        </div>
+        <div class="solution-item">
+          <h3>Transparent</h3>
+          <p>Open protocols and real-time updates for election integrity.</p>
+          <img src="https://cdn-icons-png.flaticon.com/128/6624/6624423.png">
+          <p>We've allowed any member of the public to verify that each vote was validly cast and to tally the votes to confirm the election results, all without revealing the identity of the voter behind any specific ballot.</p>
+        </div>
       </div>
-      <div class="solution-item">
-        <h3>Lack of transparency</h3>
-        <p>Voters never receive confirmation that their ballot was counted, raising concerns about trust in the system</p>
-        <img src="https://cdn-icons-png.flaticon.com/512/482/482631.png"  style="padding: 50px;">
-      </div>
-      <div class="solution-item">
-        <h3>Lost or tampered ballots</h3>
-        <p>Reports of missing or altered ballots make many voters question the fairness and security of elections</p>
-        <img src="https://cdn-icons-png.flaticon.com/512/646/646094.png"  style="padding: 50px;">
-      </div>
-      <div class="solution-item">
-        <h3>Counting errors</h3>
-        <p>Vote counting is done by election officials, and human error can lead to miscounts that impact election results</p>
-        <img src="https://img.icons8.com/?size=100&id=6644&format=png"  style="padding: 50px;">
-      </div>
-  </div>
-  <p style="font-size: 20px; max-width: 800px; margin: 0 auto; margin-top: 20px; font-weight: bold;">
-    Our purpose is to solve the issues & uncertainty of traditional <br/> voting systems by removing these obstacles.
-  </p>
-</section>
-
-<section id="goals" class="section" style="text-align: center;">
-  <h2>Our Goals</h2>
-  <div class="solutions-container">
-      <div class="solution-item">
-        <h3>Secure</h3>
-        <p>Designed with multi-layered security to prevent unauthorized access.</p>
-        <img src="https://img.icons8.com/?size=100&id=2985&format=png"  style="width: 200px;padding: 50px;">
-        <p>We've implemented countless security measures to protect sensitive data while defending against potential attackers.</p>
-      </div>
-      <div class="solution-item">
-        <h3>Trustable</h3>
-        <p>Building confidence through transparency and verifiability.</p>
-        <img src="https://cdn-icons-png.flaticon.com/128/4371/4371345.png"  style="width: 200px;padding: 50px;">
-        <p>We've eliminated the need for a central authority. Rather than solely relying on us, our clients can trust the formally proven methods in place that ensure the integrity of the process while also protecting their anonymity.
-        </p>
-      </div>
-      <div class="solution-item">
-        <h3>Transparent</h3>
-        <p>Open protocols and real-time updates for election integrity.</p>
-        <img src="https://cdn-icons-png.flaticon.com/128/6624/6624423.png"  style="width: 200px;padding: 50px;">
-        <p>We've allowed any member of the public to verify that each vote was validly cast and to tally the votes to confirm the election results, all without revealing the identity of the voter behind any specific ballot.</p>
-      </div>
-    </div>
-  </div>
 </section>
 
 <section id="solutions" class="section" style="text-align: center; margin-top: 50px;">
@@ -202,6 +232,7 @@
     </div>
   </div>
 </section>
+</main>
 
 <div id="myBtn" style="display: none; position: fixed; bottom: 20px; right: 30px; z-index: 99; cursor: pointer; align-items: center; gap: 8px; background-color: rgba(0, 0, 0, 0.6); color: white; padding: 8px 12px; border-radius: 20px; font-size: 14px; transition: background-color 0.3s;">
   <img src="https://cdn-icons-png.flaticon.com/512/130/130906.png"
@@ -231,5 +262,8 @@
 <footer>
   <p>&copy; 2025 Secure and Transparent Voting System</p>
 </footer>
+</div>
+
+
 </body>
 </html>

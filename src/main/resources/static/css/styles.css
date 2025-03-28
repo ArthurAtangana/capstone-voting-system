@@ -16,48 +16,100 @@ body {
     color: var(--logo-writing-color);
     margin: 0;
     display: block;
-    width: 100%;
+    width: 100vw;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
+/* vvv dynamic nav bar styling vvv */
 
+.user-details, .login-register {
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 20px;
+    gap: 10px;
+}
+.topnav {
+    overflow: hidden;
+    background-color: var(--medium-purple-color);
+}
+
+.topnav a {
+    float: left;
+    display: block;
+    color: inherit;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    height: 100%;
+    line-height: 200%;
+}
+
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.topnav a.active {
+    background-color: var(--logo-color);
+    color: white;
+}
+
+.topnav .icon {
+    display: none;
+}
 .user-details {
-    width: fit-content;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin: 20px;
-    gap: 10px;
-}
-
-.login-register {
-    width: fit-content;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin: 20px;
-    gap: 10px;
-}
-
-header {
-    background-color: var(--medium-purple-color); /* Light Purple for Navigation Bar */
-    min-height: fit-content;
-    width: 100%;
     position: absolute;
     top: 0;
-    display: flex;
-    justify-content: space-between;
+    right:0;
+    margin: unset;
+    padding: 14px 16px;
 }
 
-header a, header a:visited {
-    color: var(--logo-writing-color);
-    text-decoration: none;
+@media screen and (max-width: 950px) {
+    .topnav a:not(:first-child), .topnav .user-details {display: none;}
+    .topnav a.icon {
+        float: right;
+        display: block;
+    }
+    .show-username {
+        display: none;
+    }
+    .user-details {
+        position: unset;
+    }
 }
 
-header a:hover {
-    transform: scale(1.05);
+@media screen and (max-width: 950px) {
+    .topnav a:hover {
+        background-color: unset;
+    }
+
+    .topnav.responsive {
+        position: relative;
+    }
+
+    .topnav.responsive .icon {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+
+    .topnav.responsive a , .topnav.responsive .user-details{
+        float: none;
+        display: block;
+        text-align: left;
+    }
+    .topnav.responsive .user-details {display: flex;}
 }
+/* ^^^ dynamic nav bar styling ^^^ */
+
+/*header a:hover {*/
+/*    transform: scale(1.05);*/
+/*}*/
 
 nav {
     display: flex;
@@ -72,16 +124,16 @@ nav a.active {
     color: white;
 }
 
-.user-details {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: fit-content;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin: 20px;
-}
+/*.user-details {*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    right: 0;*/
+/*    width: fit-content;*/
+/*    display: flex;*/
+/*    flex-direction: row;*/
+/*    align-items: center;*/
+/*    margin: 20px;*/
+/*}*/
 
 #logout-btn {
     background: none;
@@ -177,34 +229,41 @@ button:active {
 }
 
 .solutions-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    display: flex;
+    /*grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));*/
     gap: 20px;
     text-align: center;
+    align-items: center;
+    justify-content: center;
     margin-top: 20px;
 }
 
 .solution-item {
+    flex: 1 1 200px; /* Flexible width but at least 200px */
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease-in-out, max-height 0.3s ease;
-    cursor: pointer;
-    position: relative;
+    /*cursor: pointer;*/
+    /*position: relative;*/
 }
+#purpose .solution-item {
+    height: 350px;
+}
+#goals .solution-item, #solutions .solution-item  {
+    height: 425px;
+}
+
+
 
 .solution-item:hover {
     transform: translateY(-5px);
 }
 
-.solution-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out;
-}
 
-.solution-item.active .solution-content {
+
+.solution-item.active {
     max-height: 200px;
     padding-top: 10px;
 }
@@ -218,17 +277,13 @@ button:active {
     transition: transform 0.3s;
 }
 
-.solution-item.active .arrow {
-    transform: rotate(180deg);
-}
-
 .solution-item img {
     width: 120px;
     margin: 10px 0;
 }
 
 .section {
-    padding: 40px 10vw;
+    padding: 40px 40px;
     box-sizing: border-box;
     margin-bottom: 40px;
 }
@@ -238,6 +293,7 @@ button:active {
     justify-content: center;
     gap: 15px;
     margin-top: 20px;
+    text-align: center;
 }
 
 .btn-secondary {
@@ -252,4 +308,22 @@ button:active {
 
 html {
     scroll-behavior: smooth;
+}
+
+/**
+Testing this out on all pages
+ */
+header, footer {
+    position: unset;
+    flex-shrink: 0;
+}
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    margin: 20px;
 }
