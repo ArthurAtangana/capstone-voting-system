@@ -20,7 +20,7 @@ public class PasswordValidatorUtil {
         if (result.isValid()) {
             return null; // Valid password
         } else {
-            return String.join("\n", validator.getMessages(result));
+            return String.join("<br>", validator.getMessages(result));
         }
     }
 }

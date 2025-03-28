@@ -54,7 +54,7 @@ public class AccountService {
 
         String validationMessage = PasswordValidatorUtil.validatePassword(password);
         if (validationMessage != null) {
-            throw new WeakPasswordException("Password does not meet requirements: " + validationMessage);
+            throw new WeakPasswordException("Password does not meet requirements: <br>" + validationMessage);
         }
 
         UserDetails user = User.withUsername(username)
