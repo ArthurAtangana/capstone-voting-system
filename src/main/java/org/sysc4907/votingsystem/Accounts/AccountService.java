@@ -1,7 +1,5 @@
 package org.sysc4907.votingsystem.Accounts;
 
-import com.nulabinc.zxcvbn.Strength;
-import com.nulabinc.zxcvbn.Zxcvbn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,11 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.sysc4907.votingsystem.Registration.SignInKeyService;
-
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 /**
  * Service class that handles account-related operations such as assigning blank accounts to users,
@@ -58,7 +51,12 @@ public class AccountService {
         if (username.isEmpty() || password.isEmpty() || userDetailsManager.userExists(username) || !activeRegistration) {
             return false;
         }
-        isVeryStrongPassword(password); // throws an exception if password is not strong! (caught in controller)
+
+        String validationMessage = PasswordValidatorUtil.validatePassword(password);
+        if (validationMessage != null) {
+            throw new WeakPasswordException("Password does not meet requirements: " + validationMessage);
+        }
+
         UserDetails user = User.withUsername(username)
                 .password(passwordEncoder.encode(password))
                 .roles("VOTER")
@@ -80,16 +78,6 @@ public class AccountService {
     public boolean markKeyAsUsed(Integer key) {
         activeRegistration = signInKeyService.markKeyAsUsed(key); // true if key is valid
         return activeRegistration;
-    }
-
-    public static boolean isVeryStrongPassword(String password) {
-        Zxcvbn passwordStrengthEstimator = new Zxcvbn();
-        Strength strength = passwordStrengthEstimator.measure(password);
-        if (strength.getScore() == 4 || strength.getScore() == 3) return true; // 4 is a very strong password, 3 is strong
-        System.out.println(strength.getPassword());
-        String warning = strength.getFeedback().getWarning();
-        String feedback = strength.getFeedback().getSuggestions().toString();
-        throw new WeakPasswordException(warning.isEmpty() ? feedback : warning + ", " + feedback);
     }
 
     public static class WeakPasswordException extends RuntimeException {
