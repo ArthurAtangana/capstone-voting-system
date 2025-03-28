@@ -38,3 +38,15 @@ Everything needed for the hyperledger fabric network and chaincode can be found 
     |- install-fabric.sh
     |- ...
 
+### Server Configuration
+- Make sure that nginx is running with the proper config `nginx.conf`
+- Run hyperledger fabric with `fabric-start.sh`.
+- Run the spring boot app with the right timezone:
+    * no logs
+    ```bash
+    nohup env JAVA_TOOL_OPTIONS="-Duser.timezone=America/Toronto" mvn spring-boot:run > /dev/null 2>&1 &
+    ```
+    * logs
+    ```bash
+    nohup env JAVA_TOOL_OPTIONS="-Duser.timezone=America/Toronto" mvn spring-boot:run > output.log 2>&1
+    ```
