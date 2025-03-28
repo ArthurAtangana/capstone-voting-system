@@ -104,7 +104,8 @@
     <a href="/home">
         <img src="/images/confido-logo.png"  style="width: 200px;padding: 10px;">
     </a>
-    <div class="user-details" >
+    <a href="/">About Us</a>
+    <div class="user-details" sec:authorize="isAuthenticated()">
         <i class="fa-solid fa-circle-user"></i>
         <p sec:authentication="name"></p>
         <p style="margin: 15px">|</p>

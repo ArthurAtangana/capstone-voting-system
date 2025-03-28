@@ -51,9 +51,9 @@
             <img src="images/confido-logo.png" style="width: 200px;padding: 10px;">
         </a>
         <a href="/">About Us</a>
-        <a href="/view-election-details">Election Details</a>
-        <a href="/ledger">Ledger</a>
-        <a href="/">Election Results (update link!)</a>
+        <a th:if="${electionName}" href="/view-election-details">Election Details</a>
+        <a th:if="${electionName}" href="/ledger">Ledger</a>
+        <a th:if="${electionName}" href="/view-election-results">Election Results</a>
     </nav>
     <div class="user-details">
         <i class="fa-solid fa-circle-user"></i>

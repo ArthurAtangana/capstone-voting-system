@@ -48,6 +48,10 @@ public class AuthenticationController {
         if (error != null) {
             model.addAttribute("errorMessage", session.getAttribute("errorMessage"));
         }
+        if (electionService.electionIsConfigured()) {
+            Election election = electionService.getElection();
+            model.addAttribute("electionName", election.NAME);
+        }
         return "login-page";
     }
 
