@@ -1,11 +1,11 @@
 package org.sysc4907.votingsystem;
 
-import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -13,8 +13,8 @@ import org.sysc4907.votingsystem.Elections.ElectionService;
 import org.sysc4907.votingsystem.Registration.RegistrationController;
 import org.sysc4907.votingsystem.Registration.RegistrationService;
 
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,6 +40,9 @@ public class RegistrationControllerTest {
     @MockBean
     private ElectionService electionService;
 
+    @SpyBean
+    private RegistrationController registrationController;
+
     /**
      * Verifying GET /registration-key endpoint has OK status and returns expected template name.
      */
@@ -62,9 +65,18 @@ public class RegistrationControllerTest {
      */
     @Test
     public void testShowRegistrationCredentialsPage() throws Exception {
+        // Registration when poll is not yet configured
+        mockMvc.perform(get("/register-credentials"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("login-page"))
+                .andExpect(model().attributeExists("errorMessage"));
+
+        // Registration when poll has been configured
         // Create a MockHttpSession and add attributes if needed
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("validRegKey", true);
+        when(electionService.electionIsConfigured()).thenReturn(true); // mocking that poll has been configured
+
         mockMvc.perform(get("/register-credentials").session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("registration-credentials-page"));
@@ -97,7 +109,11 @@ public class RegistrationControllerTest {
     @Test
     public void testCreateAccountVoter() throws Exception {
         when(registrationService.submitAccountCredentials(anyString(), anyString())).thenReturn(RegistrationService.Response.VOTER_REG_SUCCESS);
-
+        //This test was failing due to the login() call on the HttpServletRequest object.
+        // Because during testing, Spring uses a MockHttpServletRequest, which does not support request.login(...)
+        // it throws that UnsupportedOperationException by design.
+        // I've created a wrapper for this method and used SpyBean to mock the wrapper method so it doesn't actually call request.login(...).
+        doNothing().when(registrationController).performLogin(any(), anyString(), anyString());
         mockMvc.perform(post("/register-credentials")
                         .param("userName", "userName")
                         .param("password", "password"))
@@ -107,7 +123,7 @@ public class RegistrationControllerTest {
                 .andExpect(request().sessionAttributeDoesNotExist("validRegKey"));
     }
 
-    @Test
+    /*@Test TODO we do not currently have a workflow for admin account creation.
     public void testCreateAccountAdmin() throws Exception {
         when(registrationService.submitAccountCredentials(anyString(), anyString())).thenReturn(RegistrationService.Response.ADMIN_REG_SUCCESS);
 
@@ -118,6 +134,6 @@ public class RegistrationControllerTest {
                 .andExpect(redirectedUrl("/home"))
                 .andExpect(request().sessionAttribute("accountType", "admin"))
                 .andExpect(request().sessionAttributeDoesNotExist("validRegKey"));
-    }
+    }*/
 }
 

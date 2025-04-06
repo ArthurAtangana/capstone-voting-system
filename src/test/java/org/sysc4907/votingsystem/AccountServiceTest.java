@@ -1,4 +1,4 @@
-package org.sysc4907.votingsystem.Accounts;
+package org.sysc4907.votingsystem;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
+import org.sysc4907.votingsystem.Accounts.AccountService;
 import org.sysc4907.votingsystem.Registration.SignInKeyService;
 
 import java.util.Arrays;
@@ -37,7 +38,7 @@ class AccountServiceTest {
     @Test
     void configureAndSaveNewAccount() {
         String username = "testUser";
-        String password = "password";
+        String password = "Password1!";
 
         when(userDetailsManager.userExists(username)).thenReturn(false);
         when(passwordEncoder.encode(password)).thenReturn("encodedPassword");
