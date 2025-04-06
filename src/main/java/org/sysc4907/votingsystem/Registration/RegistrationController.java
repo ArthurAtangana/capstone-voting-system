@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.sysc4907.votingsystem.Accounts.Account;
 import org.sysc4907.votingsystem.Accounts.AccountService;
 import org.sysc4907.votingsystem.Elections.ElectionService;
 
@@ -78,7 +77,7 @@ public class RegistrationController {
 
             // Registered user is already authenticated, so they're redirected to the home page rather than login.
             try {
-                request.login(userName, password);
+                performLogin(request, userName, password); /** wrapping for ease of test mocking, see {@link org.sysc4907.votingsystem.RegistrationControllerTest#testCreateAccountVoter()*/
             } catch(ServletException ex) {
                 // fail to authenticate
                 System.out.println("Authentication of newly registered user failed");
@@ -101,5 +100,8 @@ public class RegistrationController {
         }
 
 
+    }
+    public void performLogin(HttpServletRequest request, String user, String pass) throws ServletException {
+        request.login(user, pass);
     }
 }
